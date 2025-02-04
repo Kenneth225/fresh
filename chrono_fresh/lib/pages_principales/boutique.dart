@@ -16,22 +16,22 @@ class _boutiqueState extends State<boutique> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 30,),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Icon(
-                                Icons.location_on,
-                                color: Color.fromRGBO(59, 59, 59, 1),
-                              ),
-                              Text("Akpakpa, Cotonou")
-                ],
-              ),
+            SizedBox(
+              height: 30,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.location_on,
+                  color: Color.fromRGBO(59, 59, 59, 1),
+                ),
+                Text("Akpakpa, Cotonou")
+              ],
             ),
             Container(
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(6.0),
                 child: GestureDetector(
                   onTap: () {},
                   child: TextField(
@@ -64,19 +64,113 @@ class _boutiqueState extends State<boutique> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(13),
                         child: Image.asset(
-                          "assets/store.jpg",
+                          "assets/slide.jpeg",
                           fit: BoxFit.fitWidth,
                         ),
                       ),
-                      ClipRRect(
+                      /*ClipRRect(
                         borderRadius: BorderRadius.circular(13),
                         child: Image.asset(
                           "assets/moon.jpg",
                           fit: BoxFit.fitWidth,
                         ),
-                      ),
+                      ),*/
                     ], options: CarouselOptions(autoPlay: true)),
                   ]),
+            ),
+            const Text("Poisson"),
+            Row(
+              children: [
+                Card(
+                  color: Colors.black,
+                  child: Container(
+                    color: Colors.white,
+                    height: 230,
+                    width: 150,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              /*if (statut == "wait") {
+                          verification();
+                        } else {
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => new Party()));
+                        }*/
+                            },
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(13),
+                              child: Image.network(
+                                "http://demoalito.mydevcloud.com/api_tissu/uploads/ceremonie.jpg",
+                                height: 100,
+                                width: 110,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {},
+                              child: Text(
+                                "Cérémonie",
+                                maxLines: 3,
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Text("1kg,Prix"),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Row(
+                            children: [
+                              Text("1400 fcfa"),
+                              Container(
+                                height: 35,
+                                width: 40,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(30),
+                                    gradient: const LinearGradient(colors: [
+                                      Color.fromRGBO(14, 232, 62, 0.667),
+                                      Color.fromRGBO(70, 225, 106, 1),
+                                    ])),
+                                child: Center(
+                                  child: TextButton(
+                                    onPressed: () {},
+                                    child: const Row(
+                                      verticalDirection: VerticalDirection.up,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "+",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

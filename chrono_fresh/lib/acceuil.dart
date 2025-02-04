@@ -16,7 +16,7 @@ class Acceuil extends StatefulWidget {
 
 bool loged = true;
 int _tabNum = 0;
-final _tab = [boutique(), Explorer(), Panier(), Favoris(), Recettes(), Profil()];
+final _tab = [boutique(), Explorer(), Panier(),  Recettes(), Profil()];
 //final _tab2 = [new Mesconsults(), new Allconsults(), new Doneconsults(), new Profil()];
 
 class _AcceuilState extends State<Acceuil> {
@@ -35,7 +35,7 @@ class _AcceuilState extends State<Acceuil> {
           padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
           child: GNav(
             backgroundColor: Color.fromARGB(255, 255, 255, 255),
-            style: GnavStyle.oldSchool,
+            style: GnavStyle.google,
             //iconSize: 12,
             textSize: 9,
             color: Color.fromARGB(255, 11, 11, 11),
@@ -57,7 +57,7 @@ class _AcceuilState extends State<Acceuil> {
                 icon: Icons.shopping_cart_outlined,
                 text: 'Panier',
               ),
-              GButton(icon: Icons.favorite_border_outlined, text: 'Favoris'),
+            /*  GButton(icon: Icons.favorite_border_outlined, text: 'Favoris'),*/
               GButton(icon: Icons.soup_kitchen_outlined, text: 'Recettes'),
               GButton(icon: Icons.person_4_outlined, text: 'Compte'),
             ],

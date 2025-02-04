@@ -68,15 +68,20 @@ class _MyHomePageState extends State<MyHomePage> {
       ),*/
       body: Container(
           alignment: Alignment.center,
-          padding: EdgeInsets.all(32),
-          decoration: BoxDecoration(
+          padding: const EdgeInsets.all(32),
+          decoration: const BoxDecoration(
+               gradient: LinearGradient(colors: [
+                          Color.fromRGBO(208, 208, 208, 0.667),
+                          Color.fromRGBO(60, 60, 60, 1),
+                        ]),
               image: DecorationImage(
-                  image: AssetImage("assets/moon.jpg"), fit: BoxFit.cover)),
+                opacity: 10,
+                  image: AssetImage("assets/home.jpeg"), fit: BoxFit.cover)),
           child: Padding(
             padding: const EdgeInsets.only(top: 420.25),
             child: Column(
               children: [
-                Text(
+                const Text(
                   "Bienvenue dans notre magazin",textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.white,
@@ -84,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       fontSize: 30,
                       fontStyle: FontStyle.normal),
                 ),
-                Text("Faites vos courses sans vous deplacer",textAlign: TextAlign.center,
+                const Text("Faites vos courses sans vous deplacer",textAlign: TextAlign.center,
                     style: TextStyle(
                         color: Colors.white, fontWeight: FontWeight.normal)),
                 Center(
@@ -93,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     //width: 150,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
-                        gradient: LinearGradient(colors: [
+                        gradient: const LinearGradient(colors: [
                           Color.fromRGBO(14, 232, 62, 0.667),
                           Color.fromRGBO(70, 225, 106, 1),
                         ])),
@@ -102,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         onPressed: () {
                           Navigator.pushReplacementNamed(context, 'accueil');
                         },
-                        child: Row(
+                        child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
