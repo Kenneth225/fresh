@@ -38,6 +38,8 @@ dependencies:
   shared_preferences: ^2.2.3
   carousel_slider: ^5.0.0
   google_nav_bar: ^5.0.7
+  http: ^1.2.2
+  tap_to_expand: ^0.7.2
 
 dev_dependencies:
   flutter_test:
