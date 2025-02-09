@@ -105,7 +105,8 @@ class _boutiqueState extends State<boutique> {
                       (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                     if (snapshot.hasData) {
                       return GridView.builder(
-                        itemCount: snapshot.data.length,
+                        itemCount: 2 ,
+                        //snapshot.data.length,
                         scrollDirection: Axis.vertical,
                         shrinkWrap: true,
                         itemBuilder: (BuildContext context, int index) {

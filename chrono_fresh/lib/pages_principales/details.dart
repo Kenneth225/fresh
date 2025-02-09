@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tap_to_expand/tap_to_expand.dart';
 
 class Details extends StatefulWidget {
   String? id;
@@ -49,6 +48,7 @@ class _DetailsState extends State<Details> {
         ],
       ),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Image.network(
             "https://demoalito.mydevcloud.com/waxbank/assets/uploads/images/${widget.image}",
@@ -117,34 +117,72 @@ class _DetailsState extends State<Details> {
               ),
             ],
           ),
-          const Divider(
-            height: 2,
-          ),
-          Center(
-            child: TapToExpand(
-              //backgroundcolor: Theme.of(context).colorScheme.surface,
-              curve: Curves.easeIn,
-              content: Column(
-                children: <Widget>[
-                  for (var i = 0; i < 20; i++)
-                    Text(
-                      "data $i",
-                    ),
-                ],
-              ),
-              title: Row(
-                children: [
-                  Text(
-                    'TapToExpand',
-                  ),
-                  Icon(Icons.arrow_drop_down_circle_outlined)
-                ],
-              ),
-              closedHeight: 70,
-              borderRadius: BorderRadius.circular(10),
-              openedHeight: 200,
+          const Divider(),
+          const ExpansionTile(
+            title: Text(
+              'Détail du produit',
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
-          )
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Text(
+                  "Le Poulet Est Une Excellente Source De Protéines Maigres, Idéale Pour La Construction Musculaire Et La Perte De Poids. Riche En Vitamines Et Minéraux, Il Soutient Également La Santé Du Cœur Et Du Système Immunitaire.",
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ),
+            ],
+          ),
+          const Divider(),
+          ExpansionTile(
+            title: const Text(
+              'Recettes',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            children: [Text('blablabal')],
+          ),
+          const Divider(),
+          ListTile(
+            title: const Text(
+              'Notes',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: List.generate(
+                5,
+                (index) => const Icon(
+                  Icons.star,
+                  color: Colors.orange,
+                  size: 20,
+                ),
+              )..add(const Icon(
+                  Icons.star_half,
+                  color: Colors.orange,
+                  size: 20,
+                )),
+            ),
+            onTap: () {},
+          ),
+
+const SizedBox(height: 20),
+          SizedBox(
+            width: double.infinity,
+            height: 50,
+            child: ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+              child: const Text(
+                'Ajouter au panier',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
         ],
       ),
     );
