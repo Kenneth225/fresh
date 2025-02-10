@@ -76,6 +76,9 @@ flutter:
      - assets/slide.jpeg
      - assets/store.jpg
      - assets/viande.jpeg
+     - assets/roast_chicken.jpg
+     - assets/salmon_salad.jpeg
+     - assets/shrimp_pasta.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

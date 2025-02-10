@@ -10,19 +10,19 @@ class Recettes extends StatefulWidget {
 final List<Map<String, dynamic>> recipes = const [
     {
       'title': 'Salade de saumon',
-      'image': 'assets/salmon_salad.png',
+      'image': 'assets/salmon_salad.jpeg',
       'tags': ['Saumon', 'Légumes', 'Healthy'],
       'description': 'Une délicieuse salade avec du saumon frais, des légumes croquants et une vinaigrette maison.'
     },
     {
       'title': 'Poulet rôti',
-      'image': 'assets/roast_chicken.png',
+      'image': 'assets/roast_chicken.jpg',
       'tags': ['Poulet', 'Four', 'Épices'],
       'description': 'Un poulet rôti tendre et juteux, assaisonné avec des herbes et des épices.'
     },
     {
       'title': 'Pâtes aux crevettes',
-      'image': 'assets/shrimp_pasta.png',
+      'image': 'assets/shrimp_pasta.jpg',
       'tags': ['Pâtes', 'Crevettes', 'Crème'],
       'description': 'Des pâtes crémeuses aux crevettes, ail et parmesan pour un goût irrésistible.'
     }

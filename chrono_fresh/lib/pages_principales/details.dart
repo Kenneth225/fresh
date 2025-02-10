@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_cart/flutter_cart.dart';
 
 class Details extends StatefulWidget {
   String? id;
@@ -34,6 +35,7 @@ class Details extends StatefulWidget {
 
 class _DetailsState extends State<Details> {
   int quantity = 1;
+  var cart = FlutterCart();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -170,7 +172,9 @@ const SizedBox(height: 20),
             width: double.infinity,
             height: 50,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                cart.addToCart(cartModel: CartModel(productId: widget.id as String, productName: widget.nom as String, productImages: [widget.image as String], quantity: widget.stock as int, variants: [] , productDetails: widget.description as String));
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
                 shape: RoundedRectangleBorder(
