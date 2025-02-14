@@ -1,4 +1,5 @@
 import 'package:chrono_fresh/acceuil.dart';
+import 'package:chrono_fresh/pages_login/connection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cart/cart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
                 title: 'Bienvenue',
               ),
           'accueil': (context) => Acceuil(),
+          'connect':(context) => connection()
         });
   }
 }
@@ -116,6 +118,38 @@ class _MyHomePageState extends State<MyHomePage> {
                           children: [
                             Text(
                               "Commencer",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 16,),
+                Center(
+                  child: Container(
+                    height: 55,
+                    //width: 150,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        gradient: const LinearGradient(colors: [
+                          Color.fromRGBO(14, 209, 223, 0.667),
+                          Color.fromRGBO(87, 118, 192, 1),
+                        ])),
+                    child: Center(
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(context, 'connect');
+                        },
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Connectez vous",
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 20,

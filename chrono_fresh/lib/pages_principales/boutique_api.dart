@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:chrono_fresh/global_var.dart';
 import 'package:chrono_fresh/pages_principales/boutique_structure.dart';
 import 'package:http/http.dart' as http;
 
@@ -6,7 +7,7 @@ import 'package:http/http.dart' as http;
 
 Future<List<Boutique>>  viewboutique(name) async {
 
-  var url = Uri.parse("http://10.0.2.2:80/api_fresh/maboutique.php");
+  var url = Uri.parse("${api_link}/api_fresh/maboutique.php");
   var data = {
     'categorie': name,
   };
