@@ -1,6 +1,8 @@
+import 'dart:convert';
+import 'package:chrono_fresh/global_var.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
 
 class connection extends StatefulWidget {
   const connection({super.key});
@@ -89,7 +91,9 @@ class _connectionState extends State<connection> {
                     width: 50,
                   ),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      login(mailctrl.text, numctrl.text);
+                    },
                     child: const Text('Valider'),
                   )
                 ],
@@ -101,140 +105,79 @@ class _connectionState extends State<connection> {
     );
   }
 
+  Future<void> login(mail, code) async {
+    print("start ${mail} et ${code}");
+    if (code != "02025") {
+      Fluttertoast.showToast(
+          msg: "Code incorrect", toastLength: Toast.LENGTH_SHORT);
+    } else {
+      var url = Uri.parse("${api_link}/api_fresh/inscorp.php");
+      var data = {"mail": mail, "code": code};
+
+      var res = await http.post(url, body: data);
+      if (jsonDecode(res.body) == "true") {
+        print("inscription");
+        Navigator.pushReplacementNamed(context, 'accueil');
+      } else {
+        Fluttertoast.showToast(
+            msg: "Erreur de connexion", toastLength: Toast.LENGTH_SHORT);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body:  SingleChildScrollView(
         child: Column(
-          children: [
-            Image.asset(
-              "assets/melange.png",
-              height: 325,
-              width: 125,
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            const Text("Faites vos courses avec Chrono Fresh"),
-            const SizedBox(
-              height: 16,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("Avez vous un compte ?"),
-                Switch(
-                  // This bool value toggles the switch.
-                  value: have_acount,
-                  activeColor: Colors.green,
-                  onChanged: (bool value) {
-                    // This is called when the user toggles the switch.
-                    setState(() {
-                      have_acount = value;
-                    });
-                  },
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(18.0),
-              child: have_acount
-                  ? Column(children: [
-                      TextField(
-                        controller: mailctrl,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                            prefixIcon: const Icon(
-                              Icons.mail,
-                              color: Colors.black,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            //filled: true,
-                            hintStyle: TextStyle(color: Colors.grey),
-                            hintText: "Entrez votre adresse mail",
-                            fillColor: Colors.white,
-                            hoverColor: Colors.white),
-                      ),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      Center(
-                        child: Container(
-                          height: 55,
-                          //width: 150,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              gradient: const LinearGradient(colors: [
-                                Color.fromRGBO(14, 209, 223, 0.667),
-                                Color.fromRGBO(87, 118, 192, 1),
-                              ])),
-                          child: Center(
-                            child: TextButton(
-                              onPressed: () {
-                                decidor(context, mailctrl.text);
-                              },
-                              child: const Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "Se connecté",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ])
-                  : Column(
-                      children: [
+            children: [
+              Image.asset(
+                "assets/melange.png",
+                height: 325,
+                width: 125,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              const Text("Faites vos courses avec Chrono Fresh"),
+              const SizedBox(
+                height: 16,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Avez vous un compte ?"),
+                  Switch(
+                    // This bool value toggles the switch.
+                    value: have_acount,
+                    activeColor: Colors.green,
+                    onChanged: (bool value) {
+                      // This is called when the user toggles the switch.
+                      setState(() {
+                        have_acount = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: have_acount
+                    ? Column(children: [
                         TextField(
-                          // controller: ,
-                          keyboardType: TextInputType.name,
+                          controller: mailctrl,
+                          keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
+                              prefixIcon: const Icon(
+                                Icons.mail,
+                                color: Colors.black,
                               ),
-                              hintStyle: TextStyle(color: Colors.grey),
-                              hintText: "Entrez votre Nom",
-                              fillColor: Colors.white,
-                              hoverColor: Colors.white),
-                        ),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        TextField(
-                          // controller: ,
-                          keyboardType: TextInputType.name,
-                          decoration: InputDecoration(
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                               //filled: true,
                               hintStyle: TextStyle(color: Colors.grey),
-                              hintText: "Entrez votre Prenom",
-                              fillColor: Colors.white,
-                              hoverColor: Colors.white),
-                        ),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        TextField(
-                          // controller: ,
-                          keyboardType: TextInputType.name,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              //filled: true,
-                              hintStyle: TextStyle(color: Colors.grey),
-                              hintText: "Entrez votre adresse Mail",
+                              hintText: "Entrez votre adresse mail",
                               fillColor: Colors.white,
                               hoverColor: Colors.white),
                         ),
@@ -254,13 +197,13 @@ class _connectionState extends State<connection> {
                             child: Center(
                               child: TextButton(
                                 onPressed: () {
-                                  //Navigator.pushReplacementNamed(context, 'connect');
+                                  decidor(context, mailctrl.text);
                                 },
                                 child: const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      "S'inscrire",
+                                      "Se connecté",
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 20,
@@ -272,12 +215,94 @@ class _connectionState extends State<connection> {
                             ),
                           ),
                         ),
-                      ],
-                    ),
-            )
-          ],
-        ),
+                      ])
+                    : Column(
+                        children: [
+                          TextField(
+                            // controller: ,
+                            keyboardType: TextInputType.name,
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                hintStyle: TextStyle(color: Colors.grey),
+                                hintText: "Entrez votre Nom",
+                                fillColor: Colors.white,
+                                hoverColor: Colors.white),
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          TextField(
+                            // controller: ,
+                            keyboardType: TextInputType.name,
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                //filled: true,
+                                hintStyle: TextStyle(color: Colors.grey),
+                                hintText: "Entrez votre Prenom",
+                                fillColor: Colors.white,
+                                hoverColor: Colors.white),
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          TextField(
+                            // controller: ,
+                            keyboardType: TextInputType.name,
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                //filled: true,
+                                hintStyle: TextStyle(color: Colors.grey),
+                                hintText: "Entrez votre adresse Mail",
+                                fillColor: Colors.white,
+                                hoverColor: Colors.white),
+                          ),
+                          SizedBox(
+                            height: 16,
+                          ),
+                          Center(
+                            child: Container(
+                              height: 55,
+                              //width: 150,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  gradient: const LinearGradient(colors: [
+                                    Color.fromRGBO(14, 209, 223, 0.667),
+                                    Color.fromRGBO(87, 118, 192, 1),
+                                  ])),
+                              child: Center(
+                                child: TextButton(
+                                  onPressed: () {
+                                    //Navigator.pushReplacementNamed(context, 'connect');
+                                  },
+                                  child: const Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "S'inscrire",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+              )
+            ],
+          ),
       ),
+      
     );
   }
 }
