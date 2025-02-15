@@ -11,11 +11,9 @@ class Explorer extends StatefulWidget {
 
  final List<Map<String, String>> categories = const [
     {'title': 'Poissons fraîches', 'image': 'assets/fish.png'},
-    {'title': 'Viandes', 'image': 'assets/meat.png'},
-    {'title': 'Viandes et poissons', 'image': 'assets/mixed.png'},
-    {'title': 'Lorem', 'image': 'assets/lorem.png'},
-    {'title': 'Lorem', 'image': 'assets/lorem2.png'},
-    {'title': 'Viande rouge', 'image': 'assets/red_meat.png'},
+    {'title': 'Viandes', 'image': 'assets/viande.jpeg'},
+    {'title': 'Viandes et poissons', 'image': 'assets/melange.png'},
+    {'title': 'Viande rouge', 'image': 'assets/board.png'},
   ];
 
 Color getRandomColor() {
@@ -33,6 +31,8 @@ class _ExplorerState extends State<Explorer> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.white,
         title: Center(child: const Text("Trouver des produits")),
       ),
       body: Padding(

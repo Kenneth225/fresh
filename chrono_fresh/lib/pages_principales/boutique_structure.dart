@@ -11,6 +11,7 @@ String boutiqueToJson(List<Boutique> data) => json.encode(List<dynamic>.from(dat
 class Boutique {
     String id;
     String nom;
+    String image;
     String description;
     String prix;
     String categorie;
@@ -19,6 +20,7 @@ class Boutique {
     Boutique({
         required this.id,
         required this.nom,
+        required this.image,
         required this.description,
         required this.prix,
         required this.categorie,
@@ -28,6 +30,7 @@ class Boutique {
     factory Boutique.fromJson(Map<String, dynamic> json) => Boutique(
         id: json["id"],
         nom: json["nom"],
+        image: json["image"],
         description: json["description"],
         prix: json["prix"],
         categorie: json["categorie"],
@@ -37,6 +40,7 @@ class Boutique {
     Map<String, dynamic> toJson() => {
         "id": id,
         "nom": nom,
+        "image": image,
         "description": description,
         "prix": prix,
         "categorie": categorie,

@@ -131,22 +131,36 @@ class _connectionState extends State<connection> {
       body:  SingleChildScrollView(
         child: Column(
             children: [
-              Image.asset(
-                "assets/melange.png",
-                height: 325,
-                width: 125,
+              Container(
+                width: MediaQuery.of(context).size.width * 1,
+                decoration: const BoxDecoration(
+               gradient: LinearGradient(colors: [
+                          Color.fromRGBO(208, 208, 208, 0.667),
+                          Color.fromRGBO(60, 60, 60, 1),
+                        ]),
+              image: DecorationImage(
+                opacity: 10,
+                  image: AssetImage("assets/roast_chicken.jpg"), fit: BoxFit.cover)),
+                child: Image.asset(
+                  "assets/roast_chicken.jpg",
+                  height: 325,
+                  width: 125,
+                ),
               ),
               const SizedBox(
-                height: 8,
+                height: 9,
               ),
-              const Text("Faites vos courses avec Chrono Fresh"),
+              const Text("Faites vos courses avec Chrono Fresh", style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 29,
+                                  ),),
               const SizedBox(
                 height: 16,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Avez vous un compte ?"),
+                  const Text("Avez vous un compte ?", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),),
                   Switch(
                     // This bool value toggles the switch.
                     value: have_acount,

@@ -19,6 +19,7 @@ class _ProfilState extends State<Profil> {
               child: Row(
                 children: [
                   CircleAvatar(
+                    maxRadius: 35,
                     backgroundColor: Colors.green,
                     backgroundImage: AssetImage("assets/moon.jpg"),
                   ),
@@ -29,7 +30,8 @@ class _ProfilState extends State<Profil> {
                     children: [
                       Text(
                         "Pseudo User",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 30),
                       ),
                       Text("Email User")
                     ],
@@ -44,34 +46,55 @@ class _ProfilState extends State<Profil> {
                   Divider(),
                   Row(
                     children: [
-                      Icon(Icons.shopping_bag_outlined),
+                      Icon(
+                        Icons.shopping_bag_outlined,
+                        size: 25,
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
                       Text(
                         "Commandes",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 25),
                       ),
                     ],
                   ),
                   Divider(),
                   Row(
                     children: [
-                      Icon(Icons.badge_outlined),
+                      Icon(
+                        Icons.badge_outlined,
+                        size: 25,
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
                       Text(
                         "Details",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 25),
                       ),
                     ],
                   ),
                   Divider(),
                   Row(
                     children: [
-                      Icon(Icons.person_pin_circle_outlined),
+                      Icon(
+                        Icons.person_pin_circle_outlined,
+                        size: 25,
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
                       Text(
                         "Adresse de livraison",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 25),
                       ),
                     ],
                   ),
-                 /* Divider(),
+                  /* Divider(),
                   Row(
                     children: [
                       Icon(Icons.shopping_bag_outlined),
@@ -84,40 +107,68 @@ class _ProfilState extends State<Profil> {
                   Divider(),
                   Row(
                     children: [
-                      Icon(Icons.payments_outlined),
+                      Icon(
+                        Icons.payments_outlined,
+                        size: 25,
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
                       Text(
                         "Code Promo",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 25),
                       ),
                     ],
                   ),
                   Divider(),
                   Row(
                     children: [
-                      Icon(Icons.notifications_none_outlined),
+                      Icon(
+                        Icons.notifications_none_outlined,
+                        size: 25,
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
                       Text(
                         "Notifications",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 25),
                       ),
                     ],
                   ),
                   Divider(),
                   Row(
                     children: [
-                      Icon(Icons.help_outline_outlined),
+                      Icon(
+                        Icons.help_outline_outlined,
+                        size: 25,
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
                       Text(
                         "Aide",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 25),
                       ),
                     ],
                   ),
                   Divider(),
                   Row(
                     children: [
-                      Icon(Icons.warning_amber_sharp),
+                      Icon(
+                        Icons.warning_amber_sharp,
+                        size: 25,
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
                       Text(
                         "A propos",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 25),
                       ),
                     ],
                   ),
