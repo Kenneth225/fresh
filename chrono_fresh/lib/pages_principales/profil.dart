@@ -31,7 +31,7 @@ class _ProfilState extends State<Profil> {
                       Text(
                         "Pseudo User",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 30),
+                            fontWeight: FontWeight.normal, fontSize: 30),
                       ),
                       Text("Email User")
                     ],
@@ -48,15 +48,15 @@ class _ProfilState extends State<Profil> {
                     children: [
                       Icon(
                         Icons.shopping_bag_outlined,
-                        size: 25,
+                        size: 22,
                       ),
                       SizedBox(
                         width: 5,
                       ),
                       Text(
-                        "Commandes",
+                        "Mes commandes",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 25),
+                            fontWeight: FontWeight.normal, fontSize: 22),
                       ),
                     ],
                   ),
@@ -65,15 +65,15 @@ class _ProfilState extends State<Profil> {
                     children: [
                       Icon(
                         Icons.badge_outlined,
-                        size: 25,
+                        size: 22,
                       ),
                       SizedBox(
                         width: 5,
                       ),
                       Text(
-                        "Details",
+                        "Mes données",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 25),
+                            fontWeight: FontWeight.normal, fontSize: 22),
                       ),
                     ],
                   ),
@@ -82,7 +82,7 @@ class _ProfilState extends State<Profil> {
                     children: [
                       Icon(
                         Icons.person_pin_circle_outlined,
-                        size: 25,
+                        size: 22,
                       ),
                       SizedBox(
                         width: 5,
@@ -90,7 +90,7 @@ class _ProfilState extends State<Profil> {
                       Text(
                         "Adresse de livraison",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 25),
+                            fontWeight: FontWeight.normal, fontSize: 22),
                       ),
                     ],
                   ),
@@ -100,7 +100,7 @@ class _ProfilState extends State<Profil> {
                       Icon(Icons.shopping_bag_outlined),
                       Text(
                         "Paiements",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(fontWeight: FontWeight.normal),
                       ),
                     ],
                   ),*/
@@ -109,7 +109,7 @@ class _ProfilState extends State<Profil> {
                     children: [
                       Icon(
                         Icons.payments_outlined,
-                        size: 25,
+                        size: 22,
                       ),
                       SizedBox(
                         width: 5,
@@ -117,7 +117,7 @@ class _ProfilState extends State<Profil> {
                       Text(
                         "Code Promo",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 25),
+                            fontWeight: FontWeight.normal, fontSize: 22),
                       ),
                     ],
                   ),
@@ -126,7 +126,7 @@ class _ProfilState extends State<Profil> {
                     children: [
                       Icon(
                         Icons.notifications_none_outlined,
-                        size: 25,
+                        size: 22,
                       ),
                       SizedBox(
                         width: 5,
@@ -134,7 +134,7 @@ class _ProfilState extends State<Profil> {
                       Text(
                         "Notifications",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 25),
+                            fontWeight: FontWeight.normal, fontSize: 22),
                       ),
                     ],
                   ),
@@ -143,7 +143,7 @@ class _ProfilState extends State<Profil> {
                     children: [
                       Icon(
                         Icons.help_outline_outlined,
-                        size: 25,
+                        size: 22,
                       ),
                       SizedBox(
                         width: 5,
@@ -151,7 +151,7 @@ class _ProfilState extends State<Profil> {
                       Text(
                         "Aide",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 25),
+                            fontWeight: FontWeight.normal, fontSize: 22),
                       ),
                     ],
                   ),
@@ -160,7 +160,7 @@ class _ProfilState extends State<Profil> {
                     children: [
                       Icon(
                         Icons.warning_amber_sharp,
-                        size: 25,
+                        size: 22,
                       ),
                       SizedBox(
                         width: 5,
@@ -168,7 +168,7 @@ class _ProfilState extends State<Profil> {
                       Text(
                         "A propos",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 25),
+                            fontWeight: FontWeight.normal, fontSize: 22),
                       ),
                     ],
                   ),

@@ -7,55 +7,59 @@ class Recettes extends StatefulWidget {
   State<Recettes> createState() => _RecettesState();
 }
 
-final List<Map<String, dynamic>> recipes = const [
-    {
-      'title': 'Salade de saumon',
-      'image': 'assets/salmon_salad.jpeg',
-      'tags': ['Saumon', 'Légumes', 'Healthy'],
-      'description': 'Une délicieuse salade avec du saumon frais, des légumes croquants et une vinaigrette maison.'
-    },
-    {
-      'title': 'Poulet rôti',
-      'image': 'assets/roast_chicken.jpg',
-      'tags': ['Poulet', 'Four', 'Épices'],
-      'description': 'Un poulet rôti tendre et juteux, assaisonné avec des herbes et des épices.'
-    },
-    {
-      'title': 'Pâtes aux crevettes',
-      'image': 'assets/shrimp_pasta.jpg',
-      'tags': ['Pâtes', 'Crevettes', 'Crème'],
-      'description': 'Des pâtes crémeuses aux crevettes, ail et parmesan pour un goût irrésistible.'
-    }
-  ];
-
-  void showRecipeDetails(BuildContext context, Map<String, dynamic> recipe) {
-    showModalBottomSheet(
-      context: context,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(recipe['title'], style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 10),
-              Text(recipe['description'], style: const TextStyle(fontSize: 16)),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Fermer'),
-              )
-            ],
-          ),
-        );
-      },
-    );
+const List<Map<String, dynamic>> recipes = [
+  {
+    'title': 'Salade de saumon',
+    'image': 'assets/salmon_salad.jpeg',
+    'tags': ['Saumon', 'Légumes', 'Healthy'],
+    'description':
+        'Une délicieuse salade avec du saumon frais, des légumes croquants et une vinaigrette maison.'
+  },
+  {
+    'title': 'Poulet rôti',
+    'image': 'assets/roast_chicken.jpg',
+    'tags': ['Poulet', 'Four', 'Épices'],
+    'description':
+        'Un poulet rôti tendre et juteux, assaisonné avec des herbes et des épices.'
+  },
+  {
+    'title': 'Pâtes aux crevettes',
+    'image': 'assets/shrimp_pasta.jpg',
+    'tags': ['Pâtes', 'Crevettes', 'Crème'],
+    'description':
+        'Des pâtes crémeuses aux crevettes, ail et parmesan pour un goût irrésistible.'
   }
+];
 
+void showRecipeDetails(BuildContext context, Map<String, dynamic> recipe) {
+  showModalBottomSheet(
+    context: context,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(20.0),
+    ),
+    builder: (context) {
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(recipe['title'],
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 10),
+            Text(recipe['description'], style: const TextStyle(fontSize: 16)),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Fermer'),
+            )
+          ],
+        ),
+      );
+    },
+  );
+}
 
 class _RecettesState extends State<Recettes> {
   @override
@@ -72,7 +76,8 @@ class _RecettesState extends State<Recettes> {
               onTap: () => showRecipeDetails(context, recipe),
               child: Card(
                 color: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Row(
@@ -83,12 +88,14 @@ class _RecettesState extends State<Recettes> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(recipe['title'], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                            Text(recipe['title'],
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16)),
                             const SizedBox(height: 5),
                             Wrap(
                               spacing: 5,
                               children: recipe['tags'].map<Widget>((tag) {
-                                return Chip(label: Text(tag));
+                                return Text("#${tag}");
                               }).toList(),
                             ),
                           ],
