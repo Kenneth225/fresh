@@ -37,6 +37,31 @@ class Details extends StatefulWidget {
 class _DetailsState extends State<Details> {
   int quantity = 1;
   var cart = FlutterCart();
+
+
+commande_fict(id,  nom,  image, qt, prix,mode) async {
+            cart.addToCart(
+                      cartModel: CartModel(
+                          productId: id,
+                          productName: nom,
+                          productImages: [image],
+                          quantity: 1,
+                          variants: [ProductVariant(price: double.parse(prix)),],
+                          //discount: double.parse(prix),
+                          productDetails: mode));
+
+    const snackBar = SnackBar(
+      backgroundColor: Colors.orangeAccent,
+      content: Text('Consulter votre panier en haut de page ↑ ↑ ↑'),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    print(cart.cartLength);
+    print(cart.subtotal);
+    print(cart.total);
+
+    Navigator.pushReplacementNamed(context, 'accueil');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -174,14 +199,7 @@ class _DetailsState extends State<Details> {
               height: 50,
               child: ElevatedButton(
                 onPressed: () {
-                  cart.addToCart(
-                      cartModel: CartModel(
-                          productId: widget.id as String,
-                          productName: widget.nom as String,
-                          productImages: [widget.image as String],
-                          quantity: widget.stock as int,
-                          variants: [],
-                          productDetails: widget.description as String));
+                  commande_fict(widget.id,  widget.nom,  widget.image, widget.stock, widget.prix , widget.description);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
