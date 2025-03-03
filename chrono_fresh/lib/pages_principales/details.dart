@@ -1,6 +1,7 @@
 import 'package:chrono_fresh/global_var.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cart/flutter_cart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Details extends StatefulWidget {
   String? id;
@@ -30,13 +31,62 @@ class Details extends StatefulWidget {
       this.mtreduc*/
   });
 
+
+
   @override
   State<Details> createState() => _DetailsState();
 }
 
+
 class _DetailsState extends State<Details> {
   int quantity = 1;
   var cart = FlutterCart();
+  bool isLoggedIn = false;
+  String mail = '';
+
+
+void autoLogIn() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? usermail = prefs.getString('usermail');
+    final String? role = prefs.getString('role');
+
+    if (mail != null) {
+      setState(() {
+        isLoggedIn = true;
+        mail = usermail!;
+       // role = role;
+      });
+      Navigator.pushReplacementNamed(context, 'accueil');
+    }
+  }
+
+
+Future<void> _showMyDialog() async {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false, // user must tap button!
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Information'),
+        content: const SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+                            Text('Vous devez vous connecté pour effectué cette action'),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text("OK"),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
 
 
 commande_fict(id,  nom,  image, qt, prix,mode) async {
@@ -64,6 +114,15 @@ commande_fict(id,  nom,  image, qt, prix,mode) async {
 
   @override
   Widget build(BuildContext context) {
+
+     
+initState(){
+  autoLogIn();
+}
+
+
+
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -199,7 +258,15 @@ commande_fict(id,  nom,  image, qt, prix,mode) async {
               height: 50,
               child: ElevatedButton(
                 onPressed: () {
-                  commande_fict(widget.id,  widget.nom,  widget.image, widget.stock, widget.prix , widget.description);
+                  
+
+                  if (isLoggedIn) {
+                                                                            
+                                                 commande_fict(widget.id,  widget.nom,  widget.image, widget.stock, widget.prix , widget.description);                           
+
+                                                                          } else {
+                                                                            _showMyDialog();
+                                                                          }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,

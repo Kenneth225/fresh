@@ -9,6 +9,9 @@ import 'package:chrono_fresh/pages_principales/categories_details.dart';
 import 'package:chrono_fresh/pages_principales/details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_cart/cart.dart';
+import 'package:flutter_cart/model/cart_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class boutique extends StatefulWidget {
   const boutique({super.key});
@@ -25,9 +28,31 @@ class _boutiqueState extends State<boutique> {
   @override
   void initState() {
     super.initState();
-    print("jai ete demarrer");
+    autoLogIn();
+    
     boutiqueFuture = boutique("1");
     categorieFuture = homecat();
+  }
+
+  bool isLoggedIn = false;
+  String mail = '';
+  String role = "1";
+
+  var cart = FlutterCart();
+
+  void autoLogIn() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? usermail = prefs.getString('usermail');
+    final String? role = prefs.getString('role');
+
+    if (mail != null) {
+      setState(() {
+        isLoggedIn = true;
+        mail = usermail!;
+       // role = role;
+      });
+      Navigator.pushReplacementNamed(context, 'accueil');
+    }
   }
 
   boutique(categorie) async {
@@ -37,6 +62,56 @@ class _boutiqueState extends State<boutique> {
   homecat() async {
     return await viewcat();
   }
+
+  commande_fict(id,  nom,  image, qt, prix,mode) async {
+            cart.addToCart(
+                      cartModel: CartModel(
+                          productId: id,
+                          productName: nom,
+                          productImages: [image],
+                          quantity: 1,
+                          variants: [ProductVariant(price: double.parse(prix)),],
+                          //discount: double.parse(prix),
+                          productDetails: mode));
+
+    const snackBar = SnackBar(
+      backgroundColor: Colors.orangeAccent,
+      content: Text('Consulter votre panier en haut de page'),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    print(cart.cartLength);
+    print(cart.subtotal);
+    print(cart.total);
+
+    Navigator.pushReplacementNamed(context, 'accueil');
+  }
+
+Future<void> _showMyDialog() async {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false, // user must tap button!
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Information'),
+        content: const SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+                            Text('Vous devez vous connecté pour effectué cette action'),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text("OK"),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -251,7 +326,15 @@ class _boutiqueState extends State<boutique> {
                                                                     style:
                                                                         ButtonStyle(),
                                                                     onPressed:
-                                                                        () {},
+                                                                        () {
+                                                                          if (isLoggedIn) {
+                                                                            
+                                                                             commande_fict(boutique.id,  boutique.nom,  boutique.image, boutique.stock, boutique.prix , boutique.description);
+
+                                                                          } else {
+                                                                            _showMyDialog();
+                                                                          }
+                                                                        },
                                                                     child: const Icon(
                                                                         Icons
                                                                             .add_outlined),

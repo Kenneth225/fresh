@@ -40,6 +40,33 @@ class _PanierState extends State<Panier> {
     });
   }
 
+Future<void> _showMyDialog() async {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false, // user must tap button!
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Information'),
+        content: const SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+                            Text('Vous devez vous connecté pour effectué cette action'),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text("OK"),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
   void _showPaymentModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -121,6 +148,10 @@ class _PanierState extends State<Panier> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        
+        title: Text("Panier"),
+      ),
       body: Padding(
         padding: EdgeInsets.all(8.0),
         child: taille >= 1
@@ -206,15 +237,17 @@ class _PanierState extends State<Panier> {
                   ),
                 ),
               ])
-            : Column(
-                children: [
-                  Icon(
-                    Icons.shopping_basket_outlined,
-                    size: 50,
-                  ),
-                  Text("Vous n'avez aucun article dans votre panier ${taille}")
-                ],
-              ),
+            : Center(
+              child: Column(
+                  children: [
+                    Icon(
+                      Icons.shopping_basket_outlined,
+                      size: 50,
+                    ),
+                    Text("Vous n'avez aucun article dans votre panier ${taille}")
+                  ],
+                ),
+            ),
       ),
     );
   }

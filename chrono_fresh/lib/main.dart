@@ -46,7 +46,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   bool isLoggedIn = false;
-  String numero = '';
+  String mail = '';
 
   void initState() {
     autoLogIn();
@@ -54,12 +54,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void autoLogIn() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? usernum = prefs.getString('telephone');
+    final String? usermail = prefs.getString('usermail');
 
-    if (usernum != null) {
+    if (mail != null) {
       setState(() {
         isLoggedIn = true;
-        numero = usernum;
+        mail = usermail!;
       });
       Navigator.pushReplacementNamed(context, 'accueil');
     }

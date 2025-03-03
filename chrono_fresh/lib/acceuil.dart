@@ -5,27 +5,56 @@ import 'package:chrono_fresh/pages_principales/profil.dart';
 import 'package:chrono_fresh/pages_principales/recettes.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Acceuil extends StatefulWidget {
   const Acceuil({super.key});
 
   @override
+
+  
   State<Acceuil> createState() => _AcceuilState();
 }
+
+ 
 
 bool loged = true;
 int _tabNum = 0;
 final _tab = [const boutique(), const Explorer(), const Panier(),  const Recettes(), const Profil()];
-//final _tab2 = [new Mesconsults(), new Allconsults(), new Doneconsults(), new Profil()];
+final _tab2 = [const boutique(),  const Profil()];
 
 class _AcceuilState extends State<Acceuil> {
   @override
+
+bool isLoggedIn = false;
+  String mail = '';
+  String role = "1";
+
+  void initState() {
+    autoLogIn();
+  }
+
+  void autoLogIn() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? usermail = prefs.getString('usermail');
+    final String? role = prefs.getString('role');
+
+    if (mail != null) {
+      setState(() {
+        isLoggedIn = true;
+        mail = usermail!;
+       // role = role;
+      });
+      Navigator.pushReplacementNamed(context, 'accueil');
+    }
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
-        // child: role == "2" ?_tab2[_tabNum] : _tab[_tabNum],
-        child: _tab[_tabNum],
+        child: role == "1" ?_tab[_tabNum] : _tab2[_tabNum],
+        //child: _tab[_tabNum],
       ),
       bottomNavigationBar: Container(
         //width: MediaQuery.of(context).size.height * 1.1,
@@ -43,7 +72,7 @@ class _AcceuilState extends State<Acceuil> {
             selectedIndex: _tabNum,
             gap: 5,
             padding: EdgeInsets.all(8),
-            tabs: const [
+            tabs: role == "1" ?const [
               GButton(
                 icon: Icons.local_convenience_store_rounded,
                 text: 'Boutique',
@@ -59,7 +88,25 @@ class _AcceuilState extends State<Acceuil> {
             /*  GButton(icon: Icons.favorite_border_outlined, text: 'Favoris'),*/
               GButton(icon: Icons.soup_kitchen_outlined, text: 'Recettes'),
               GButton(icon: Icons.person_4_outlined, text: 'Compte'),
-            ],
+            ] : 
+            const [
+              GButton(
+                icon: Icons.local_convenience_store_rounded,
+                text: 'Boutique',
+              ),
+             /*  GButton(
+                icon: Icons.travel_explore_rounded,
+                text: 'Explorer',
+              ),
+              GButton(
+                icon: Icons.shopping_cart_outlined,
+                text: 'Panier',
+              ),
+             GButton(icon: Icons.favorite_border_outlined, text: 'Favoris'),
+              GButton(icon: Icons.soup_kitchen_outlined, text: 'Recettes'),*/
+              GButton(icon: Icons.person_4_outlined, text: 'Compte'),
+            ]
+            ,
             onTabChange: (index) {
               setState(() {
                 _tabNum = index;

@@ -3,6 +3,7 @@ import 'package:chrono_fresh/global_var.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class connection extends StatefulWidget {
   const connection({super.key});
@@ -117,6 +118,9 @@ class _connectionState extends State<connection> {
       var res = await http.post(url, body: data);
       if (jsonDecode(res.body) == "true") {
         print("inscription");
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+     prefs.setString('usermail', mail);
+     
         Navigator.pushReplacementNamed(context, 'accueil');
       } else {
         Fluttertoast.showToast(

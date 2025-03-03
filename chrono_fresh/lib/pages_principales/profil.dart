@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Profil extends StatefulWidget {
   const Profil({super.key});
@@ -8,9 +11,50 @@ class Profil extends StatefulWidget {
 }
 
 class _ProfilState extends State<Profil> {
+  String? nom;
+  String? prenom;
+  String? avatar;
+  String? mail;
+  String? id;
+
   @override
+void initState() {
+    // TODO: implement initState
+    super.initState();
+    test();
+  }
+
+  void test() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    
+    prefs.getString("usermail");
+
+    setState(() {
+     /*id = prefs.getString("userid");
+      nom = prefs.getString("username");
+      prenom = prefs.getString("userprenom");*/
+      mail = prefs.getString("usermail");
+      //avatar = prefs.getString("useravatar");
+    });
+  }
+
+  void logout(context) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.clear();
+  //Navigator.pushNamedAndRemoveUntil(context, 'accueil', (route) => false);
+  Navigator.pushReplacementNamed(context, 'accueil');
+  Fluttertoast.showToast(msg: "Deconnexion", toastLength: Toast.LENGTH_SHORT);
+  print("Done");
+}
+
+void info(context) async {
+    Fluttertoast.showToast(msg: "Tapez deux fois pour vous deconnecté", toastLength: Toast.LENGTH_SHORT);
+      print("Done");
+}
+
+
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return  Scaffold(
       body: Center(
         child: Column(
           children: [
@@ -33,7 +77,8 @@ class _ProfilState extends State<Profil> {
                         style: TextStyle(
                             fontWeight: FontWeight.normal, fontSize: 30),
                       ),
-                      Text("Email User")
+                     // Text("$mail")
+                      Text("email")
                     ],
                   )
                 ],
@@ -171,6 +216,31 @@ class _ProfilState extends State<Profil> {
                             fontWeight: FontWeight.normal, fontSize: 22),
                       ),
                     ],
+                  ),
+                  Divider(),
+                  GestureDetector(
+                    onTap: (){
+                      info(context);
+                    },
+                    onDoubleTap: () {
+                      logout(context);
+                    },
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.power_settings_new_outlined,
+                          size: 22,
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          "Deconnexion",
+                          style: TextStyle(
+                              fontWeight: FontWeight.normal, fontSize: 22),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
