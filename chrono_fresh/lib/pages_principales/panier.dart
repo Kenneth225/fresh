@@ -1,6 +1,7 @@
 import 'package:chrono_fresh/global_var.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cart/flutter_cart.dart';
+import 'package:flutter_number_picker/flutter_number_picker.dart';
 
 class Panier extends StatefulWidget {
   const Panier({super.key});
@@ -18,18 +19,21 @@ class _PanierState extends State<Panier> {
   List nomArray = [];
   List unitprArray = [];
   var Montant = 0;
+  late int qt;
   var taille = FlutterCart().cartItemsList.length;
 
   void _incrementQuantity(qty) {
     setState(() {
-      qty++;
+      qt = qty + 1;
     });
   }
 
   void _decrementQuantity(qty) {
     setState(() {
-      if (qty > 1) {
-        qty--;
+      if (qty >= 2) {
+        qt = qty - 1;
+      } else {
+        qt = 1;
       }
     });
   }
@@ -40,32 +44,32 @@ class _PanierState extends State<Panier> {
     });
   }
 
-Future<void> _showMyDialog() async {
-  return showDialog<void>(
-    context: context,
-    barrierDismissible: false, // user must tap button!
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Information'),
-        content: const SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-                            Text('Vous devez vous connecté pour effectué cette action'),
-            ],
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Information'),
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Vous devez vous connecté pour effectué cette action'),
+              ],
+            ),
           ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: const Text("OK"),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
+          actions: <Widget>[
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void _showPaymentModal(BuildContext context) {
     showModalBottomSheet(
@@ -97,7 +101,7 @@ Future<void> _showMyDialog() async {
               _buildOptionRow("Livraison", "Select Method"),
               _buildOptionRow("Paiement", "🇧🇯"),
               _buildOptionRow("Code promotionnel", "TOTO5"),
-              _buildOptionRow("Coût total", "5600 FCFA"),
+              _buildOptionRow("Coût total", "•  ${cart.total} Fcfa"),
               const SizedBox(height: 10),
               Text(
                 "En passant une commande, vous acceptez nos Conditions générales",
@@ -149,105 +153,146 @@ Future<void> _showMyDialog() async {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        
         title: Text("Panier"),
       ),
       body: Padding(
         padding: EdgeInsets.all(8.0),
         child: taille >= 1
-            ? Column(children: [
-                ListView.builder(
-                    itemCount: cart.cartLength,
-                    shrinkWrap: true,
-                    itemBuilder: (BuildContext context, int index) {
-                      var item = cart.cartItemsList[index];
-                      return Padding(
-                        padding: const EdgeInsets.all(5),
-                        child: Column(
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
+            ? SingleChildScrollView(
+                child: Column(children: [
+                  ListView.builder(
+                      itemCount: cart.cartLength,
+                      shrinkWrap: true,
+                      itemBuilder: (BuildContext context, int index) {
+                        var item = cart.cartItemsList[index];
+                        return Padding(
+                          padding: const EdgeInsets.all(5),
+                          child: Card(
+                            color: Colors.white,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Image.network(
-                                  "${api_link}/api_fresh/uploads/${item.productImages?[0]}",
-                                  height: 50,
-                                  width: 50,
-                                  fit: BoxFit.fitWidth,
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('${item.productName}',
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold)),
-                                      Text("${item.quantity}kg, Prix",
-                                          style: TextStyle(
-                                              fontSize: 12, color: Colors.grey)),
-                                    ],
+                                Column(children: [
+                                  Image.network(
+                                    "${api_link}/api_fresh/uploads/${item.productImages?[0]}",
+                                    height: 50,
+                                    width: 60,
+                                    fit: BoxFit.fitWidth,
                                   ),
-                                ),
-                                Row(
+                                  const SizedBox(width: 16),
+                                ]),
+                                Column(
                                   children: [
-                                    IconButton(
-                                        icon: Icon(Icons.remove_circle_outline),
-                                        onPressed: () {
-                                          print("min");
-                                          _decrementQuantity(item.quantity);
-                                        }),
-                                    Text("${item.quantity}",
-                                        style: TextStyle(fontSize: 16)),
-                                    IconButton(
-                                        icon: Icon(Icons.add_circle_outline),
-                                        onPressed: () {
-                                          print("plus");
-                                          _incrementQuantity(item.quantity);
-                                        }),
+                                    Text('${item.productName}',
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold)),
+                                    const Text("1kg, Prix",
+                                        style: TextStyle(
+                                            fontSize: 12, color: Colors.grey)),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        IconButton(
+                                            onPressed: () {
+                                              if (item.quantity <= 1) {
+                                                print("rien a faire");
+                                              } else {
+                                                setState(() {
+                                                  cart.updateQuantity(
+                                                      item.productId,
+                                                      item.variants,
+                                                      item.quantity - 1);
+                                                });
+                                              }
+                                            },
+                                            icon: const Icon(Icons.minimize)),
+                                         Container(
+                                          height: 60,
+                                          width: 45,
+                                           child: TextField(
+                                              enabled: false,
+                                              decoration: InputDecoration(
+                                                  border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5.0),
+                                                  ),
+                                                  //filled: true,
+                                                  hintStyle: TextStyle(
+                                                      color: Colors.grey),
+                                                  hintText: "${item.quantity}",
+                                                  fillColor: Colors.white,
+                                                  hoverColor: Colors.white),
+                                            ),
+                                         ),
+                                        
+                                        IconButton(
+                                            onPressed: () {
+                                              if (item.quantity >= 10) {
+                                                print("rien a faire");
+                                              } else {
+                                                setState(() {
+                                                  cart.updateQuantity(
+                                                      item.productId,
+                                                      item.variants,
+                                                      item.quantity + 1);
+                                                });
+                                              }
+                                            },
+                                            icon:
+                                                const Icon(Icons.add_outlined)),
+                                      ],
+                                    ),
                                   ],
                                 ),
-                                Text(
-                                    "${item.variants[0].price * item.quantity} FCFA",
-                                    style: TextStyle(fontSize: 16)),
-                                IconButton(
-                                  icon: Icon(Icons.close, color: Colors.red),
-                                  onPressed: () =>
-                                      _removeItem(item.productId, item.variants),
+                                Column(
+                                  children: [
+                                    IconButton(
+                                      icon:
+                                          Icon(Icons.close, color: Colors.grey),
+                                      onPressed: () => _removeItem(
+                                          item.productId, item.variants),
+                                    ),
+                                    Text("${item.variants[0].price} FCFA",
+                                        style: TextStyle(fontSize: 16)),
+                                  ],
                                 ),
+                                Divider(),
                               ],
                             ),
-                            Divider(),
-                          ],
-                        ),
-                      );
-                    }),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      minimumSize: Size(double.infinity, 50),
+                          ),
+                        );
+                      }),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        minimumSize: Size(double.infinity, 50),
+                      ),
+                      onPressed: () {
+                        _showPaymentModal(context);
+                      },
+                      child: Text("Aller à la caisse •  ${cart.total} Fcfa",
+                          style: TextStyle(fontSize: 16, color: Colors.white)),
                     ),
-                    onPressed: () {
-                      _showPaymentModal(context);
-                    },
-                    child: Text("Aller à la caisse •  ${cart.subtotal} Fcfa",
-                        style: TextStyle(fontSize: 16)),
                   ),
-                ),
-              ])
+                ]),
+              )
             : Center(
-              child: Column(
+                child: Column(
                   children: [
                     Icon(
                       Icons.shopping_basket_outlined,
                       size: 50,
                     ),
-                    Text("Vous n'avez aucun article dans votre panier ${taille}")
+                    Text(
+                        "Vous n'avez aucun article dans votre panier ${taille}")
                   ],
                 ),
-            ),
+              ),
       ),
     );
   }

@@ -89,13 +89,13 @@ Future<void> _showMyDialog() async {
 }
 
 
-commande_fict(id,  nom,  image, qt, prix,mode) async {
+commande_fict(id,  nom,  image, int qt, prix,mode) async {
             cart.addToCart(
                       cartModel: CartModel(
                           productId: id,
                           productName: nom,
                           productImages: [image],
-                          quantity: 1,
+                          quantity: qt,
                           variants: [ProductVariant(price: double.parse(prix)),],
                           //discount: double.parse(prix),
                           productDetails: mode));
@@ -259,14 +259,14 @@ initState(){
               child: ElevatedButton(
                 onPressed: () {
                   
-
-                  if (isLoggedIn) {
+ commande_fict(widget.id,  widget.nom,  widget.image, quantity, widget.prix , widget.description);
+                /*  if (isLoggedIn) {
                                                                             
                                                  commande_fict(widget.id,  widget.nom,  widget.image, widget.stock, widget.prix , widget.description);                           
 
                                                                           } else {
                                                                             _showMyDialog();
-                                                                          }
+                                                                          }*/
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,

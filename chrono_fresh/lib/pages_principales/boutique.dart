@@ -63,7 +63,7 @@ class _boutiqueState extends State<boutique> {
     return await viewcat();
   }
 
-  commande_fict(id,  nom,  image, qt, prix,mode) async {
+  commande_fict(id,  nom,  image, int qt, prix,mode) async {
             cart.addToCart(
                       cartModel: CartModel(
                           productId: id,
@@ -329,7 +329,7 @@ Future<void> _showMyDialog() async {
                                                                         () {
                                                                           if (isLoggedIn) {
                                                                             
-                                                                             commande_fict(boutique.id,  boutique.nom,  boutique.image, boutique.stock, boutique.prix , boutique.description);
+                                                                             commande_fict(boutique.id,  boutique.nom,  boutique.image, 1, boutique.prix , boutique.description);
 
                                                                           } else {
                                                                             _showMyDialog();
