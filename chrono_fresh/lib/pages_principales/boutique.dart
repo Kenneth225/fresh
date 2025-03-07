@@ -45,7 +45,7 @@ class _boutiqueState extends State<boutique> {
     final String? usermail = prefs.getString('usermail');
     final String? role = prefs.getString('role');
 
-    if (mail != null) {
+    if (usermail != null) {
       setState(() {
         isLoggedIn = true;
         mail = usermail!;
@@ -102,9 +102,16 @@ Future<void> _showMyDialog() async {
         ),
         actions: <Widget>[
           TextButton(
+            child: const Text("Se connecté"),
+            onPressed: () {
+                           Navigator.pushReplacementNamed(context, 'home');
+            },
+          ),
+          TextButton(
             child: const Text("OK"),
             onPressed: () {
               Navigator.of(context).pop();
+              Navigator.pushReplacementNamed(context, 'home');
             },
           ),
         ],

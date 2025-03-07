@@ -50,7 +50,7 @@ void autoLogIn() async {
     final String? usermail = prefs.getString('usermail');
     final String? role = prefs.getString('role');
 
-    if (mail != null) {
+    if (usermail != null) {
       setState(() {
         isLoggedIn = true;
         mail = usermail!;
@@ -76,6 +76,12 @@ Future<void> _showMyDialog() async {
           ),
         ),
         actions: <Widget>[
+          TextButton(
+            child: const Text("Se connecté"),
+            onPressed: () {
+                           Navigator.pushReplacementNamed(context, 'home');
+            },
+          ),
           TextButton(
             child: const Text("OK"),
             onPressed: () {
@@ -259,14 +265,14 @@ initState(){
               child: ElevatedButton(
                 onPressed: () {
                   
- commande_fict(widget.id,  widget.nom,  widget.image, quantity, widget.prix , widget.description);
-                /*  if (isLoggedIn) {
+ //commande_fict(widget.id,  widget.nom,  widget.image, quantity, widget.prix , widget.description);
+                if (isLoggedIn) {
                                                                             
-                                                 commande_fict(widget.id,  widget.nom,  widget.image, widget.stock, widget.prix , widget.description);                           
+                                                 commande_fict(widget.id,  widget.nom,  widget.image, quantity, widget.prix , widget.description);                           
 
                                                                           } else {
                                                                             _showMyDialog();
-                                                                          }*/
+                                                                          }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,

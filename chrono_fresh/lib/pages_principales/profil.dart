@@ -16,7 +16,7 @@ class _ProfilState extends State<Profil> {
   String? avatar;
   String? mail;
   String? id;
-
+bool isLoggedIn = false;
   @override
 void initState() {
     // TODO: implement initState
@@ -38,12 +38,36 @@ void initState() {
     });
   }
 
+void autoLogIn() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? usermail = prefs.getString('usermail');
+    final String? role = prefs.getString('role');
+
+    if (usermail != null) {
+      setState(() {
+        isLoggedIn = true;
+        mail = usermail!;
+       // role = role;
+      });
+      Navigator.pushReplacementNamed(context, 'accueil');
+    }
+  }
+
   void logout(context) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.clear();
   //Navigator.pushNamedAndRemoveUntil(context, 'accueil', (route) => false);
-  Navigator.pushReplacementNamed(context, 'accueil');
+ Navigator.pushReplacementNamed(context, 'home');
   Fluttertoast.showToast(msg: "Deconnexion", toastLength: Toast.LENGTH_SHORT);
+  print("Done");
+}
+
+void logpage(context) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.clear();
+  //Navigator.pushNamedAndRemoveUntil(context, 'accueil', (route) => false);
+ Navigator.pushReplacementNamed(context, 'home');
+  //Fluttertoast.showToast(msg: "Deconnexion", toastLength: Toast.LENGTH_SHORT);
   print("Done");
 }
 
@@ -51,11 +75,14 @@ void info(context) async {
     Fluttertoast.showToast(msg: "Tapez deux fois pour vous deconnecté", toastLength: Toast.LENGTH_SHORT);
       print("Done");
 }
-
+void info1(context) async {
+    Fluttertoast.showToast(msg: "Tapez deux fois pour vous Connecté", toastLength: Toast.LENGTH_SHORT);
+      print("Done");
+}
 
   Widget build(BuildContext context) {
     return  Scaffold(
-      body: Center(
+      body: isLoggedIn ? Center(
         child: Column(
           children: [
             Padding(
@@ -246,6 +273,32 @@ void info(context) async {
               ),
             )
           ],
+        ),
+      ): Center(
+        child: GestureDetector(
+          onTap: (){
+                      info1(context);
+                    },
+                    onDoubleTap: () {
+                      logpage(context);
+                    },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.power_settings_new_outlined,
+                              size: 22,
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              "Se connecté",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.normal, fontSize: 22),
+                            ),
+                          ],
+                        ),
         ),
       ),
     );

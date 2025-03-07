@@ -1,7 +1,9 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:chrono_fresh/global_var.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cart/flutter_cart.dart';
-import 'package:flutter_number_picker/flutter_number_picker.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Panier extends StatefulWidget {
   const Panier({super.key});
@@ -21,22 +23,6 @@ class _PanierState extends State<Panier> {
   var Montant = 0;
   late int qt;
   var taille = FlutterCart().cartItemsList.length;
-
-  void _incrementQuantity(qty) {
-    setState(() {
-      qt = qty + 1;
-    });
-  }
-
-  void _decrementQuantity(qty) {
-    setState(() {
-      if (qty >= 2) {
-        qt = qty - 1;
-      } else {
-        qt = 1;
-      }
-    });
-  }
 
   void _removeItem(id, variants) {
     setState(() {
@@ -98,10 +84,10 @@ class _PanierState extends State<Panier> {
                 ],
               ),
               const SizedBox(height: 10),
-              _buildOptionRow("Livraison", "Select Method"),
+              _buildOptionRow("Livraison", "Choisir la Methode"),
               _buildOptionRow("Paiement", "🇧🇯"),
               _buildOptionRow("Code promotionnel", "TOTO5"),
-              _buildOptionRow("Coût total", "•  ${cart.total} Fcfa"),
+              _buildOptionRow("Coût total", "${cart.total} Fcfa"),
               const SizedBox(height: 10),
               Text(
                 "En passant une commande, vous acceptez nos Conditions générales",
@@ -114,19 +100,48 @@ class _PanierState extends State<Panier> {
                   minimumSize: Size(double.infinity, 50),
                 ),
                 onPressed: () {
+                  commander(idArray, cart.cartLength, '${cart.total}');
                   Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  /*  ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text("Commande passée avec succès !")),
-                  );
+                  );*/
                 },
-                child:
-                    Text("Passer la commande", style: TextStyle(fontSize: 16)),
+                child: Text("Passer la commande",
+                    style: TextStyle(fontSize: 16, color: Colors.white)),
               ),
             ],
           ),
         );
       },
     );
+  }
+
+  commander(idp, qtp, prixT) async {
+    var url = Uri.parse("${api_link}/api_fresh/addcommandes.php");
+    var data = {
+      "IDcli": "18",
+      "taille": qtp.toString(),
+      "montantT": prixT.toString(),
+      "IDproduit": idArray.toString(),
+      "pu": unitprArray.toString(),
+      "quant": qtArray.toString(),
+      "nom": "PASTOR",
+    };
+    
+   var res = await http.post(url, body: data);
+    if (jsonDecode(res.body) == "true" ) {
+      print("la reponse: ");
+      print(jsonDecode(res.body));
+      Fluttertoast.showToast(
+          msg: "Commande Effectué", toastLength: Toast.LENGTH_SHORT);
+      cart.clearCart();
+      unitprArray.clear();
+      idArray.clear();
+      imgArray.clear();
+      Navigator.pushReplacementNamed(context, 'accueil');
+    } else {
+      Fluttertoast.showToast(msg: "Erreur", toastLength: Toast.LENGTH_SHORT);
+    }
   }
 
   Widget _buildOptionRow(String title, String value) {
@@ -208,26 +223,25 @@ class _PanierState extends State<Panier> {
                                               }
                                             },
                                             icon: const Icon(Icons.minimize)),
-                                         Container(
+                                        Container(
                                           height: 60,
                                           width: 45,
-                                           child: TextField(
-                                              enabled: false,
-                                              decoration: InputDecoration(
-                                                  border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5.0),
-                                                  ),
-                                                  //filled: true,
-                                                  hintStyle: TextStyle(
-                                                      color: Colors.grey),
-                                                  hintText: "${item.quantity}",
-                                                  fillColor: Colors.white,
-                                                  hoverColor: Colors.white),
-                                            ),
-                                         ),
-                                        
+                                          child: TextField(
+                                            enabled: false,
+                                            decoration: InputDecoration(
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          5.0),
+                                                ),
+                                                //filled: true,
+                                                hintStyle: TextStyle(
+                                                    color: Colors.grey),
+                                                hintText: "${item.quantity}",
+                                                fillColor: Colors.white,
+                                                hoverColor: Colors.white),
+                                          ),
+                                        ),
                                         IconButton(
                                             onPressed: () {
                                               if (item.quantity >= 10) {
@@ -255,7 +269,7 @@ class _PanierState extends State<Panier> {
                                       onPressed: () => _removeItem(
                                           item.productId, item.variants),
                                     ),
-                                    Text("${item.variants[0].price} FCFA",
+                                    Text("${item.variants.first.price} FCFA",
                                         style: TextStyle(fontSize: 16)),
                                   ],
                                 ),
@@ -273,6 +287,18 @@ class _PanierState extends State<Panier> {
                         minimumSize: Size(double.infinity, 50),
                       ),
                       onPressed: () {
+                        cart.cartItemsList.forEach((f) {
+                          nomArray.add(f.productName);
+                          qtArray.add(f.quantity);
+                          unitprArray.add(f.variants.isNotEmpty
+                              ? f.variants[0].price
+                              : null); // Ajout du prix
+                          idArray.add(f.productId);
+                        });
+                        print('$nomArray');
+                        print('$qtArray');
+                        print('$unitprArray');
+                        print(cart.cartLength);
                         _showPaymentModal(context);
                       },
                       child: Text("Aller à la caisse •  ${cart.total} Fcfa",

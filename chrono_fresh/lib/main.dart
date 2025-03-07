@@ -18,12 +18,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
         return MaterialApp(
-        title: 'Flutter Demo',
+        title: 'CHRONO FRESH',
         theme: ThemeData(
           fontFamily: "Roboto",
           useMaterial3: true, colorScheme: ColorScheme.fromSeed(seedColor: Colors.green).copyWith(background: Colors.white),
         ),
-        home: const MyHomePage(title: 'Flutter Demo Home Page'),
+        home: const MyHomePage(title: 'CHRONO FRESH'),
         initialRoute: 'home',
         routes: {
           'home': (context) => const MyHomePage(
