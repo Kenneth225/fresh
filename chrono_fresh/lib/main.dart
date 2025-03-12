@@ -49,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String mail = '';
 
   void initState() {
-    autoLogIn();
+    //autoLogIn();
   }
 
   void autoLogIn() async {

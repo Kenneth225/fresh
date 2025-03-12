@@ -107,8 +107,8 @@ commande_fict(id,  nom,  image, int qt, prix,mode) async {
                           productDetails: mode));
 
     const snackBar = SnackBar(
-      backgroundColor: Colors.orangeAccent,
-      content: Text('Consulter votre panier en haut de page ↑ ↑ ↑'),
+      backgroundColor: Color.fromARGB(255, 131, 230, 167),
+      content: Text('Consulter votre panier'),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
     print(cart.cartLength);

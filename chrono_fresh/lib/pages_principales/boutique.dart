@@ -8,7 +8,6 @@ import 'package:chrono_fresh/pages_principales/categorie_structure.dart';
 import 'package:chrono_fresh/pages_principales/categories_details.dart';
 import 'package:chrono_fresh/pages_principales/details.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_cart/cart.dart';
 import 'package:flutter_cart/model/cart_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,10 +27,9 @@ class _boutiqueState extends State<boutique> {
   @override
   void initState() {
     super.initState();
-    autoLogIn();
-    
-    boutiqueFuture = boutique("1");
-    categorieFuture = homecat();
+    //autoLogIn();
+    //boutiqueFuture = boutique("1");
+    //categorieFuture = homecat();
   }
 
   bool isLoggedIn = false;
@@ -75,15 +73,15 @@ class _boutiqueState extends State<boutique> {
                           productDetails: mode));
 
     const snackBar = SnackBar(
-      backgroundColor: Colors.orangeAccent,
-      content: Text('Consulter votre panier en haut de page'),
+      backgroundColor: Color.fromARGB(255, 131, 230, 167),
+      content: Text('Consulter votre panier'),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
     print(cart.cartLength);
     print(cart.subtotal);
     print(cart.total);
 
-    Navigator.pushReplacementNamed(context, 'accueil');
+    //Navigator.pushReplacementNamed(context, 'accueil');
   }
 
 Future<void> _showMyDialog() async {
@@ -111,8 +109,7 @@ Future<void> _showMyDialog() async {
             child: const Text("OK"),
             onPressed: () {
               Navigator.of(context).pop();
-              Navigator.pushReplacementNamed(context, 'home');
-            },
+                         },
           ),
         ],
       );
@@ -213,7 +210,7 @@ Future<void> _showMyDialog() async {
                                                   )));
                                     },
                                     child: const Text(
-                                      "Voir tout",
+                                      "...",
                                       style: TextStyle(
                                           fontSize: 16, color: Colors.green),
                                     )),
@@ -334,13 +331,15 @@ Future<void> _showMyDialog() async {
                                                                         ButtonStyle(),
                                                                     onPressed:
                                                                         () {
-                                                                          if (isLoggedIn) {
+                                                                            commande_fict(boutique.id,  boutique.nom,  boutique.image, 1, boutique.prix , boutique.description);
+
+                                                                        /*  if (isLoggedIn) {
                                                                             
                                                                              commande_fict(boutique.id,  boutique.nom,  boutique.image, 1, boutique.prix , boutique.description);
 
                                                                           } else {
                                                                             _showMyDialog();
-                                                                          }
+                                                                          }*/
                                                                         },
                                                                     child: const Icon(
                                                                         Icons
