@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:chrono_fresh/global_var.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cart/flutter_cart.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Panier extends StatefulWidget {
   const Panier({super.key});
@@ -13,6 +15,14 @@ class Panier extends StatefulWidget {
 }
 
 class _PanierState extends State<Panier> {
+  String? nom;
+  String? prenom;
+  String? role;
+  String? avatar;
+  String? telephone;
+  String? mail;
+  String? id;
+  bool isLoggedIn = false;
   var cart = FlutterCart();
   List imgArray = [];
   List idArray = [];
@@ -23,6 +33,30 @@ class _PanierState extends State<Panier> {
   var Montant = 0;
   late int qt;
   var taille = FlutterCart().cartItemsList.length;
+
+  initState() {
+    super.initState();
+
+    autoLogIn();
+  }
+
+  void autoLogIn() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? usermail = prefs.getString('email');
+    String? role = prefs.getString('role');
+
+    if (usermail != null) {
+      setState(() {
+        isLoggedIn = true;
+        mail = usermail;
+        role = role!;
+        nom = prefs.getString('nom');
+        prenom = prefs.getString('prenom');
+        telephone = prefs.getString('telephone');
+        id = prefs.getString('id');
+      });
+    }
+  }
 
   void _removeItem(id, variants) {
     setState(() {
@@ -47,6 +81,38 @@ class _PanierState extends State<Panier> {
           actions: <Widget>[
             TextButton(
               child: const Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showMymap() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Selectioner le lieu de livraison'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Image.asset(
+                  'assets/mapss.png', // Remplace cette image par la tienne
+                  width: 50,
+                  height: 150,
+                  fit: BoxFit.cover,
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("Ma position actuel"),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -84,9 +150,12 @@ class _PanierState extends State<Panier> {
                 ],
               ),
               const SizedBox(height: 10),
-              _buildOptionRow("Livraison", "Choisir la Methode"),
+              GestureDetector(
+                  onTap: () {
+                    _showMymap();
+                  },
+                  child: _buildOptionRow("Livraison", "Choisir le lieu")),
               _buildOptionRow("Paiement", "🇧🇯"),
-              _buildOptionRow("Code promotionnel", "TOTO5"),
               _buildOptionRow("Coût total", "${cart.total} Fcfa"),
               const SizedBox(height: 10),
               Text(
@@ -100,11 +169,12 @@ class _PanierState extends State<Panier> {
                   minimumSize: Size(double.infinity, 50),
                 ),
                 onPressed: () {
-                  commander(idArray, cart.cartLength, '${cart.total}');
-                  Navigator.pop(context);
-                  /*  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Commande passée avec succès !")),
-                  );*/
+                  if (isLoggedIn) {
+                    commander(idArray, cart.cartLength, '${cart.total}');
+                    Navigator.pop(context);
+                  } else {
+                    _showMyDialog();
+                  }
                 },
                 child: Text("Passer la commande",
                     style: TextStyle(fontSize: 16, color: Colors.white)),
@@ -119,17 +189,17 @@ class _PanierState extends State<Panier> {
   commander(idp, qtp, prixT) async {
     var url = Uri.parse("${api_link}/api_fresh/addcommandes.php");
     var data = {
-      "IDcli": "18",
+      "IDcli": "${id}",
       "taille": qtp.toString(),
       "montantT": prixT.toString(),
       "IDproduit": idArray.toString(),
       "pu": unitprArray.toString(),
       "quant": qtArray.toString(),
-      "nom": "PASTOR",
+      "nom": "${prenom}",
     };
-    
-   var res = await http.post(url, body: data);
-    if (jsonDecode(res.body) == "true" ) {
+
+    var res = await http.post(url, body: data);
+    if (jsonDecode(res.body) == "true") {
       print("la reponse: ");
       print(jsonDecode(res.body));
       Fluttertoast.showToast(

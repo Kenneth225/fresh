@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:math';
+import 'dart:ui';
 import 'package:chrono_fresh/global_var.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -13,15 +15,20 @@ class connection extends StatefulWidget {
 }
 
 class _connectionState extends State<connection> {
-  late TextEditingController numctrl;
+  late TextEditingController nomctrl;
+  late TextEditingController prenomctrl;
   late TextEditingController mailctrl;
+  late TextEditingController numctrl;
   bool have_acount = true;
+  late bool isLoggedIn;
 
   @override
   void initState() {
     super.initState();
-    numctrl = TextEditingController();
+    nomctrl = TextEditingController();
+    prenomctrl = TextEditingController();
     mailctrl = TextEditingController();
+    numctrl = TextEditingController();
   }
 
   void decidor(context, value) {
@@ -33,6 +40,34 @@ class _connectionState extends State<connection> {
     } else {
       showRecipeDetails(context);
     }
+  }
+
+  Future<void> _showMyDialogvalidation(mail, cd) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('VERIFICATION DE MAIL'),
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                    'Un e-mail de confirmation vous a été envoyé. Cliquez sur le lien pour continuer. Pensez à vérifier vos spams !'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () {
+                getcode(mail, cd);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void showRecipeDetails(
@@ -62,18 +97,7 @@ class _connectionState extends State<connection> {
                 height: 8,
               ),
               Center(
-                child:
-                    /*PinCodeTextField(
-                        keyboardType: TextInputType.number,
-                        appContext: context,
-                        length: 6,
-                        onChanged: (value) {
-                          print(value);
-                          setState(() {
-                          //  code = value;
-                          });
-                        }),*/
-                    TextField(
+                child: TextField(
                   controller: numctrl,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(hintText: "-   -   -   -   -"),
@@ -116,135 +140,260 @@ class _connectionState extends State<connection> {
       var data = {"mail": mail, "code": code};
 
       var res = await http.post(url, body: data);
-      if (jsonDecode(res.body) == "true") {
-        print("inscription");
+
+      if (jsonDecode(res.body) != "pas de compte") {
+        var jsonData = jsonDecode(res.body);
+        print(jsonData);
         final SharedPreferences prefs = await SharedPreferences.getInstance();
-     prefs.setString('usermail', mail);
-     
+        if (jsonData[0]["telephone"] != null) {
+          prefs.setString('role', jsonData[0]["role"]);
+          prefs.setString('email', jsonData[0]["email"]);
+          prefs.setString('nom', jsonData[0]["nom"]);
+          prefs.setString('prenom', jsonData[0]["prenom"]);
+          prefs.setString('telephone', jsonData[0]["telephone"]);
+          prefs.setString('id', jsonData[0]["id"]);
+        } else {
+          prefs.setString('role', jsonData[0]["role"]);
+          prefs.setString('email', jsonData[0]["email"]);
+          prefs.setString('nom', jsonData[0]["nom"]);
+          prefs.setString('prenom', jsonData[0]["prenom"]);
+          prefs.setString('telephone', "...");
+          prefs.setString('id', jsonData[0]["id"]);
+        }
+
+        setState(() {
+          isLoggedIn = true;
+        });
+
         Navigator.pushReplacementNamed(context, 'accueil');
       } else {
         Fluttertoast.showToast(
-            msg: "Erreur de connexion", toastLength: Toast.LENGTH_SHORT);
+            msg: "Le mail inscrit n'existe pas dans nos donnés", toastLength: Toast.LENGTH_LONG);
       }
+    }
+  }
+
+  Future<void> saveuser(nom, prenom, mail) async {
+    var rng = new Random();
+    var next = rng.nextDouble() * 1000000;
+    while (next < 100000) {
+      next *= 10;
+    }
+    var cd = rng.nextInt(900100);
+    print(cd);
+
+    var url = Uri.parse("${api_link}/api_fresh/inscrip.php");
+    var data = {"nom": nom, "prenom": prenom, "mail": mail, "key": '${cd}'};
+    var res = await http.post(url, body: data);
+
+    if (jsonDecode(res.body) == "true") {
+      _showMyDialogvalidation(mail, cd);
+    } else {
+      Fluttertoast.showToast(
+          msg: "Erreur de connexion", toastLength: Toast.LENGTH_LONG);
+    }
+  }
+
+  void getcode(mail, value) async {
+    if (value != '......') {
+      var url = Uri.parse("${api_link}/api_fresh/checkcode.php");
+      var data = {"mail": mail, "key": '${value}'};
+
+      var res = await http.post(url, body: data);
+      if (jsonDecode(res.body) != "pas de compte") {
+        var jsonData = jsonDecode(res.body);
+        print(jsonData);
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        if (jsonData[0]["telephone"] != null) {
+          prefs.setString('role', jsonData[0]["role"]);
+          prefs.setString('email', jsonData[0]["email"]);
+          prefs.setString('nom', jsonData[0]["nom"]);
+          prefs.setString('prenom', jsonData[0]["prenom"]);
+          prefs.setString('telephone', jsonData[0]["telephone"]);
+          prefs.setString('id', jsonData[0]["id"]);
+        } else {
+          prefs.setString('role', jsonData[0]["role"]);
+          prefs.setString('email', jsonData[0]["email"]);
+          prefs.setString('nom', jsonData[0]["nom"]);
+          prefs.setString('prenom', jsonData[0]["prenom"]);
+          prefs.setString('telephone', "...");
+          prefs.setString('id', jsonData[0]["id"]);
+        }
+
+        setState(() {
+          isLoggedIn = true;
+        });
+
+        Navigator.pushReplacementNamed(context, 'accueil');
+      } else {
+        print("pas de compte");
+      }
+    } else {
+      Navigator.pushNamedAndRemoveUntil(context, 'accueil', (route) => false);
+      Fluttertoast.showToast(msg: "pROBLEME", toastLength: Toast.LENGTH_SHORT);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:  SingleChildScrollView(
-        child: Column(
-            children: [
-              Container(
-                width: MediaQuery.of(context).size.width * 1,
-                decoration: const BoxDecoration(
-               gradient: LinearGradient(colors: [
-                          Color.fromRGBO(208, 208, 208, 0.667),
-                          Color.fromRGBO(60, 60, 60, 1),
-                        ]),
-              image: DecorationImage(
-                opacity: 10,
-                  image: AssetImage("assets/roast_chicken.jpg"), fit: BoxFit.cover)),
-                child: Image.asset(
-                  "assets/roast_chicken.jpg",
-                  height: 325,
-                  width: 125,
-                ),
-              ),
-              const SizedBox(
-                height: 9,
-              ),
-              const Text("Faites vos courses avec Chrono Fresh", style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 29,
-                                  ),),
-              const SizedBox(
-                height: 16,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Avez vous un compte ?", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),),
-                  Switch(
-                    // This bool value toggles the switch.
-                    value: have_acount,
-                    activeColor: Colors.green,
-                    onChanged: (bool value) {
-                      // This is called when the user toggles the switch.
-                      setState(() {
-                        have_acount = value;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.all(18.0),
-                child: have_acount
-                    ? Column(children: [
-                        TextField(
-                          controller: mailctrl,
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: InputDecoration(
-                              prefixIcon: const Icon(
-                                Icons.mail,
-                                color: Colors.black,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              //filled: true,
-                              hintStyle: TextStyle(color: Colors.grey),
-                              hintText: "Entrez votre adresse mail",
-                              fillColor: Colors.white,
-                              hoverColor: Colors.white),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset(
+            "assets/roast_chicken.jpg",
+            fit: BoxFit.cover,
+          ),
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+            child: Container(
+              color: Colors.black.withOpacity(0.3),
+            ),
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: have_acount
+                  ? Column(mainAxisSize: MainAxisSize.min, children: [
+                      SizedBox(
+                        height: MediaQuery.sizeOf(context).height * 0.2,
+                      ),
+                      const Text(
+                        "Faites vos courses avec Chrono Fresh",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 28,
                         ),
-                        SizedBox(
-                          height: 16,
+                      ),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      const Text(
+                        "Connexion",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
                         ),
-                        Center(
-                          child: Container(
-                            height: 55,
-                            //width: 150,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                gradient: const LinearGradient(colors: [
-                                  Color.fromRGBO(14, 209, 223, 0.667),
-                                  Color.fromRGBO(87, 118, 192, 1),
-                                ])),
-                            child: Center(
-                              child: TextButton(
-                                onPressed: () {
-                                  decidor(context, mailctrl.text);
-                                },
-                                child: const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "Se connecté",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
+                      ),
+                      const SizedBox(
+                        height: 14,
+                      ),
+                      TextField(
+                        controller: mailctrl,
+                        style: TextStyle(color: Colors.white),
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                            prefixIcon: const Icon(
+                              Icons.mail,
+                              color: Colors.black,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            //filled: true,
+                            hintStyle: TextStyle(color: Colors.grey),
+                            hintText: "Entrez votre adresse mail",
+                            fillColor: Colors.white,
+                            hoverColor: Colors.white),
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      Center(
+                        child: Container(
+                          height: 55,
+                          //width: 150,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              gradient: const LinearGradient(colors: [
+                                Color.fromRGBO(14, 209, 223, 0.667),
+                                Color.fromRGBO(87, 118, 192, 1),
+                              ])),
+                          child: Center(
+                            child: TextButton(
+                              onPressed: () {
+                                decidor(context, mailctrl.text);
+                              },
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Se connecté",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                         ),
-                      ])
-                    : Column(
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          const Text(
+                            "Pas encore de compte ?",
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold,
+                                fontStyle: FontStyle.italic),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                have_acount = !have_acount;
+                              });
+                            },
+                            child: Text(
+                              "S'inscrire",
+                              style: TextStyle(
+                                  color: Colors.blueGrey,
+                                  fontWeight: FontWeight.bold,
+                                  fontStyle: FontStyle.italic),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ])
+                  : SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            height: MediaQuery.sizeOf(context).height * 0.2,
+                          ),
+                          const Text(
+                            "Faites vos courses avec Chrono Fresh",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 28,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          const Text(
+                            "Inscription",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 14,
+                          ),
                           TextField(
-                            // controller: ,
+                            controller: nomctrl,
+                            style: TextStyle(color: Colors.white),
                             keyboardType: TextInputType.name,
                             decoration: InputDecoration(
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderRadius: BorderRadius.circular(12.0),
                                 ),
                                 hintStyle: TextStyle(color: Colors.grey),
-                                hintText: "Entrez votre Nom",
+                                hintText: "Nom",
                                 fillColor: Colors.white,
                                 hoverColor: Colors.white),
                           ),
@@ -252,15 +401,16 @@ class _connectionState extends State<connection> {
                             height: 8,
                           ),
                           TextField(
-                            // controller: ,
+                            controller: prenomctrl,
+                            style: TextStyle(color: Colors.white),
                             keyboardType: TextInputType.name,
                             decoration: InputDecoration(
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderRadius: BorderRadius.circular(12.0),
                                 ),
                                 //filled: true,
                                 hintStyle: TextStyle(color: Colors.grey),
-                                hintText: "Entrez votre Prenom",
+                                hintText: "Prenom",
                                 fillColor: Colors.white,
                                 hoverColor: Colors.white),
                           ),
@@ -268,15 +418,16 @@ class _connectionState extends State<connection> {
                             height: 8,
                           ),
                           TextField(
-                            // controller: ,
-                            keyboardType: TextInputType.name,
+                            controller: mailctrl,
+                            style: TextStyle(color: Colors.white),
+                            keyboardType: TextInputType.emailAddress,
                             decoration: InputDecoration(
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderRadius: BorderRadius.circular(12.0),
                                 ),
                                 //filled: true,
                                 hintStyle: TextStyle(color: Colors.grey),
-                                hintText: "Entrez votre adresse Mail",
+                                hintText: "Mail",
                                 fillColor: Colors.white,
                                 hoverColor: Colors.white),
                           ),
@@ -296,7 +447,8 @@ class _connectionState extends State<connection> {
                               child: Center(
                                 child: TextButton(
                                   onPressed: () {
-                                    //Navigator.pushReplacementNamed(context, 'connect');
+                                    saveuser(nomctrl.text, prenomctrl.text,
+                                        mailctrl.text);
                                   },
                                   child: const Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -314,13 +466,39 @@ class _connectionState extends State<connection> {
                               ),
                             ),
                           ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                "Vous avez deja un compte ?",
+                                style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FontStyle.italic),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    have_acount = !have_acount;
+                                  });
+                                },
+                                child: const Text(
+                                  "Se connecté",
+                                  style: TextStyle(
+                                      color: Colors.blueGrey,
+                                      fontWeight: FontWeight.bold,
+                                      fontStyle: FontStyle.italic),
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
-              )
-            ],
-          ),
+                    ),
+            ),
+          )
+        ],
       ),
-      
     );
   }
 }

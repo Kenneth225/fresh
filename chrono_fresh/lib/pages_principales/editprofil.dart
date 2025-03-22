@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Editprofil extends StatefulWidget {
   const Editprofil({super.key});
@@ -8,7 +9,40 @@ class Editprofil extends StatefulWidget {
 }
 
 class _EditprofilState extends State<Editprofil> {
+String? nom;
+  String? prenom;
+  String? role;
+  String? avatar;
+  String? telephone;
+  String? mail;
+  String? id;
+  bool isLoggedIn = false;
+
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    autoLogIn();
+  }
+  @override
+
+  void autoLogIn() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? usermail = prefs.getString('email');
+    String? role = prefs.getString('role');
+
+    if (usermail != null) {
+      setState(() {
+        isLoggedIn = true;
+        mail = usermail;
+        role = role!;
+        nom = prefs.getString('nom');
+        prenom = prefs.getString('prenom');
+        telephone = prefs.getString('telephone');
+        id = prefs.getString('id');
+      });
+    }
+  }
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -24,27 +58,26 @@ class _EditprofilState extends State<Editprofil> {
       body: Column(
         children: [
           Container(
-            //color: Colors.green[700],
+            
             padding: EdgeInsets.all(16),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 CircleAvatar(
                   radius: 40,
                   backgroundColor: Colors.grey[300],
                   child: Icon(Icons.person, size: 50, color: Colors.white),
                 ),
-                const Column(
+                 Column(
                   children: [
                     Text(
-                      "Kenneth GABA",
-                      style: TextStyle(
+                      "$nom $prenom",
+                      style: const TextStyle(
                           color: Colors.black,
                           fontSize: 18,
                           fontWeight: FontWeight.bold),
                     ),
-                    Text("Registered 5 months ago",
-                        style: TextStyle(color: Colors.black)),
+                    
                   ],
                 ),
               ],
@@ -57,13 +90,13 @@ class _EditprofilState extends State<Editprofil> {
                 ProfileField(
                     icon: Icons.phone,
                     label: "Phone number",
-                    value: "+229 0196652074"),
+                    value: "$telephone"),
                 ProfileField(
                     icon: Icons.flag, label: "Pays", value: "Benin"),
                 ProfileField(
-                    icon: Icons.person, label: "Prénom", value: "Kenneth"),
+                    icon: Icons.person, label: "Prénom", value: "$prenom"),
                 ProfileField(
-                    icon: Icons.person, label: "Nom", value: "GABA"),
+                    icon: Icons.person, label: "Nom", value: "$nom"),
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {},

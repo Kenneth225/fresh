@@ -16,7 +16,9 @@ class Profil extends StatefulWidget {
 class _ProfilState extends State<Profil> {
   String? nom;
   String? prenom;
+  String? role;
   String? avatar;
+  String? telephone;
   String? mail;
   String? id;
   bool isLoggedIn = false;
@@ -27,30 +29,21 @@ class _ProfilState extends State<Profil> {
     autoLogIn();
   }
 
-  /*void test() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    
-    prefs.getString("usermail");
-
-    setState(() {
-     /*id = prefs.getString("userid");
-      nom = prefs.getString("username");
-      prenom = prefs.getString("userprenom");*/
-      mail = prefs.getString("usermail");
-      //avatar = prefs.getString("useravatar");
-    });
-  }*/
 
   void autoLogIn() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? usermail = prefs.getString('usermail');
-    //final String? role = prefs.getString('role');
+    final String? usermail = prefs.getString('email');
+    String? role = prefs.getString('role');
 
     if (usermail != null) {
       setState(() {
         isLoggedIn = true;
-        mail = usermail!;
-        // role = role;
+        mail = usermail;
+        role = role!;
+        nom = prefs.getString('nom');
+        prenom = prefs.getString('prenom');
+        telephone = prefs.getString('telephone');
+        id = prefs.getString('id');
       });
     }
   }
@@ -94,7 +87,7 @@ class _ProfilState extends State<Profil> {
               child: Column(
                 children: [
                   Padding(
-                    padding: EdgeInsets.all(38.0),
+                    padding: EdgeInsets.all(30.0),
                     child: Row(
                       children: [
                         CircleAvatar(
@@ -103,12 +96,12 @@ class _ProfilState extends State<Profil> {
                           backgroundImage: AssetImage("assets/moon.jpg"),
                         ),
                         SizedBox(
-                          width: 30,
+                          width: 20,
                         ),
                         Column(
                           children: [
                             Text(
-                              "Pseudo User",
+                              "${nom}  ${prenom}",
                               style: TextStyle(
                                   fontWeight: FontWeight.normal, fontSize: 30),
                             ),
@@ -124,11 +117,9 @@ class _ProfilState extends State<Profil> {
                       children: [
                         Divider(),
                         GestureDetector(
-                          onTap:  (){
-                            Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  Mescommandes()));
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => Mescommandes()));
                           },
                           child: const Row(
                             children: [
@@ -142,18 +133,17 @@ class _ProfilState extends State<Profil> {
                               Text(
                                 "Mes commandes",
                                 style: TextStyle(
-                                    fontWeight: FontWeight.normal, fontSize: 22),
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 22),
                               ),
                             ],
                           ),
                         ),
                         Divider(),
                         GestureDetector(
-                          onTap:() {
-                            Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  Editprofil()));
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => Editprofil()));
                           },
                           child: const Row(
                             children: [
@@ -167,7 +157,8 @@ class _ProfilState extends State<Profil> {
                               Text(
                                 "Mes données",
                                 style: TextStyle(
-                                    fontWeight: FontWeight.normal, fontSize: 22),
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 22),
                               ),
                             ],
                           ),

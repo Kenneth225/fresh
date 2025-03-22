@@ -31,80 +31,93 @@ class Details extends StatefulWidget {
       this.mtreduc*/
   });
 
-
-
   @override
   State<Details> createState() => _DetailsState();
 }
 
-
 class _DetailsState extends State<Details> {
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    autoLogIn();
+    print("okkkkkkk");
+  }
+
   int quantity = 1;
   var cart = FlutterCart();
   bool isLoggedIn = false;
-  String mail = '';
+  String? nom;
+  String? prenom;
+  String? role;
+  String? avatar;
+  String? telephone;
+  String? mail;
+  String? id;
 
-
-void autoLogIn() async {
+  void autoLogIn() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? usermail = prefs.getString('usermail');
-    final String? role = prefs.getString('role');
+    final String? usermail = prefs.getString('email');
+    String? role = prefs.getString('role');
 
     if (usermail != null) {
       setState(() {
         isLoggedIn = true;
-        mail = usermail!;
-       // role = role;
+        mail = usermail;
+        role = role!;
+        nom = prefs.getString('nom');
+        prenom = prefs.getString('prenom');
+        telephone = prefs.getString('telephone');
+        id = prefs.getString('id');
       });
-      Navigator.pushReplacementNamed(context, 'accueil');
     }
   }
 
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Information'),
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Vous devez vous connecté pour effectué cette action'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("Se connecté"),
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, 'home');
+              },
+            ),
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
-Future<void> _showMyDialog() async {
-  return showDialog<void>(
-    context: context,
-    barrierDismissible: false, // user must tap button!
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Information'),
-        content: const SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-                            Text('Vous devez vous connecté pour effectué cette action'),
+  commande_fict(id, nom, image, int qt, prix, mode) async {
+    cart.addToCart(
+        cartModel: CartModel(
+            productId: id,
+            productName: nom,
+            productImages: [image],
+            quantity: qt,
+            variants: [
+              ProductVariant(price: double.parse(prix)),
             ],
-          ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: const Text("Se connecté"),
-            onPressed: () {
-                           Navigator.pushReplacementNamed(context, 'home');
-            },
-          ),
-          TextButton(
-            child: const Text("OK"),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
-
-
-commande_fict(id,  nom,  image, int qt, prix,mode) async {
-            cart.addToCart(
-                      cartModel: CartModel(
-                          productId: id,
-                          productName: nom,
-                          productImages: [image],
-                          quantity: qt,
-                          variants: [ProductVariant(price: double.parse(prix)),],
-                          //discount: double.parse(prix),
-                          productDetails: mode));
+            //discount: double.parse(prix),
+            productDetails: mode));
 
     const snackBar = SnackBar(
       backgroundColor: Color.fromARGB(255, 131, 230, 167),
@@ -115,19 +128,12 @@ commande_fict(id,  nom,  image, int qt, prix,mode) async {
     print(cart.subtotal);
     print(cart.total);
 
-    Navigator.pushReplacementNamed(context, 'accueil');
+    //Navigator.pushReplacementNamed(context, 'accueil');
   }
 
   @override
   Widget build(BuildContext context) {
-
-     
-initState(){
-  autoLogIn();
-}
-
-
-
+    
 
     return Scaffold(
       appBar: AppBar(
@@ -153,8 +159,8 @@ initState(){
               children: [
                 Text(
                   "${widget.nom}",
-                  style:
-                      const TextStyle(fontWeight: FontWeight.bold, fontSize: 27),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 27),
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width / 3,
@@ -206,22 +212,23 @@ initState(){
                 ),
                 Text(
                   "${widget.prix} Fcfa",
-                  style:
-                      const TextStyle(fontWeight: FontWeight.bold, fontSize: 27),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 27),
                 ),
               ],
             ),
             const Divider(),
-            const ExpansionTile(
-              title: Text(
+             ExpansionTile(
+              title: const Text(
                 'Détail du produit',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   child: Text(
-                    "Le Poulet Est Une Excellente Source De Protéines Maigres, Idéale Pour La Construction Musculaire Et La Perte De Poids. Riche En Vitamines Et Minéraux, Il Soutient Également La Santé Du Cœur Et Du Système Immunitaire.",
+                    "${widget.description}",
                     style: TextStyle(color: Colors.grey),
                   ),
                 ),
@@ -264,15 +271,13 @@ initState(){
               height: 50,
               child: ElevatedButton(
                 onPressed: () {
-                  
- //commande_fict(widget.id,  widget.nom,  widget.image, quantity, widget.prix , widget.description);
-                if (isLoggedIn) {
-                                                                            
-                                                 commande_fict(widget.id,  widget.nom,  widget.image, quantity, widget.prix , widget.description);                           
-
-                                                                          } else {
-                                                                            _showMyDialog();
-                                                                          }
+                  print(isLoggedIn);
+                  if (isLoggedIn) {
+                    commande_fict(widget.id, widget.nom, widget.image, quantity,
+                        widget.prix, widget.description);
+                  } else {
+                    _showMyDialog();
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,

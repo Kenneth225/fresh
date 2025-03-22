@@ -3,6 +3,7 @@ import 'package:chrono_fresh/pages_principales/boutique_api.dart';
 import 'package:chrono_fresh/pages_principales/boutique_structure.dart';
 import 'package:chrono_fresh/pages_principales/details.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cart/flutter_cart.dart';
 
 class Categoriedetails extends StatefulWidget {
   String? nom;
@@ -17,7 +18,7 @@ class Categoriedetails extends StatefulWidget {
 class _CategoriedetailsState extends State<Categoriedetails> {
   late Future boutiqueFuture;
   String categorie = "";
-  
+  var cart = FlutterCart();
   void initState() {
     super.initState();
     print("jai ete demarrer");
@@ -26,6 +27,29 @@ class _CategoriedetailsState extends State<Categoriedetails> {
 
   boutique(categorie) async {
     return await viewboutique(categorie);
+  }
+
+  commande_fict(id, nom, image, int qt, prix, mode) async {
+    cart.addToCart(
+        cartModel: CartModel(
+            productId: id,
+            productName: nom,
+            productImages: [image],
+            quantity: 1,
+            variants: [
+              ProductVariant(price: double.parse(prix)),
+            ],
+            //discount: double.parse(prix),
+            productDetails: mode));
+
+    const snackBar = SnackBar(
+      backgroundColor: Color.fromARGB(255, 131, 230, 167),
+      content: Text('Consulter votre panier'),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    print(cart.cartLength);
+    print(cart.subtotal);
+    print(cart.total);
   }
 
   @override
@@ -128,9 +152,31 @@ class _CategoriedetailsState extends State<Categoriedetails> {
                                       SizedBox(
                                         width: 8,
                                       ),
-                                      Container(
-                                        /*height: 25,
-                                              width: 40,*/
+                                      ElevatedButton(
+                                        style: ButtonStyle(
+                                          minimumSize:
+                                              MaterialStateProperty.all(
+                                                  const Size(10, 25)),
+                                          backgroundColor:
+                                              MaterialStateProperty.all(
+                                                  Color.fromRGBO(
+                                                      70, 225, 106, 1)),
+                                        ),
+                                        onPressed: () {
+                                          commande_fict(
+                                              boutique.id,
+                                              boutique.nom,
+                                              boutique.image,
+                                              1,
+                                              boutique.prix,
+                                              boutique.description);
+                                        },
+                                        child: const Icon(Icons.add_outlined,
+                                            size: 18, color: Colors.white),
+                                      ),
+                                      /* Container(
+                                        height: 25,
+                                              width: 40,
                                         decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(30),
@@ -161,7 +207,7 @@ class _CategoriedetailsState extends State<Categoriedetails> {
                                             ),
                                           ),
                                         ),
-                                      ),
+                                      ),*/
                                     ],
                                   )
                                 ],
