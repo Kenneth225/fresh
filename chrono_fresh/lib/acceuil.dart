@@ -1,8 +1,10 @@
 import 'package:chrono_fresh/pages_principales/boutique.dart';
+import 'package:chrono_fresh/pages_principales/courses.dart';
 import 'package:chrono_fresh/pages_principales/explorer.dart';
 import 'package:chrono_fresh/pages_principales/panier.dart';
 import 'package:chrono_fresh/pages_principales/profil.dart';
 import 'package:chrono_fresh/pages_principales/recettes.dart';
+import 'package:chrono_fresh/pages_principales/statistiques.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cart/cart.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -25,12 +27,12 @@ final _tab = [
   const Recettes(),
   const Profil()
 ];
-final _tab2 = [const boutique(), const Profil()];
+final _tab2 = [const Statistique(), const Courses(),const Profil()];
 
 class _AcceuilState extends State<Acceuil> {
   bool isLoggedIn = false;
   String mail = '';
-  String role = "1";
+  String role = '';
   @override
   void initState() {
     super.initState();
@@ -39,14 +41,16 @@ class _AcceuilState extends State<Acceuil> {
 
   void autoLogIn() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? usermail = prefs.getString('usermail');
-    // final String? role = prefs.getString('role');
+    final String? usermail = prefs.getString('email');
+    final String? roli = prefs.getString('role');
 
     setState(() {
       isLoggedIn = true;
       mail = usermail!;
-      // role = role;
+      role = roli!;
     });
+
+    print(role);
   }
 
   @override
@@ -55,8 +59,7 @@ class _AcceuilState extends State<Acceuil> {
       backgroundColor: Colors.white,
       body: Center(
         child: role == "1" ? _tab[_tabNum] : _tab2[_tabNum],
-        //child: _tab[_tabNum],
-      ),
+              ),
       bottomNavigationBar: Container(
         //width: MediaQuery.of(context).size.height * 1.1,
         color: const Color.fromARGB(255, 255, 255, 255),
@@ -121,8 +124,12 @@ class _AcceuilState extends State<Acceuil> {
                   ]
                 : const [
                     GButton(
-                      icon: Icons.local_convenience_store_rounded,
-                      text: 'Boutique',
+                      icon: Icons.auto_graph_outlined,
+                      text: 'Statistique',
+                    ),
+                    GButton(
+                      icon: Icons.motorcycle_rounded,
+                      text: 'course en cours',
                     ),
                     GButton(icon: Icons.person_4_outlined, text: 'Compte'),
                   ],

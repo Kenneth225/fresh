@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:chrono_fresh/pages_principales/mescommandes.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:chrono_fresh/global_var.dart';
@@ -123,6 +124,49 @@ class _PanierState extends State<Panier> {
     );
   }
 
+
+Future<void> _showOrderdone() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Commande acceptée'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Image.asset(
+                  'assets/done.png', // Remplace cette image par la tienne
+                  width: 50,
+                  height: 150,
+                  fit: BoxFit.cover,
+                ),
+                const Text("Votre commande a été accepté"),
+                const Text("Vos articles ont été placé et sont en cours de traitement"),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("Suivre la commande"),
+              onPressed: () {
+                 Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => Mescommandes(id: "${id}",)));
+              },
+            ),
+            TextButton(
+              child: const Text("Retour à l'acceuil"),
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, 'accueil');
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
   void _showPaymentModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -171,7 +215,7 @@ class _PanierState extends State<Panier> {
                 onPressed: () {
                   if (isLoggedIn) {
                     commander(idArray, cart.cartLength, '${cart.total}');
-                    Navigator.pop(context);
+                    _showOrderdone();
                   } else {
                     _showMyDialog();
                   }
@@ -210,7 +254,7 @@ class _PanierState extends State<Panier> {
       unitprArray.clear();
       idArray.clear();
       imgArray.clear();
-      Navigator.pushReplacementNamed(context, 'accueil');
+     // Navigator.pushReplacementNamed(context, 'accueil');
     } else {
       Fluttertoast.showToast(msg: "Erreur", toastLength: Toast.LENGTH_SHORT);
     }

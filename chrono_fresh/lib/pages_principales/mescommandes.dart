@@ -1,32 +1,19 @@
 import 'package:chrono_fresh/pages_principales/mescommandes_api.dart';
 import 'package:chrono_fresh/pages_principales/mescommandes_structure.dart';
+import 'package:chrono_fresh/pages_principales/suivi_commande.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+// ignore: must_be_immutable
 class Mescommandes extends StatefulWidget {
-  const Mescommandes({super.key});
+  String? id;
+   Mescommandes({super.key, this.id,});
 
   @override
   State<Mescommandes> createState() => _MescommandesState();
 }
 
-class Order {
-  final String number;
-  final String name;
-  final String date;
-  final String total;
-  final String status;
-  final Color statusColor;
 
-  Order({
-    required this.number,
-    required this.name,
-    required this.date,
-    required this.total,
-    required this.status,
-    required this.statusColor,
-  });
-}
 
 class _MescommandesState extends State<Mescommandes> {
   late Future ordersFuture;
@@ -37,14 +24,14 @@ late bool isLoggedIn;
   String? avatar;
   String? telephone;
   String? mail;
-  String? id;
+  
 
   @override
 void initState() {
     // TODO: implement initState
     super.initState();
     autoLogIn();
-    ordersFuture = order(id);
+    ordersFuture = order(widget.id);
   }
 
 void autoLogIn() async {
@@ -60,7 +47,7 @@ void autoLogIn() async {
         nom = prefs.getString('nom');
         prenom = prefs.getString('prenom');
         telephone = prefs.getString('telephone');
-        id = prefs.getString('id');
+        //id = prefs.getString('id');
       });
     }
   }
@@ -98,7 +85,7 @@ void autoLogIn() async {
                         child: Container(
                           height: MediaQuery.of(context).size.height - 200,
                           child: FutureBuilder<dynamic>(
-                            future: order(id),
+                            future: order(widget.id),
                             builder: (BuildContext context,
                                 AsyncSnapshot<dynamic> snapshot) {
                               if (snapshot.hasData) {
@@ -146,12 +133,18 @@ void autoLogIn() async {
                           ),
                         ),
                         
-                   mcommande.statut =="0"   ? const Chip(
-                          label: Text("En attente",
-                              style: TextStyle(color: Colors.white)),
-                          backgroundColor: Colors.orange,
-                        ):  const Chip(
-                          label: Text("En preparation",
+                   mcommande.statut =="0"   ? GestureDetector(
+                    onTap: (){
+                      Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => Suivicommande()));
+                    },
+                     child: const Chip(
+                            label: Text("Suivre la commande",
+                                style: TextStyle(color: Colors.white)),
+                            backgroundColor: Colors.orange,
+                          ),
+                   ):  const Chip(
+                          label: Text("Terminé",
                               style: TextStyle(color: Colors.white)),
                           backgroundColor: Colors.green,
                         ),
