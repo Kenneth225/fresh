@@ -191,6 +191,8 @@ class _PanierState extends State<Panier> {
     var data = {
       "IDcli": "${id}",
       "taille": qtp.toString(),
+      "namep" : nomArray.toString(),
+      "imgp": imgArray.toString(),
       "montantT": prixT.toString(),
       "IDproduit": idArray.toString(),
       "pu": unitprArray.toString(),
@@ -360,6 +362,7 @@ class _PanierState extends State<Panier> {
                         cart.cartItemsList.forEach((f) {
                           nomArray.add(f.productName);
                           qtArray.add(f.quantity);
+                          imgArray.add(f.productImages?[0]);
                           unitprArray.add(f.variants.isNotEmpty
                               ? f.variants[0].price
                               : null); // Ajout du prix
@@ -368,6 +371,7 @@ class _PanierState extends State<Panier> {
                         print('$nomArray');
                         print('$qtArray');
                         print('$unitprArray');
+                        print('$imgArray');
                         print(cart.cartLength);
                         _showPaymentModal(context);
                       },

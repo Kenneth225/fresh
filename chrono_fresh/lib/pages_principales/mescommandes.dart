@@ -68,24 +68,7 @@ void autoLogIn() async {
     return await viewsorders(id);
     
   }
-  final List<Order> orders = [
-    Order(
-      number: "1658893",
-      name: "Royal Panini's Guincomey 🌯",
-      date: "13 Dec at 18:06",
-      total: "2750 F",
-      status: "Order delivered",
-      statusColor: Colors.green,
-    ),
-    Order(
-      number: "1658794",
-      name: "Royal Panini's Guincomey 🌯",
-      date: "13 Dec at 17:21",
-      total: "2750 F",
-      status: "Cancelled",
-      statusColor: Colors.red,
-    ),
-  ];
+  
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -146,16 +129,13 @@ void autoLogIn() async {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+
                               Text("N° ${mcommande.id}",
-                                  style: TextStyle(
-                                      fontSize: 14, color: Colors.grey)),
-                              SizedBox(height: 4),
-                              Text("${mcommande.iduniq}",
                                   style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold)),
                               SizedBox(height: 4),
-                              Text("Articles · Total : ${mcommande.total} F",
+                              Text("Total : ${mcommande.total} F",
                                   style: TextStyle(
                                       fontSize: 14, color: Colors.grey)),
                               SizedBox(height: 4),

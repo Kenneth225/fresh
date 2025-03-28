@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chrono_fresh/global_var.dart';
@@ -164,390 +165,405 @@ class _boutiqueState extends State<boutique> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 30,
+     // backgroundColor: getRandomColor(),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset(
+            "assets/roast_chicken.jpg",
+            fit: BoxFit.cover,
+          ),
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+            child: Container(
+              color: Colors.black.withOpacity(0.3),
             ),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.location_on,
-                  color: Color.fromRGBO(59, 59, 59, 1),
-                ),
-                Text("Akpakpa, Cotonou")
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => const Search()));
-                },
-                child: TextField(
-                  enabled: false,
-                  decoration: InputDecoration(
-                      prefixIcon: const Icon(
-                        Icons.search,
-                        color: Color.fromRGBO(59, 59, 59, 1),
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      //filled: true,
-                      hintStyle: TextStyle(color: Colors.grey),
-                      hintText: "Rechercher dans le magasin",
-                      fillColor: Colors.white,
-                      hoverColor: Colors.white),
-                ),
+          ),
+          SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 30,
               ),
-            ),
-
-//carousel dynamique
-
-            Center(
-              child: CarouselSlider.builder(
-                itemCount: sliderData.length,
-                options: CarouselOptions(
-                  height: 100,
-                  autoPlay: true,
-                  enlargeCenterPage: true,
-                  aspectRatio: 16 / 9,
-                  viewportFraction: 0.8,
-                ),
-                itemBuilder: (context, index, realIndex) {
-                  final item = sliderData[index];
-                  return Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 5,
-                          offset: Offset(2, 2),
-                        )
-                      ],
-                      color: Colors.white,
-                      //color: getRandomColor(),
-                    ),
-                    child: Row(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(15),
-                          child: Image.network(
-                            item['image']!,
-                            width: 100,
-                            height: 100,
-                            fit: BoxFit.cover,
-                          ),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.location_on,
+                    color: Color.fromRGBO(59, 59, 59, 1),
+                  ),
+                  Text("Akpakpa, Cotonou")
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(6.0),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => const Search()));
+                  },
+                  child: TextField(
+                    enabled: false,
+                    decoration: InputDecoration(
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          color: Color.fromRGBO(59, 59, 59, 1),
                         ),
-                        SizedBox(width: 10),
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                item['title']!,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                item['discount']!,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.green,
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  );
-                },
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        //filled: true,
+                        hintStyle: TextStyle(color: Colors.grey),
+                        hintText: "Rechercher dans le magasin",
+                        fillColor: Colors.white,
+                        hoverColor: Colors.white),
+                  ),
+                ),
               ),
-            ),
-
-//fin carousel
-
-            SingleChildScrollView(
-              child: Container(
-                // color: Colors.blue,
-                height: MediaQuery.sizeOf(context).height / 1.6,
-                child: FutureBuilder(
-                    future: homecat(),
-                    builder: (context, AsyncSnapshot snapshot) {
-                      if (snapshot.hasData) {
-                        print('yes');
-                        return ListView.builder(
-                          itemCount: snapshot.data.length,
-                          shrinkWrap: true,
-                          itemBuilder: (BuildContext context, index) {
-                            Categorie cate = snapshot.data[index];
-                            return Column(
+        
+        //carousel dynamique
+        
+              Center(
+                child: CarouselSlider.builder(
+                  itemCount: sliderData.length,
+                  options: CarouselOptions(
+                    height: 100,
+                    autoPlay: true,
+                    enlargeCenterPage: true,
+                    aspectRatio: 16 / 9,
+                    viewportFraction: 0.8,
+                  ),
+                  itemBuilder: (context, index, realIndex) {
+                    final item = sliderData[index];
+                    return Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 5,
+                            offset: Offset(2, 2),
+                          )
+                        ],
+                        color: Colors.white,
+                        //color: getRandomColor(),
+                      ),
+                      child: Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Image.network(
+                              item['image']!,
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Text(
-                                        cate.nomCategorie,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 25),
-                                      ),
-                                    ),
-                                    TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      Categoriedetails(
-                                                        nom:
-                                                            "${cate.nomCategorie}",
-                                                        cat: "${cate.id}",
-                                                      )));
-                                        },
-                                        child: const Text(
-                                          "...",
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.green),
-                                        )),
-                                    /*    DropdownButton<String>(
-                                        value: dropdownValue,
-                                        icon: const Icon(Icons.arrow_downward),
-                                        elevation: 16,
-                                        style:
-                                            const TextStyle(color: Colors.deepPurple),
-                                        underline: Container(
-                                            height: 2,
-                                            color: Colors.deepPurpleAccent),
-                                        onChanged: (String? value) {
-                                          // This is called when the user selects an item.
-                                          setState(() {
-                                            dropdownValue = value!;
-                                          });
-                                        },
-                                        items: const ["Voir tout", "Autre"]
-                                            .map<DropdownMenuItem<String>>(
-                                                (String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Text(value),
-                                          );
-                                        }).toList(),
-                                      ),*/
-                                  ],
+                                Text(
+                                  item['title']!,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                SingleChildScrollView(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      height: 200,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(18),
-                                      ),
-                                      child: FutureBuilder<dynamic>(
-                                          future: boutique(cate.id),
-                                          builder: (BuildContext context,
-                                              AsyncSnapshot<dynamic> snapshot) {
-                                            if (snapshot.hasData) {
-                                              return GridView.builder(
-                                                itemCount: snapshot.data.length,
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                shrinkWrap: true,
-                                                itemBuilder:
-                                                    (BuildContext context,
-                                                        int index) {
-                                                  Boutique boutique =
-                                                      snapshot.data[index];
-                                                  return Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Card(
-                                                        color: Colors.white,
-                                                        child: Container(
-                                                          color: Colors.white,
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(8.0),
-                                                            child: Column(
-                                                              children: [
-                                                                GestureDetector(
-                                                                  onTap: () {
-                                                                    Navigator.of(
-                                                                            context)
-                                                                        .push(MaterialPageRoute(
-                                                                            builder: (context) => Details(
-                                                                                  id: boutique.id,
-                                                                                  nom: boutique.nom,
-                                                                                  prix: boutique.prix,
-                                                                                  description: boutique.description,
-                                                                                  categorie: boutique.categorie,
-                                                                                  image: boutique.image,
-                                                                                  stock: boutique.stock,
-                                                                                )));
-                                                                  },
-                                                                  child:
-                                                                      ClipRRect(
-                                                                    child: Image
-                                                                        .network(
-                                                                      "${api_link}/api_fresh/uploads/${boutique.image}",
-                                                                      height:
-                                                                          60,
-                                                                      width: 80,
-                                                                      fit: BoxFit
-                                                                          .fitWidth,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                GestureDetector(
-                                                                  onTap: () {
-                                                                    Navigator.of(
-                                                                            context)
-                                                                        .push(MaterialPageRoute(
-                                                                            builder: (context) => Details(
-                                                                                  id: boutique.id,
-                                                                                  nom: boutique.nom,
-                                                                                  prix: boutique.prix,
-                                                                                  description: boutique.description,
-                                                                                  categorie: boutique.categorie,
-                                                                                  image: boutique.image,
-                                                                                  stock: boutique.stock,
-                                                                                )));
-                                                                  },
-                                                                  child: Text(
-                                                                    "${boutique.nom}",
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .left,
-                                                                    style: const TextStyle(
-                                                                        fontSize:
-                                                                            20,
-                                                                        fontWeight:
-                                                                            FontWeight
-                                                                                .bold,
-                                                                        color: Colors
-                                                                            .black),
-                                                                  ),
-                                                                ),
-                                                                Text(
-                                                                    "${boutique.stock}kg,Prix"),
-                                                                Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                          .all(
-                                                                          4.0),
-                                                                  child: Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .spaceBetween,
-                                                                    children: [
-                                                                      Text(
-                                                                          "${boutique.prix} fcfa"),
-                                                                      const SizedBox(
-                                                                        width:
-                                                                            18,
-                                                                      ),
-                                                                      ElevatedButton(
-                                                                        style:
-                                                                            ButtonStyle(
-                                                                          minimumSize: MaterialStateProperty.all(const Size(
-                                                                              10,
-                                                                              25)),
-                                                                          backgroundColor: MaterialStateProperty.all(Color.fromRGBO(
-                                                                              70,
-                                                                              225,
-                                                                              106,
-                                                                              1)),
-                                                                        ),
-                                                                        onPressed:
-                                                                            () {
-                                                                          commande_fict(
-                                                                              boutique.id,
-                                                                              boutique.nom,
-                                                                              boutique.image,
-                                                                              1,
-                                                                              boutique.prix,
-                                                                              boutique.description);
-                                                                        },
-                                                                        child: const Icon(
-                                                                            Icons
-                                                                                .add_outlined,
-                                                                            size:
-                                                                                18,
-                                                                            color:
-                                                                                Colors.white),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  );
-                                                },
-                                                gridDelegate:
-                                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                                  crossAxisCount: 1,
-                                                  childAspectRatio: (1 / 1),
-                                                  crossAxisSpacing: 10,
-                                                  mainAxisSpacing: 10,
-                                                ),
-                                              );
-                                            } else if (snapshot.hasError) {
-                                              return const Center(
-                                                child: Text('Erreur code',
-                                                    style: TextStyle(
-                                                        color: Colors.black)),
-                                              );
-                                            } else {
-                                              return const Center(
-                                                child: Text(
-                                                    'Aucun produit correspondant',
-                                                    style: TextStyle(
-                                                        color: Colors.black)),
-                                              );
-                                            }
-                                          }),
-                                    ),
+                                Text(
+                                  item['discount']!,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.green,
                                   ),
                                 ),
                               ],
-                            );
-                          },
-                        );
-                      } else {
-                        return const Text("Aucune donnée disponible");
-                      }
-                    }),
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 203,
-            )
-          ],
+        
+        //fin carousel
+        
+              SingleChildScrollView(
+                child: Container(
+                  // color: Colors.blue,
+                  height: MediaQuery.sizeOf(context).height / 1.6,
+                  child: FutureBuilder(
+                      future: homecat(),
+                      builder: (context, AsyncSnapshot snapshot) {
+                        if (snapshot.hasData) {
+                          print('yes');
+                          return ListView.builder(
+                            itemCount: snapshot.data.length,
+                            shrinkWrap: true,
+                            itemBuilder: (BuildContext context, index) {
+                              Categorie cate = snapshot.data[index];
+                              return Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Text(
+                                          cate.nomCategorie,
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 25),
+                                        ),
+                                      ),
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        Categoriedetails(
+                                                          nom:
+                                                              "${cate.nomCategorie}",
+                                                          cat: "${cate.id}",
+                                                        )));
+                                          },
+                                          child: const Text(
+                                            "...",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.green),
+                                          )),
+                                      /*    DropdownButton<String>(
+                                          value: dropdownValue,
+                                          icon: const Icon(Icons.arrow_downward),
+                                          elevation: 16,
+                                          style:
+                                              const TextStyle(color: Colors.deepPurple),
+                                          underline: Container(
+                                              height: 2,
+                                              color: Colors.deepPurpleAccent),
+                                          onChanged: (String? value) {
+                                            // This is called when the user selects an item.
+                                            setState(() {
+                                              dropdownValue = value!;
+                                            });
+                                          },
+                                          items: const ["Voir tout", "Autre"]
+                                              .map<DropdownMenuItem<String>>(
+                                                  (String value) {
+                                            return DropdownMenuItem<String>(
+                                              value: value,
+                                              child: Text(value),
+                                            );
+                                          }).toList(),
+                                        ),*/
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  SingleChildScrollView(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        height: 200,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(18),
+                                        ),
+                                        child: FutureBuilder<dynamic>(
+                                            future: boutique(cate.id),
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot<dynamic> snapshot) {
+                                              if (snapshot.hasData) {
+                                                return GridView.builder(
+                                                  itemCount: snapshot.data.length,
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  shrinkWrap: true,
+                                                  itemBuilder:
+                                                      (BuildContext context,
+                                                          int index) {
+                                                    Boutique boutique =
+                                                        snapshot.data[index];
+                                                    return Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Card(
+                                                          color: Colors.white,
+                                                          child: Container(
+                                                            color: Colors.white,
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child: Column(
+                                                                children: [
+                                                                  GestureDetector(
+                                                                    onTap: () {
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .push(MaterialPageRoute(
+                                                                              builder: (context) => Details(
+                                                                                    id: boutique.id,
+                                                                                    nom: boutique.nom,
+                                                                                    prix: boutique.prix,
+                                                                                    description: boutique.description,
+                                                                                    categorie: boutique.categorie,
+                                                                                    image: boutique.image,
+                                                                                    stock: boutique.stock,
+                                                                                  )));
+                                                                    },
+                                                                    child:
+                                                                        ClipRRect(
+                                                                      child: Image
+                                                                          .network(
+                                                                        "${api_link}/api_fresh/uploads/${boutique.image}",
+                                                                        height:
+                                                                            60,
+                                                                        width: 80,
+                                                                        fit: BoxFit
+                                                                            .fitWidth,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  GestureDetector(
+                                                                    onTap: () {
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .push(MaterialPageRoute(
+                                                                              builder: (context) => Details(
+                                                                                    id: boutique.id,
+                                                                                    nom: boutique.nom,
+                                                                                    prix: boutique.prix,
+                                                                                    description: boutique.description,
+                                                                                    categorie: boutique.categorie,
+                                                                                    image: boutique.image,
+                                                                                    stock: boutique.stock,
+                                                                                  )));
+                                                                    },
+                                                                    child: Text(
+                                                                      "${boutique.nom}",
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .left,
+                                                                      style: const TextStyle(
+                                                                          fontSize:
+                                                                              20,
+                                                                          fontWeight:
+                                                                              FontWeight
+                                                                                  .bold,
+                                                                          color: Colors
+                                                                              .black),
+                                                                    ),
+                                                                  ),
+                                                                  Text(
+                                                                      "${boutique.stock}kg,Prix"),
+                                                                  Padding(
+                                                                    padding:
+                                                                        const EdgeInsets
+                                                                            .all(
+                                                                            4.0),
+                                                                    child: Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceBetween,
+                                                                      children: [
+                                                                        Text(
+                                                                            "${boutique.prix} fcfa"),
+                                                                        const SizedBox(
+                                                                          width:
+                                                                              18,
+                                                                        ),
+                                                                        ElevatedButton(
+                                                                          style:
+                                                                              ButtonStyle(
+                                                                            minimumSize: MaterialStateProperty.all(const Size(
+                                                                                10,
+                                                                                25)),
+                                                                            backgroundColor: MaterialStateProperty.all(Color.fromRGBO(
+                                                                                70,
+                                                                                225,
+                                                                                106,
+                                                                                1)),
+                                                                          ),
+                                                                          onPressed:
+                                                                              () {
+                                                                            commande_fict(
+                                                                                boutique.id,
+                                                                                boutique.nom,
+                                                                                boutique.image,
+                                                                                1,
+                                                                                boutique.prix,
+                                                                                boutique.description);
+                                                                          },
+                                                                          child: const Icon(
+                                                                              Icons
+                                                                                  .add_outlined,
+                                                                              size:
+                                                                                  18,
+                                                                              color:
+                                                                                  Colors.white),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                  gridDelegate:
+                                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                                    crossAxisCount: 1,
+                                                    childAspectRatio: (1 / 1),
+                                                    crossAxisSpacing: 10,
+                                                    mainAxisSpacing: 10,
+                                                  ),
+                                                );
+                                              } else if (snapshot.hasError) {
+                                                return const Center(
+                                                  child: Text('Erreur code',
+                                                      style: TextStyle(
+                                                          color: Colors.black)),
+                                                );
+                                              } else {
+                                                return const Center(
+                                                  child: Text(
+                                                      'Aucun produit correspondant',
+                                                      style: TextStyle(
+                                                          color: Colors.black)),
+                                                );
+                                              }
+                                            }),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        } else {
+                          return const Text("Aucune donnée disponible");
+                        }
+                      }),
+                ),
+              ),
+              const SizedBox(
+                height: 203,
+              )
+            ],
+          ),
         ),
-      ),
+     ] ),
     );
   }
 }
