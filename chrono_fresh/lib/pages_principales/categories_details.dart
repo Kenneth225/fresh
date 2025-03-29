@@ -1,5 +1,5 @@
 import 'package:chrono_fresh/global_var.dart';
-import 'package:chrono_fresh/pages_principales/boutique_api.dart';
+import 'package:chrono_fresh/pages_principales/boutique_all_api.dart';
 import 'package:chrono_fresh/pages_principales/boutique_structure.dart';
 import 'package:chrono_fresh/pages_principales/details.dart';
 import 'package:flutter/material.dart';
@@ -142,7 +142,7 @@ class _CategoriedetailsState extends State<Categoriedetails> {
                                   const SizedBox(
                                     height: 7,
                                   ),
-                                  Text("${boutique.stock}kg,Prix"),
+                                  Text("1kg,Prix"),
                                   const SizedBox(
                                     height: 8,
                                   ),

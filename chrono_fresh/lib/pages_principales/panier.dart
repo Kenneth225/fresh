@@ -7,13 +7,53 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cart/flutter_cart.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:kkiapay_flutter_sdk/kkiapay_flutter_sdk.dart';
 
 class Panier extends StatefulWidget {
   const Panier({super.key});
 
   @override
   State<Panier> createState() => _PanierState();
+
+
+  
 }
+
+void callback(response, context) {
+    switch (response['status']) {
+      case PAYMENT_CANCELLED:
+        Navigator.pop(context);
+        debugPrint(PAYMENT_CANCELLED);
+        break;
+
+      case PAYMENT_INIT:
+        debugPrint(PAYMENT_INIT);
+        break;
+
+      case PENDING_PAYMENT:
+        debugPrint(PENDING_PAYMENT);
+        break;
+
+      case PAYMENT_SUCCESS:
+        Navigator.pop(context);
+       // commander(idArray, cart.cartLength, '${cart.total}');
+        /*Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SuccessScreen(
+            amount: response['requestData']['amount'],
+            transactionId: response['transactionId'],
+          ),
+        ),
+      );*/
+        break;
+
+      default:
+        debugPrint(UNKNOWN_EVENT);
+        break;
+    }
+  }
+
 
 class _PanierState extends State<Panier> {
   String? nom;
@@ -35,11 +75,15 @@ class _PanierState extends State<Panier> {
   late int qt;
   var taille = FlutterCart().cartItemsList.length;
 
+  
+
   initState() {
     super.initState();
 
     autoLogIn();
   }
+
+  
 
   void autoLogIn() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -124,8 +168,7 @@ class _PanierState extends State<Panier> {
     );
   }
 
-
-Future<void> _showOrderdone() async {
+  Future<void> _showOrderdone() async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -142,7 +185,8 @@ Future<void> _showOrderdone() async {
                   fit: BoxFit.cover,
                 ),
                 const Text("Votre commande a été accepté"),
-                const Text("Vos articles ont été placé et sont en cours de traitement"),
+                const Text(
+                    "Vos articles ont été placé et sont en cours de traitement"),
               ],
             ),
           ),
@@ -150,8 +194,10 @@ Future<void> _showOrderdone() async {
             TextButton(
               child: const Text("Suivre la commande"),
               onPressed: () {
-                 Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => Mescommandes(id: "${id}",)));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => Mescommandes(
+                          id: "${id}",
+                        )));
               },
             ),
             TextButton(
@@ -165,7 +211,6 @@ Future<void> _showOrderdone() async {
       },
     );
   }
-
 
   void _showPaymentModal(BuildContext context) {
     showModalBottomSheet(
@@ -214,13 +259,31 @@ Future<void> _showOrderdone() async {
                 ),
                 onPressed: () {
                   if (isLoggedIn) {
+                  /*  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const KKiaPay(
+    amount: 2000 ,//
+    countries: ["BJ","CI","SN","TG"],//
+    phone: "22967341587",//
+    name: "John Doe",//
+    email: "email@mail.com",//
+    reason: 'Paiement article reason',//
+    data: 'Fake data',//
+    sandbox: true,//
+    apikey: "ed3a0460653111efbf02478c5adba4b8",//
+    callback: callback,//
+    theme: defaultTheme, // Ex : "#222F5A",
+    partnerId: 'AxXxXXxId',//
+    paymentMethods: ["momo","card"]//
+)),
+                    );*/
                     commander(idArray, cart.cartLength, '${cart.total}');
-                    _showOrderdone();
+                   
                   } else {
                     _showMyDialog();
                   }
                 },
-                child: Text("Passer la commande",
+                child: const Text("Passer la commande",
                     style: TextStyle(fontSize: 16, color: Colors.white)),
               ),
             ],
@@ -235,7 +298,7 @@ Future<void> _showOrderdone() async {
     var data = {
       "IDcli": "${id}",
       "taille": qtp.toString(),
-      "namep" : nomArray.toString(),
+      "namep": nomArray.toString(),
       "imgp": imgArray.toString(),
       "montantT": prixT.toString(),
       "IDproduit": idArray.toString(),
@@ -254,7 +317,7 @@ Future<void> _showOrderdone() async {
       unitprArray.clear();
       idArray.clear();
       imgArray.clear();
-     // Navigator.pushReplacementNamed(context, 'accueil');
+      _showOrderdone();
     } else {
       Fluttertoast.showToast(msg: "Erreur", toastLength: Toast.LENGTH_SHORT);
     }
@@ -428,12 +491,8 @@ Future<void> _showOrderdone() async {
             : Center(
                 child: Column(
                   children: [
-                    Icon(
-                      Icons.shopping_basket_outlined,
-                      size: 50,
-                    ),
-                    Text(
-                        "Vous n'avez aucun article dans votre panier ${taille}")
+                    Image.asset("assets/bempty.jpg"),
+                    const Text("Vous n'avez aucun article dans votre panier")
                   ],
                 ),
               ),

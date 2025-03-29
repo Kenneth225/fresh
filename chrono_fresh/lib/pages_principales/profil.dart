@@ -29,7 +29,6 @@ class _ProfilState extends State<Profil> {
     autoLogIn();
   }
 
-
   void autoLogIn() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? usermail = prefs.getString('email');
@@ -112,175 +111,246 @@ class _ProfilState extends State<Profil> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.all(16.0),
+                    padding: EdgeInsets.all(14.0),
                     child: Column(
                       children: [
-                        Divider(),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => Mescommandes(id: "${id}",)));
-                          },
-                          child: const Row(
-                            children: [
-                              Icon(
-                                Icons.shopping_bag_outlined,
-                                size: 22,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                "Mes commandes",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 22),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Divider(),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => Editprofil()));
-                          },
-                          child: const Row(
-                            children: [
-                              Icon(
-                                Icons.badge_outlined,
-                                size: 22,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                "Mes données",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 22),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Divider(),
-                        const Row(
-                          children: [
-                            Icon(
-                              Icons.person_pin_circle_outlined,
-                              size: 22,
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              "Adresse de livraison",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.normal, fontSize: 22),
-                            ),
-                          ],
-                        ),
-                        /* Divider(),
-                  Row(
-                    children: [
-                      Icon(Icons.shopping_bag_outlined),
-                      Text(
-                        "Paiements",
-                        style: TextStyle(fontWeight: FontWeight.normal),
-                      ),
-                    ],
-                  ),*/
-                        Divider(),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Icon(
-                              Icons.payments_outlined,
-                              size: 22,
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => Mescommandes(
+                                          id: "${id}",
+                                        )));
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(10),
+                                height: 120,
+                                width: 150,
+                                decoration: BoxDecoration(
+                                  color: Colors.green.shade100,
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: [
+                                      Icon(
+                                        Icons.shopping_bag_outlined,
+                                        size: 25,
+                                      ),
+                                      SizedBox(width: 10),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(
+                                        "Mes Commandes",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.normal,
+                                            fontSize: 18),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              "Code Promo",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.normal, fontSize: 22),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => Editprofil()));
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(10),
+                                height: 120,
+                                width: 150,
+                                decoration: BoxDecoration(
+                                  color: Colors.green.shade100,
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Column(children: [
+                                    Icon(
+                                      Icons.badge_outlined,
+                                      size: 25,
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      "Mes données",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.normal,
+                                          fontSize: 18),
+                                    ),
+                                  ]),
+                                ),
+                              ),
                             ),
                           ],
                         ),
-                        Divider(),
+                        const SizedBox(height: 5,),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Icon(
-                              Icons.notifications_none_outlined,
-                              size: 22,
+                            GestureDetector(
+                              onTap: () {},
+                              child: Container(
+                                padding: EdgeInsets.all(10),
+                                height: 120,
+                                width: 150,
+                                decoration: BoxDecoration(
+                                  color: Colors.green.shade100,
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Column(children: [
+                                    Icon(
+                                      Icons.person_pin_circle_outlined,
+                                      size: 25,
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      "Adresse de livraison",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.normal,
+                                          fontSize: 18),
+                                    ),
+                                  ]),
+                                ),
+                              ),
                             ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              "Notifications",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.normal, fontSize: 22),
+                            GestureDetector(
+                              onTap: () {},
+                              child: Container(
+                                padding: EdgeInsets.all(10),
+                                height: 120,
+                                width: 150,
+                                decoration: BoxDecoration(
+                                  color: Colors.green.shade100,
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: [
+                                      Icon(
+                                        Icons.notifications_none_outlined,
+                                        size: 25,
+                                      ),
+                                      SizedBox(width: 10),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(
+                                        "Notifications",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.normal,
+                                            fontSize: 18),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ),
                           ],
                         ),
-                        Divider(),
+                        const SizedBox(height: 5,),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Icon(
-                              Icons.help_outline_outlined,
-                              size: 22,
+                            GestureDetector(
+                              onTap: () {},
+                              child: Container(
+                                padding: EdgeInsets.all(10),
+                                height: 120,
+                                width: 150,
+                                decoration: BoxDecoration(
+                                  color: Colors.green.shade100,
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Column(children: [
+                                    Icon(
+                                      Icons.warning_amber_sharp,
+                                      size: 25,
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      "A propos",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.normal,
+                                          fontSize: 18),
+                                    ),
+                                  ]),
+                                ),
+                              ),
                             ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              "Aide",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.normal, fontSize: 22),
+                            GestureDetector(
+                              onTap: () {},
+                              child: Container(
+                                padding: EdgeInsets.all(10),
+                                height: 120,
+                                width: 150,
+                                decoration: BoxDecoration(
+                                  color: Colors.green.shade100,
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                                /* shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20)),*/
+                                child: const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Center(
+                                    child: Column(
+                                      children: [
+                                        Icon(
+                                          Icons.help_outline_outlined,
+                                          size: 25,
+                                        ),
+                                        SizedBox(width: 10),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        Text(
+                                          "Aide",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 18),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
                           ],
                         ),
-                        Divider(),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.warning_amber_sharp,
-                              size: 22,
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              "A propos",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.normal, fontSize: 22),
-                            ),
-                          ],
-                        ),
-                        Divider(),
-                        GestureDetector(
-                          onTap: () {
+                        const SizedBox(height: 10,),
+                        TextButton(
+                          onPressed: () {
                             info(context);
                           },
-                          onDoubleTap: () {
+                          onLongPress: () {
                             logout(context);
                           },
-                          child: Row(
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
-                                Icons.power_settings_new_outlined,
-                                size: 22,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                "Deconnexion",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 22),
-                              ),
+                              Icon(Icons.output_rounded),
+                              Text("Deconnexion",
+                                  style: TextStyle(
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 18)),
                             ],
                           ),
                         ),
@@ -303,7 +373,7 @@ class _ProfilState extends State<Profil> {
                   children: [
                     Icon(
                       Icons.power_settings_new_outlined,
-                      size: 22,
+                      size: 25,
                     ),
                     SizedBox(
                       width: 5,
@@ -311,7 +381,7 @@ class _ProfilState extends State<Profil> {
                     Text(
                       "Se connecté",
                       style: TextStyle(
-                          fontWeight: FontWeight.normal, fontSize: 22),
+                          fontWeight: FontWeight.normal, fontSize: 18),
                     ),
                   ],
                 ),

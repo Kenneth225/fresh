@@ -47,6 +47,7 @@ dependencies:
   path_provider: ^2.0.11
   path: ^1.8.0
   badges: ^3.0.2
+  kkiapay_flutter_sdk:
 
 dev_dependencies:
   flutter_test:
@@ -87,7 +88,11 @@ flutter:
      - assets/salmon_salad.jpeg
      - assets/shrimp_pasta.jpg
      - assets/mapss.png
-     - assets/done.png
+     - assets/ok.jpg
+     - assets/bempty.jpg
+     - assets/bfull.jpg
+     - assets/livc.jpg
+     - assets/livdone.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

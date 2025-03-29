@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_cart/cart.dart';
 import 'package:flutter_cart/model/cart_model.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class boutique extends StatefulWidget {
@@ -41,7 +42,7 @@ class _boutiqueState extends State<boutique> {
   void initState() {
     super.initState();
     autoLogIn();
-  fetchAndStoreProducts();
+    fetchAndStoreProducts();
     boutiqueFuture = boutique("1");
     categorieFuture = homecat();
   }
@@ -87,15 +88,17 @@ class _boutiqueState extends State<boutique> {
             //discount: double.parse(prix),
             productDetails: mode));
 
-    const snackBar = SnackBar(
-      backgroundColor: Color.fromARGB(255, 131, 230, 167),
-      content: Text('Consulter votre panier'),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    
+    Fluttertoast.showToast(
+        msg: "Article ajouté au panier",
+        toastLength: Toast.LENGTH_SHORT);
     print(cart.cartLength);
     print(cart.subtotal);
     print(cart.total);
   }
+
+
+
 
   Future<void> _showMyDialog() async {
     return showDialog<void>(
@@ -165,21 +168,20 @@ class _boutiqueState extends State<boutique> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-     // backgroundColor: getRandomColor(),
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          Image.asset(
-            "assets/roast_chicken.jpg",
-            fit: BoxFit.cover,
+       //backgroundColor: getRandomColor(),
+       backgroundColor: Colors.white,
+      body: /*Stack(fit: StackFit.expand, children: [
+        Image.asset(
+          "assets/roast_chicken.jpg",
+          fit: BoxFit.cover,
+        ),
+        BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: Container(
+            color: Colors.black.withOpacity(0.3),
           ),
-          BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-            child: Container(
-              color: Colors.black.withOpacity(0.3),
-            ),
-          ),
-          SingleChildScrollView(
+        ),*/
+        SingleChildScrollView(
           child: Column(
             children: [
               const SizedBox(
@@ -199,8 +201,8 @@ class _boutiqueState extends State<boutique> {
                 padding: const EdgeInsets.all(6.0),
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => const Search()));
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const Search()));
                   },
                   child: TextField(
                     enabled: false,
@@ -220,9 +222,9 @@ class _boutiqueState extends State<boutique> {
                   ),
                 ),
               ),
-        
-        //carousel dynamique
-        
+
+              //carousel dynamique
+
               Center(
                 child: CarouselSlider.builder(
                   itemCount: sliderData.length,
@@ -267,14 +269,14 @@ class _boutiqueState extends State<boutique> {
                               children: [
                                 Text(
                                   item['title']!,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 Text(
                                   item['discount']!,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 14,
                                     color: Colors.green,
                                   ),
@@ -288,12 +290,11 @@ class _boutiqueState extends State<boutique> {
                   },
                 ),
               ),
-        
-        //fin carousel
-        
+
+              //fin carousel
+
               SingleChildScrollView(
                 child: Container(
-                  // color: Colors.blue,
                   height: MediaQuery.sizeOf(context).height / 1.6,
                   child: FutureBuilder(
                       future: homecat(),
@@ -372,15 +373,18 @@ class _boutiqueState extends State<boutique> {
                                       child: Container(
                                         height: 200,
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(18),
+                                          borderRadius:
+                                              BorderRadius.circular(18),
                                         ),
                                         child: FutureBuilder<dynamic>(
                                             future: boutique(cate.id),
                                             builder: (BuildContext context,
-                                                AsyncSnapshot<dynamic> snapshot) {
+                                                AsyncSnapshot<dynamic>
+                                                    snapshot) {
                                               if (snapshot.hasData) {
                                                 return GridView.builder(
-                                                  itemCount: snapshot.data.length,
+                                                  itemCount:
+                                                      snapshot.data.length,
                                                   scrollDirection:
                                                       Axis.horizontal,
                                                   shrinkWrap: true,
@@ -406,18 +410,16 @@ class _boutiqueState extends State<boutique> {
                                                                 children: [
                                                                   GestureDetector(
                                                                     onTap: () {
-                                                                      Navigator.of(
-                                                                              context)
-                                                                          .push(MaterialPageRoute(
-                                                                              builder: (context) => Details(
-                                                                                    id: boutique.id,
-                                                                                    nom: boutique.nom,
-                                                                                    prix: boutique.prix,
-                                                                                    description: boutique.description,
-                                                                                    categorie: boutique.categorie,
-                                                                                    image: boutique.image,
-                                                                                    stock: boutique.stock,
-                                                                                  )));
+                                                                      Navigator.of(context).push(MaterialPageRoute(
+                                                                          builder: (context) => Details(
+                                                                                id: boutique.id,
+                                                                                nom: boutique.nom,
+                                                                                prix: boutique.prix,
+                                                                                description: boutique.description,
+                                                                                categorie: boutique.categorie,
+                                                                                image: boutique.image,
+                                                                                stock: boutique.stock,
+                                                                              )));
                                                                     },
                                                                     child:
                                                                         ClipRRect(
@@ -426,7 +428,8 @@ class _boutiqueState extends State<boutique> {
                                                                         "${api_link}/api_fresh/uploads/${boutique.image}",
                                                                         height:
                                                                             60,
-                                                                        width: 80,
+                                                                        width:
+                                                                            80,
                                                                         fit: BoxFit
                                                                             .fitWidth,
                                                                       ),
@@ -434,18 +437,16 @@ class _boutiqueState extends State<boutique> {
                                                                   ),
                                                                   GestureDetector(
                                                                     onTap: () {
-                                                                      Navigator.of(
-                                                                              context)
-                                                                          .push(MaterialPageRoute(
-                                                                              builder: (context) => Details(
-                                                                                    id: boutique.id,
-                                                                                    nom: boutique.nom,
-                                                                                    prix: boutique.prix,
-                                                                                    description: boutique.description,
-                                                                                    categorie: boutique.categorie,
-                                                                                    image: boutique.image,
-                                                                                    stock: boutique.stock,
-                                                                                  )));
+                                                                      Navigator.of(context).push(MaterialPageRoute(
+                                                                          builder: (context) => Details(
+                                                                                id: boutique.id,
+                                                                                nom: boutique.nom,
+                                                                                prix: boutique.prix,
+                                                                                description: boutique.description,
+                                                                                categorie: boutique.categorie,
+                                                                                image: boutique.image,
+                                                                                stock: boutique.stock,
+                                                                              )));
                                                                     },
                                                                     child: Text(
                                                                       "${boutique.nom}",
@@ -455,15 +456,14 @@ class _boutiqueState extends State<boutique> {
                                                                       style: const TextStyle(
                                                                           fontSize:
                                                                               20,
-                                                                          fontWeight:
-                                                                              FontWeight
-                                                                                  .bold,
-                                                                          color: Colors
-                                                                              .black),
+                                                                          fontWeight: FontWeight
+                                                                              .bold,
+                                                                          color:
+                                                                              Colors.black),
                                                                     ),
                                                                   ),
                                                                   Text(
-                                                                      "${boutique.stock}kg,Prix"),
+                                                                      "1kg,Prix"),
                                                                   Padding(
                                                                     padding:
                                                                         const EdgeInsets
@@ -483,9 +483,8 @@ class _boutiqueState extends State<boutique> {
                                                                         ElevatedButton(
                                                                           style:
                                                                               ButtonStyle(
-                                                                            minimumSize: MaterialStateProperty.all(const Size(
-                                                                                10,
-                                                                                25)),
+                                                                            minimumSize:
+                                                                                MaterialStateProperty.all(const Size(10, 25)),
                                                                             backgroundColor: MaterialStateProperty.all(Color.fromRGBO(
                                                                                 70,
                                                                                 225,
@@ -503,12 +502,9 @@ class _boutiqueState extends State<boutique> {
                                                                                 boutique.description);
                                                                           },
                                                                           child: const Icon(
-                                                                              Icons
-                                                                                  .add_outlined,
-                                                                              size:
-                                                                                  18,
-                                                                              color:
-                                                                                  Colors.white),
+                                                                              Icons.add_outlined,
+                                                                              size: 18,
+                                                                              color: Colors.white),
                                                                         ),
                                                                       ],
                                                                     ),
@@ -562,8 +558,9 @@ class _boutiqueState extends State<boutique> {
               )
             ],
           ),
-        ),
-     ] ),
-    );
+        )
+     // ]
+      );
+    //);
   }
 }
