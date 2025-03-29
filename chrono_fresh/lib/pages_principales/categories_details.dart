@@ -5,6 +5,7 @@ import 'package:chrono_fresh/pages_principales/details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cart/flutter_cart.dart';
 
+// ignore: must_be_immutable
 class Categoriedetails extends StatefulWidget {
   String? nom;
   String? cat;

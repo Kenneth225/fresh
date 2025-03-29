@@ -24,8 +24,6 @@ String? nom;
     super.initState();
     autoLogIn();
   }
-  @override
-
   void autoLogIn() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? usermail = prefs.getString('email');

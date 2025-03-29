@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:chrono_fresh/global_var.dart';
-import 'package:chrono_fresh/pages_principales/categorie_api.dart';
 import 'package:chrono_fresh/pages_principales/categorie_structure.dart';
 import 'package:chrono_fresh/pages_principales/categories_details.dart';
 import 'package:chrono_fresh/pages_principales/categoriesall_api.dart';
@@ -35,6 +34,7 @@ class _ExplorerState extends State<Explorer> {
 
   @override
   void initState() {
+    super.initState();
     categorieFuture = homecat();
   }
 
@@ -109,7 +109,7 @@ class _ExplorerState extends State<Explorer> {
                                   ),
                                   const SizedBox(height: 10),
                                   Text(
-                                    cate.nomCategorie!,
+                                    cate.nomCategorie,
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold),
                                   ),
