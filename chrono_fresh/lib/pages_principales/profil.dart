@@ -170,7 +170,7 @@ class _ProfilState extends State<Profil> {
                                   borderRadius: BorderRadius.circular(18),
                                 ),
                                 child: const Padding(
-                                  padding: EdgeInsets.all(8.0),
+                                  padding: EdgeInsets.all(11.0),
                                   child: Column(children: [
                                     Icon(
                                       Icons.badge_outlined,
@@ -180,7 +180,7 @@ class _ProfilState extends State<Profil> {
                                       width: 5,
                                     ),
                                     Text(
-                                      "Mes données",
+                                      "Mes Données",textAlign: TextAlign.center,
                                       style: TextStyle(
                                           fontWeight: FontWeight.normal,
                                           fontSize: 18),
@@ -216,7 +216,7 @@ class _ProfilState extends State<Profil> {
                                       width: 5,
                                     ),
                                     Text(
-                                      "Adresse de livraison",
+                                      "Adresses de livraison",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           fontWeight: FontWeight.normal,
@@ -237,7 +237,7 @@ class _ProfilState extends State<Profil> {
                                   borderRadius: BorderRadius.circular(18),
                                 ),
                                 child: const Padding(
-                                  padding: EdgeInsets.all(8.0),
+                                  padding: EdgeInsets.all(11.5),
                                   child: Column(
                                     children: [
                                       Icon(
@@ -276,7 +276,7 @@ class _ProfilState extends State<Profil> {
                                   borderRadius: BorderRadius.circular(18),
                                 ),
                                 child: const Padding(
-                                  padding: EdgeInsets.all(8.0),
+                                  padding: EdgeInsets.all(12.0),
                                   child: Column(children: [
                                     Icon(
                                       Icons.warning_amber_sharp,
@@ -308,7 +308,7 @@ class _ProfilState extends State<Profil> {
                                 /* shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20)),*/
                                 child: const Padding(
-                                  padding: EdgeInsets.all(8.0),
+                                  padding: EdgeInsets.all(12.0),
                                   child: Center(
                                     child: Column(
                                       children: [
@@ -345,7 +345,7 @@ class _ProfilState extends State<Profil> {
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.output_rounded),
+                              Icon(Icons.output_rounded, size: 30, color: Colors.grey,),
                               Text("Deconnexion",
                                   style: TextStyle(
                                       color: Colors.grey,

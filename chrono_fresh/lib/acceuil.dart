@@ -11,14 +11,16 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Acceuil extends StatefulWidget {
-  const Acceuil({super.key});
+  final int initialTab;
+
+  const Acceuil({super.key,this.initialTab = 0});
 
   @override
   State<Acceuil> createState() => _AcceuilState();
 }
 
 bool loged = true;
-int _tabNum = 0;
+late int _tabNum;
 var cart = FlutterCart();
 final _tab = [
   const boutique(),
@@ -36,6 +38,7 @@ class _AcceuilState extends State<Acceuil> {
   @override
   void initState() {
     super.initState();
+     _tabNum =  widget.initialTab;
     autoLogIn();
   }
 
@@ -58,7 +61,7 @@ class _AcceuilState extends State<Acceuil> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
-        child: role == "1" ? _tab[_tabNum] : _tab2[_tabNum],
+        child: role == "2" ? _tab2[_tabNum] : _tab[_tabNum],
               ),
       bottomNavigationBar: Container(
         //width: MediaQuery.of(context).size.height * 1.1,
@@ -76,8 +79,18 @@ class _AcceuilState extends State<Acceuil> {
             selectedIndex: _tabNum,
             gap: 5,
             padding: EdgeInsets.all(8),
-            tabs: role == "1"
-                ? [
+            tabs: role == "2"
+                ? const [
+                    GButton(
+                      icon: Icons.auto_graph_outlined,
+                      text: 'Statistique',
+                    ),
+                    GButton(
+                      icon: Icons.motorcycle_rounded,
+                      text: 'course en cours',
+                    ),
+                    GButton(icon: Icons.person_4_outlined, text: 'Compte'),
+                  ] :[
                     const GButton(
                       icon: Icons.local_convenience_store_rounded,
                       text: 'Boutique',
@@ -122,17 +135,7 @@ class _AcceuilState extends State<Acceuil> {
                         icon: Icons.soup_kitchen_outlined, text: 'Recettes'),
                     GButton(icon: Icons.person_4_outlined, text: 'Compte'),
                   ]
-                : const [
-                    GButton(
-                      icon: Icons.auto_graph_outlined,
-                      text: 'Statistique',
-                    ),
-                    GButton(
-                      icon: Icons.motorcycle_rounded,
-                      text: 'course en cours',
-                    ),
-                    GButton(icon: Icons.person_4_outlined, text: 'Compte'),
-                  ],
+                ,
             onTabChange: (index) {
               setState(() {
                 _tabNum = index;

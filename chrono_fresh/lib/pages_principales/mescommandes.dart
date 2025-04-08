@@ -7,6 +7,9 @@ import 'package:chrono_fresh/pages_principales/suivi_commande.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
+
 
 // ignore: must_be_immutable
 class Mescommandes extends StatefulWidget {
@@ -35,6 +38,7 @@ class _MescommandesState extends State<Mescommandes> {
   void initState() {
     // TODO: implement initState
     super.initState();
+   
     autoLogIn();
     ordersFuture = order(widget.id);
   }
@@ -201,7 +205,7 @@ class _MescommandesState extends State<Mescommandes> {
                                                   fontSize: 14,
                                                   color: Colors.grey)),
                                           const SizedBox(height: 4),
-                                          Text("${mcommande.dateCommande}",
+                                          Text( "${DateTime.parse("${mcommande.dateCommande}")}"   ,
                                               style: const TextStyle(
                                                   fontSize: 12,
                                                   color: Colors.grey)),

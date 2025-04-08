@@ -45,7 +45,7 @@ class _CategoriedetailsState extends State<Categoriedetails> {
 
     const snackBar = SnackBar(
       backgroundColor: Color.fromARGB(255, 131, 230, 167),
-      content: Text('Consulter votre panier'),
+      content: Text('Article ajouté au panier'),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
     print(cart.cartLength);

@@ -1,12 +1,17 @@
+import 'dart:ui';
+
 import 'package:chrono_fresh/acceuil.dart';
 import 'package:chrono_fresh/pages_login/connection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cart/cart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   var cart = FlutterCart();
+  await initializeDateFormatting('fr_FR', null);
   await cart.initializeCart(isPersistenceSupportEnabled: true);
   runApp(const MyApp());
 }
@@ -27,12 +32,34 @@ class MyApp extends StatelessWidget {
         ),
         home: const MyHomePage(title: 'CHRONO FRESH'),
         initialRoute: 'home',
-        routes: {
-          'home': (context) => const MyHomePage(
+        onGenerateRoute: (settings) {
+          if (settings.name == 'accueil') {
+            final args = settings.arguments as Map<String, dynamic>?;
+
+            return MaterialPageRoute(
+              builder: (context) => Acceuil(
+                initialTab: args?['initialTab'] ?? 0,
+              ),
+            );
+          }
+
+          if (settings.name == 'home') {
+            final args = settings.arguments as Map<String, dynamic>?;
+
+            return MaterialPageRoute(
+              builder: (context) => const MyHomePage(
                 title: 'Bienvenue',
               ),
-          'accueil': (context) => Acceuil(),
-          'connect': (context) => connection()
+            );
+          }
+
+          if (settings.name == 'connect') {
+            final args = settings.arguments as Map<String, dynamic>?;
+
+            return MaterialPageRoute(
+              builder: (context) => const connection(),
+            );
+          }
         });
   }
 }
@@ -87,36 +114,37 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),*/
-      body: Container(
-          alignment: Alignment.center,
-          padding: const EdgeInsets.all(32),
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(colors: [
-                Color.fromRGBO(208, 208, 208, 0.667),
-                Color.fromRGBO(60, 60, 60, 1),
-              ]),
-              image: DecorationImage(
-                  opacity: 10,
-                  image: AssetImage("assets/home.jpeg"),
-                  fit: BoxFit.cover)),
-          child: Padding(
-            padding: const EdgeInsets.only(top: 420.25),
-            child: Column(
-              children: [
-                const Text(
-                  "Bienvenue dans notre magazin",
+      body: Stack(fit: StackFit.expand, children: [
+        Image.asset(
+          "assets/home.jpeg",
+          fit: BoxFit.cover,
+        ),
+        BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: Container(
+            color: Colors.black.withOpacity(0.3),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 420.25),
+          child: Column(
+            children: [
+              const Text(
+                "Bienvenue dans notre magazin",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                    fontStyle: FontStyle.normal),
+              ),
+              const Text("Faites vos courses sans vous deplacer",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 30,
-                      fontStyle: FontStyle.normal),
-                ),
-                const Text("Faites vos courses sans vous deplacer",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.normal)),
-                Center(
+                      color: Colors.white, fontWeight: FontWeight.normal)),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
                   child: Container(
                     height: 55,
                     //width: 150,
@@ -129,7 +157,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Center(
                       child: TextButton(
                         onPressed: () {
-                          Navigator.pushReplacementNamed(context, 'accueil');
+                          //Navigator.pushReplacementNamed(context, 'accueil');
+                          Navigator.pushReplacementNamed(
+                            context,
+                            'accueil',
+                            arguments: {'initialTab': 0}, // Forcer accueil
+                          );
                         },
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -147,10 +180,13 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 16,
-                ),
-                Center(
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
                   child: Container(
                     height: 55,
                     //width: 150,
@@ -181,9 +217,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                 ),
-              ],
-            ),
-          )),
+              ),
+            ],
+          ),
+        ),
+      ]),
     );
   }
 }

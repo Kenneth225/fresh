@@ -179,14 +179,14 @@ class _PanierState extends State<Panier> {
             child: ListBody(
               children: <Widget>[
                 Image.asset(
-                  'assets/done.png', // Remplace cette image par la tienne
+                  'assets/ok.jpg', // Remplace cette image par la tienne
                   width: 50,
-                  height: 150,
+                  height: 250,
                   fit: BoxFit.cover,
                 ),
-                const Text("Votre commande a été accepté"),
+                const Text("Votre commande a été accepté", textAlign: TextAlign.center,),
                 const Text(
-                    "Vos articles ont été placé et sont en cours de traitement"),
+                    "Vos articles ont été placé et sont en cours de traitement", textAlign: TextAlign.center,),
               ],
             ),
           ),
@@ -381,8 +381,8 @@ class _PanierState extends State<Panier> {
                                         style: const TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold)),
-                                    const Text("1kg, Prix",
-                                        style: TextStyle(
+                                     Text("1kg, ${item.variants.first.price} FCFA",
+                                        style: const TextStyle(
                                             fontSize: 12, color: Colors.grey)),
                                     Row(
                                       mainAxisAlignment:
@@ -441,14 +441,14 @@ class _PanierState extends State<Panier> {
                                   ],
                                 ),
                                 Column(
-                                  children: [
+                                  children: <Widget>[
                                     IconButton(
                                       icon:
                                           Icon(Icons.close, color: Colors.grey),
                                       onPressed: () => _removeItem(
                                           item.productId, item.variants),
                                     ),
-                                    Text("${item.variants.first.price} FCFA",
+                                    Text("${item.variants.first.price * item.quantity} FCFA",
                                         style: TextStyle(fontSize: 16)),
                                   ],
                                 ),

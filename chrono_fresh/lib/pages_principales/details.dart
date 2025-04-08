@@ -122,7 +122,7 @@ class _DetailsState extends State<Details> {
 
     const snackBar = SnackBar(
       backgroundColor: Color.fromARGB(255, 131, 230, 167),
-      content: Text('Consulter votre panier'),
+      content: Text('Article ajouté au panier'),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
     print(cart.cartLength);
@@ -173,7 +173,7 @@ class _DetailsState extends State<Details> {
               height: 8,
             ),
             Text(
-              "${widget.stock}kg, Prix",
+              "1kg, ${widget.prix} FCFA",
               style: const TextStyle(fontSize: 17, color: Colors.black45),
             ),
             Row(
@@ -212,7 +212,7 @@ class _DetailsState extends State<Details> {
                   width: MediaQuery.of(context).size.width / 5,
                 ),
                 Text(
-                  "${widget.prix} Fcfa",
+                  "${double.parse(widget.prix!) * quantity} Fcfa",
                   style: const TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 27),
                 ),
