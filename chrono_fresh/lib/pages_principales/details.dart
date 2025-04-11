@@ -1,4 +1,6 @@
 import 'package:chrono_fresh/global_var.dart';
+import 'package:chrono_fresh/pages_principales/recette_api.dart';
+import 'package:chrono_fresh/pages_principales/recette_structure.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cart/flutter_cart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,7 +39,7 @@ class Details extends StatefulWidget {
 }
 
 class _DetailsState extends State<Details> {
-@override
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -107,6 +109,41 @@ class _DetailsState extends State<Details> {
     );
   }
 
+  void showRecipeDetails(BuildContext context, titre, description) {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(titre,
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold)),
+                  ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Fermer'),
+                  )
+                ],
+              ),
+              const SizedBox(height: 10),
+              Text(description, style: const TextStyle(fontSize: 16)),
+              const SizedBox(height: 20),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   commande_fict(id, nom, image, int qt, prix, mode) async {
     cart.addToCart(
         cartModel: CartModel(
@@ -134,8 +171,6 @@ class _DetailsState extends State<Details> {
 
   @override
   Widget build(BuildContext context) {
-    
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -219,7 +254,7 @@ class _DetailsState extends State<Details> {
               ],
             ),
             const Divider(),
-             ExpansionTile(
+            ExpansionTile(
               title: const Text(
                 'Détail du produit',
                 style: TextStyle(fontWeight: FontWeight.bold),
@@ -241,7 +276,48 @@ class _DetailsState extends State<Details> {
                 'Recettes',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              children: [Text('blablabal')],
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: FutureBuilder<dynamic>(
+                      future: viewrec('${widget.id}'),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<dynamic> snapshot) {
+                        if (snapshot.hasData) {
+                          return ListView.builder(
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (context, index) {
+                              // final recipe = snapshot.data[index];
+                              Mrecettes recette = snapshot.data[index];
+                              return GestureDetector(
+                                onTap: () => showRecipeDetails(context,
+                                    recette.nomPlat, recette.description),
+                                child: Container(
+                                  height:30,
+                                    color: Colors.white,
+                                    child: Chip(
+                                      label: Text(recette.nomPlat,
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                      backgroundColor: Colors.orange,
+                                    )),
+                              );
+                            },
+                          );
+                        } else if (snapshot.hasError) {
+                          return const Center(
+                            child: Text('Erreur code',
+                                style: TextStyle(color: Colors.black)),
+                          );
+                        } else {
+                          return const Center(
+                            child: Text('Aucune recette disponible',
+                                style: TextStyle(color: Colors.black)),
+                          );
+                        }
+                      }),
+                )
+              ],
             ),
             const Divider(),
             ListTile(

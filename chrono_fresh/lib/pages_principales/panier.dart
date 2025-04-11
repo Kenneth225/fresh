@@ -49,6 +49,7 @@ void callback(response, context) {
         break;
 
       default:
+        String? UNKNOWN_EVENT;
         debugPrint(UNKNOWN_EVENT);
         break;
     }

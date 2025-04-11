@@ -88,6 +88,8 @@ class _MyHomePageState extends State<MyHomePage> {
     autoLogIn();
   }
 
+  
+
   void autoLogIn() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? usermail = prefs.getString('email');

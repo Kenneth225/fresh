@@ -17,6 +17,7 @@ import 'package:flutter_cart/cart.dart';
 import 'package:flutter_cart/model/cart_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:geolocator/geolocator.dart';
 
 class boutique extends StatefulWidget {
   const boutique({super.key});
@@ -41,6 +42,7 @@ class _boutiqueState extends State<boutique> {
   @override
   void initState() {
     super.initState();
+    getLocation();
     autoLogIn();
     fetchAndStoreProducts();
     boutiqueFuture = boutique("1");
@@ -48,6 +50,30 @@ class _boutiqueState extends State<boutique> {
   }
 
   var cart = FlutterCart();
+
+
+void getLocation() async{
+  LocationPermission permission =  await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied){
+    permission = await Geolocator.requestPermission();
+    if(permission == LocationPermission.denied){
+      return Future.error('Acces refusé');
+    }
+  }
+
+  if(permission == LocationPermission.deniedForever){
+    return Future.error('La permission est refuser de facon permanente'); 
+  } 
+  
+
+final LocationSettings locationSettings = LocationSettings(
+  accuracy: LocationAccuracy.high,
+  distanceFilter: 100,
+);
+
+Position position = await Geolocator.getCurrentPosition(locationSettings: locationSettings);
+print(position);
+}
 
   void autoLogIn() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
