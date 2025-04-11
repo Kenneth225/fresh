@@ -50,6 +50,7 @@ dependencies:
   badges: ^3.0.2
   kkiapay_flutter_sdk:
   geolocator: ^13.0.4
+  image_picker: ^1.0.4
 
 dev_dependencies:
   flutter_test:
@@ -76,6 +77,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
      - assets/board.png
+     - assets/logo.png
      - assets/fish.png
      - assets/group.png
      - assets/home.jpeg

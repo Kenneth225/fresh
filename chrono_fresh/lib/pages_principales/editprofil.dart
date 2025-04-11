@@ -1,15 +1,22 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Editprofil extends StatefulWidget {
-  const Editprofil({super.key});
+class PersonalInfoPage extends StatefulWidget {
+  const PersonalInfoPage({super.key});
 
   @override
-  State<Editprofil> createState() => _EditprofilState();
+  State<PersonalInfoPage> createState() => _PersonalInfoPageState();
 }
 
-class _EditprofilState extends State<Editprofil> {
-String? nom;
+class _PersonalInfoPageState extends State<PersonalInfoPage> {
+  String? _imagePath;
+  String _firstName = '';
+  String _lastName = '';
+  String _phone = '';
+  String? nom;
   String? prenom;
   String? role;
   String? avatar;
@@ -18,13 +25,21 @@ String? nom;
   String? id;
   bool isLoggedIn = false;
 
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+
+  
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    _loadUserData();
     autoLogIn();
   }
-  void autoLogIn() async {
+
+
+void autoLogIn() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? usermail = prefs.getString('email');
     String? role = prefs.getString('role');
@@ -41,114 +56,147 @@ String? nom;
       });
     }
   }
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Mes données"),
-        backgroundColor:  Colors.white,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      body: Column(
-        children: [
-          Container(
-            
-            padding: EdgeInsets.all(16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                CircleAvatar(
+
+  
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _imagePath = prefs.getString('user_image');
+      _firstName = prefs.getString('user_firstname') ?? '';
+      _lastName = prefs.getString('user_lastname') ?? '';
+      _phone = prefs.getString('user_phone') ?? '';
+    });
+  }
+
+  Future<void> _saveUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('user_firstname', _firstName);
+    await prefs.setString('user_lastname', _lastName);
+    await prefs.setString('user_phone', _phone);
+    if (_imagePath != null) {
+      await prefs.setString('user_image', _imagePath!);
+    }
+  }
+
+  void _openEditModal() {
+    _firstNameController.text = _firstName;
+    _lastNameController.text = _lastName;
+    _phoneController.text = _phone;
+
+    showModalBottomSheet(
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      context: context,
+      builder: (_) {
+        return Padding(
+          padding: EdgeInsets.only(
+            top: 20,
+            left: 20,
+            right: 20,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                "Mettre à jour les informations",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              GestureDetector(
+                onTap: _pickImage,
+                child: CircleAvatar(
                   radius: 40,
-                  backgroundColor: Colors.grey[300],
-                  child: Icon(Icons.person, size: 50, color: Colors.white),
+                  backgroundImage:
+                      _imagePath != null ? FileImage(File(_imagePath!)) : null,
+                  child:
+                      _imagePath == null ? const Icon(Icons.camera_alt) : null,
                 ),
-                 Column(
-                  children: [
-                    Text(
-                      "$nom $prenom",
-                      style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    
-                  ],
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _firstNameController,
+                decoration: const InputDecoration(labelText: 'Prénom'),
+              ),
+              TextField(
+                controller: _lastNameController,
+                decoration: const InputDecoration(labelText: 'Nom'),
+              ),
+              TextField(
+                controller: _phoneController,
+                keyboardType: TextInputType.phone,
+                decoration: const InputDecoration(labelText: 'Téléphone'),
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _firstName = _firstNameController.text;
+                    _lastName = _lastNameController.text;
+                    _phone = _phoneController.text;
+                  });
+                  _saveUserData();
+                  Navigator.pop(context);
+                },
+                child: const Text("Enregistrer"),
+              ),
+            ],
           ),
-          Expanded(
-            child: ListView(
-              padding: EdgeInsets.all(16),
-              children: [
-                ProfileField(
-                    icon: Icons.phone,
-                    label: "Phone number",
-                    value: "$telephone"),
-                ProfileField(
-                    icon: Icons.flag, label: "Pays", value: "Benin"),
-                ProfileField(
-                    icon: Icons.person, label: "Prénom", value: "$prenom"),
-                ProfileField(
-                    icon: Icons.person, label: "Nom", value: "$nom"),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green[700],
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
-                    padding: EdgeInsets.symmetric(vertical: 14),
-                  ),
-                  child: const Text("Verifié mon email",
-                      style: TextStyle(fontSize: 16, color: Colors.white)),
-                ),
-                SizedBox(height: 10),
-                TextButton(
-                  onPressed: () {},
-                  child: const Text("Enregistrer le changement",
-                      style: TextStyle(color: Colors.grey)),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
-}
 
-class ProfileField extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
-
-  ProfileField({required this.icon, required this.label, required this.value});
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final XFile? pickedFile =
+        await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _imagePath = pickedFile.path;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: TextStyle(fontSize: 14, color: Colors.grey)),
-        TextFormField(
-          initialValue: value,
-          decoration: InputDecoration(
-            prefixIcon: Icon(icon, color: Colors.grey),
-            suffixIcon: Icon(Icons.edit, color: Colors.grey),
-            filled: true,
-            fillColor: Colors.grey[100],
-            border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide.none),
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Données personnelles'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Center(
+              child: CircleAvatar(
+                radius: 50,
+                backgroundImage:
+                    _imagePath != null ? FileImage(File(_imagePath!)) : null,
+                child: _imagePath == null
+                    ? const Icon(Icons.person, size: 50)
+                    : null,
+              ),
+            ),
+            const SizedBox(height: 20),
+            ListTile(
+              leading: const Icon(Icons.person),
+              title: const Text("Nom complet"),
+              subtitle: Text("$_firstName $_lastName"),
+            ),
+            ListTile(
+              leading: const Icon(Icons.phone),
+              title: const Text("Téléphone"),
+              subtitle: Text(_phone),
+            ),
+          ],
         ),
-        SizedBox(height: 10),
-      ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _openEditModal,
+        child: const Icon(Icons.edit),
+      ),
     );
   }
 }

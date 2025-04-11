@@ -1,5 +1,9 @@
+import 'package:chrono_fresh/pages_principales/aide.dart';
+import 'package:chrono_fresh/pages_principales/conditions.dart';
 import 'package:chrono_fresh/pages_principales/editprofil.dart';
+import 'package:chrono_fresh/pages_principales/favorite_adress.dart';
 import 'package:chrono_fresh/pages_principales/mescommandes.dart';
+import 'package:chrono_fresh/pages_principales/notifications.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -159,7 +163,7 @@ class _ProfilState extends State<Profil> {
                             GestureDetector(
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => Editprofil()));
+                                    builder: (context) => PersonalInfoPage()));
                               },
                               child: Container(
                                 padding: EdgeInsets.all(10),
@@ -196,7 +200,9 @@ class _ProfilState extends State<Profil> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             GestureDetector(
-                              onTap: () {},
+                              onTap: () {
+                                 Navigator.push(context, MaterialPageRoute(builder: (context) => const FavoriteAddressesPage()));
+                              },
                               child: Container(
                                 padding: EdgeInsets.all(10),
                                 height: 120,
@@ -227,7 +233,9 @@ class _ProfilState extends State<Profil> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const NotificationPage()));
+                              },
                               child: Container(
                                 padding: EdgeInsets.all(10),
                                 height: 120,
@@ -266,7 +274,10 @@ class _ProfilState extends State<Profil> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             GestureDetector(
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const CguPage()));
+
+                              },
                               child: Container(
                                 padding: EdgeInsets.all(10),
                                 height: 120,
@@ -286,7 +297,7 @@ class _ProfilState extends State<Profil> {
                                       width: 5,
                                     ),
                                     Text(
-                                      "A propos",
+                                      "Conditions",
                                       style: TextStyle(
                                           fontWeight: FontWeight.normal,
                                           fontSize: 18),
@@ -296,7 +307,10 @@ class _ProfilState extends State<Profil> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const HelpPage()));
+
+                              },
                               child: Container(
                                 padding: EdgeInsets.all(10),
                                 height: 120,
@@ -321,7 +335,7 @@ class _ProfilState extends State<Profil> {
                                           width: 5,
                                         ),
                                         Text(
-                                          "Aide",
+                                          "A propos",
                                           style: TextStyle(
                                               fontWeight: FontWeight.normal,
                                               fontSize: 18),
