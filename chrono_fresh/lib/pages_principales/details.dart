@@ -280,47 +280,50 @@ class _DetailsState extends State<Details> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: FutureBuilder<dynamic>(
-                      future: viewrec('${widget.id}'),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<dynamic> snapshot) {
-                        if (snapshot.hasData) {
-                          return ListView.builder(
-                            itemCount: snapshot.data.length,
-                            itemBuilder: (context, index) {
-                              // final recipe = snapshot.data[index];
-                              Mrecettes recette = snapshot.data[index];
-                              return GestureDetector(
-                                onTap: () => showRecipeDetails(context,
-                                    recette.nomPlat, recette.description),
-                                child: Container(
-                                  height:30,
-                                    color: Colors.white,
-                                    child: Chip(
-                                      label: Text(recette.nomPlat,
-                                          style:
-                                              TextStyle(color: Colors.white)),
-                                      backgroundColor: Colors.orange,
-                                    )),
-                              );
-                            },
-                          );
-                        } else if (snapshot.hasError) {
-                          return const Center(
-                            child: Text('Erreur code',
-                                style: TextStyle(color: Colors.black)),
-                          );
-                        } else {
-                          return const Center(
-                            child: Text('Aucune recette disponible',
-                                style: TextStyle(color: Colors.black)),
-                          );
-                        }
-                      }),
-                )
+                    future: viewrec('${widget.id}'),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<dynamic> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return const Center(
+                          child: Text('Aucune recette disponible pour ce produit',
+                              style: TextStyle(color: Colors.black)),
+                        );
+                      } else if (!snapshot.hasData || snapshot.data.isEmpty) {
+                        return const Center(
+                          child: Text('Aucune recette disponible',
+                              style: TextStyle(color: Colors.black)),
+                        );
+                      } else {
+                        List<Mrecettes> recettes = snapshot.data;
+
+                        return Wrap(
+                          spacing: 8.0,
+                          runSpacing: 8.0,
+                          children: recettes.map((recette) {
+                            return ActionChip(
+                              avatar: const Icon(Icons.remove_red_eye_sharp),
+                              label: Text(
+                                recette.nomPlat,
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.greenAccent,
+                              onPressed: () {
+                                showRecipeDetails(context, recette.nomPlat,
+                                    recette.description);
+                              },
+                            );
+                          }).toList(),
+                        );
+                      }
+                    },
+                  ),
+                ),
               ],
             ),
             const Divider(),
-            ListTile(
+           /* ListTile(
               title: const Text(
                 'Notes',
                 style: TextStyle(fontWeight: FontWeight.bold),
@@ -341,7 +344,7 @@ class _DetailsState extends State<Details> {
                   )),
               ),
               onTap: () {},
-            ),
+            ),*/
             const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,

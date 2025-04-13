@@ -5,7 +5,6 @@ import 'package:chrono_fresh/pages_login/connection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cart/cart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 Future<void> main() async {

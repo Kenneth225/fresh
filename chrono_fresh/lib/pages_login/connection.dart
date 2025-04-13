@@ -230,7 +230,7 @@ class _connectionState extends State<connection> {
       }
     } else {
       Navigator.pushNamedAndRemoveUntil(context, 'accueil', (route) => false);
-      Fluttertoast.showToast(msg: "pROBLEME", toastLength: Toast.LENGTH_SHORT);
+      Fluttertoast.showToast(msg: "PROBLEME", toastLength: Toast.LENGTH_SHORT);
     }
   }
 

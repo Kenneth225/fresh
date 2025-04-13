@@ -8,6 +8,9 @@ class Suivicommande extends StatefulWidget {
 }
 
 class _SuivicommandeState extends State<Suivicommande> {
+
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +44,8 @@ class _SuivicommandeState extends State<Suivicommande> {
               title: 'Livraison en cours',
               subtitle: 'Le livreur est en route',
               isCompleted: false,
-              showCallIcon: true,
+              showCallIcon: false,
+              onLivraison: true,
             ),
             SizedBox(height: 10),
             Container(
@@ -50,7 +54,7 @@ class _SuivicommandeState extends State<Suivicommande> {
                 borderRadius: BorderRadius.circular(10),
                 color: Colors.grey[300],
               ),
-              child: Center(child: Text('Carte ici', style: TextStyle(color: Colors.black54))),
+              child: Center(child: Text('Code QR ici', style: TextStyle(color: Colors.black54))),
             ),
             SizedBox(height: 10),
             OrderStep(
@@ -73,6 +77,7 @@ class OrderStep extends StatelessWidget {
   final bool isCompleted;
   final bool showCallIcon;
   final bool isFinalStep;
+  final bool onLivraison;
 
   OrderStep({
     required this.icon,
@@ -81,6 +86,7 @@ class OrderStep extends StatelessWidget {
     this.isCompleted = false,
     this.showCallIcon = false,
     this.isFinalStep = false,
+    this.onLivraison = false
   });
 
   @override
@@ -110,6 +116,8 @@ class OrderStep extends StatelessWidget {
           Icon(Icons.check_circle, color: Colors.green),
         if (showCallIcon)
           Icon(Icons.call, color: Colors.orange),
+          if(onLivraison)
+          Text("- 4.5 km", style: TextStyle(color: Colors.amberAccent, fontWeight: FontWeight.bold),)
       ],
     );
   }
