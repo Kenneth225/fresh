@@ -13,7 +13,7 @@ class Details extends StatefulWidget {
   String? description;
   String? categorie;
   String? image;
-  String? stock;
+  
   /* String? idVendeur;
   String? statut;
   String? qtreduc;
@@ -27,7 +27,7 @@ class Details extends StatefulWidget {
     this.description,
     this.categorie,
     this.image,
-    this.stock,
+   
     /* this.idVendeur,
       this.statut,
       this.qtreduc,
@@ -172,6 +172,7 @@ class _DetailsState extends State<Details> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: Colors.white,
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
@@ -352,12 +353,12 @@ class _DetailsState extends State<Details> {
               child: ElevatedButton(
                 onPressed: () {
                   print(isLoggedIn);
-                  if (isLoggedIn) {
+                 // if (isLoggedIn) {
                     commande_fict(widget.id, widget.nom, widget.image, quantity,
                         widget.prix, widget.description);
-                  } else {
+                 /* } else {
                     _showMyDialog();
-                  }
+                  }*/
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,

@@ -54,8 +54,11 @@ class _ProfilState extends State<Profil> {
   void logout(context) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
-    //Navigator.pushNamedAndRemoveUntil(context, 'accueil', (route) => false);
-    Navigator.pushReplacementNamed(context, 'home');
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      'home',
+      (route) => false,
+    );
+
     Fluttertoast.showToast(msg: "Deconnexion", toastLength: Toast.LENGTH_SHORT);
     print("Done");
   }
@@ -63,9 +66,11 @@ class _ProfilState extends State<Profil> {
   void logpage(context) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
-    //Navigator.pushNamedAndRemoveUntil(context, 'accueil', (route) => false);
-    Navigator.pushReplacementNamed(context, 'home');
-    //Fluttertoast.showToast(msg: "Deconnexion", toastLength: Toast.LENGTH_SHORT);
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      'home',
+      (route) => false,
+    );
+
     print("Done");
   }
 
@@ -85,6 +90,7 @@ class _ProfilState extends State<Profil> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: isLoggedIn
           ? Center(
               child: Column(
@@ -184,7 +190,8 @@ class _ProfilState extends State<Profil> {
                                       width: 5,
                                     ),
                                     Text(
-                                      "Mes Données",textAlign: TextAlign.center,
+                                      "Mes Données",
+                                      textAlign: TextAlign.center,
                                       style: TextStyle(
                                           fontWeight: FontWeight.normal,
                                           fontSize: 18),
@@ -195,13 +202,19 @@ class _ProfilState extends State<Profil> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 5,),
+                        const SizedBox(
+                          height: 5,
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             GestureDetector(
                               onTap: () {
-                                 Navigator.push(context, MaterialPageRoute(builder: (context) => const FavoriteAddressesPage()));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const FavoriteAddressesPage()));
                               },
                               child: Container(
                                 padding: EdgeInsets.all(10),
@@ -234,7 +247,11 @@ class _ProfilState extends State<Profil> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const NotificationPage()));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const NotificationPage()));
                               },
                               child: Container(
                                 padding: EdgeInsets.all(10),
@@ -269,14 +286,18 @@ class _ProfilState extends State<Profil> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 5,),
+                        const SizedBox(
+                          height: 5,
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             GestureDetector(
                               onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const CguPage()));
-
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const CguPage()));
                               },
                               child: Container(
                                 padding: EdgeInsets.all(10),
@@ -308,8 +329,11 @@ class _ProfilState extends State<Profil> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const HelpPage()));
-
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const HelpPage()));
                               },
                               child: Container(
                                 padding: EdgeInsets.all(10),
@@ -348,7 +372,9 @@ class _ProfilState extends State<Profil> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 10,),
+                        const SizedBox(
+                          height: 10,
+                        ),
                         TextButton(
                           onPressed: () {
                             info(context);
@@ -359,7 +385,11 @@ class _ProfilState extends State<Profil> {
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.output_rounded, size: 30, color: Colors.grey,),
+                              Icon(
+                                Icons.output_rounded,
+                                size: 30,
+                                color: Colors.grey,
+                              ),
                               Text("Deconnexion",
                                   style: TextStyle(
                                       color: Colors.grey,

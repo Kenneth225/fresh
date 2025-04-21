@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 // ignore: must_be_immutable
 class Mescommandes extends StatefulWidget {
   String? id;
+  
   Mescommandes({
     super.key,
     this.id,
@@ -37,7 +38,6 @@ class _MescommandesState extends State<Mescommandes> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
     autoLogIn();
     ordersFuture = order(widget.id);
   }
@@ -55,7 +55,7 @@ class _MescommandesState extends State<Mescommandes> {
         nom = prefs.getString('nom');
         prenom = prefs.getString('prenom');
         telephone = prefs.getString('telephone');
-        //id = prefs.getString('id');
+      //  id = prefs.getString('id');
       });
     }
   }
@@ -136,13 +136,19 @@ class _MescommandesState extends State<Mescommandes> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.of(context).pushNamedAndRemoveUntil(
+  'accueil',
+  (route) => false,
+  arguments: {'initialTab': 4},
+);
+            //Navigator.pop(context);
           },
         ),
         title: const Text("Mes Commandes",
@@ -159,101 +165,87 @@ class _MescommandesState extends State<Mescommandes> {
             ),
           ),*/
           SingleChildScrollView(
-            child: Container(
-              height: MediaQuery.sizeOf(context).height / 1.9,
+            child: SizedBox(
+              height: MediaQuery.sizeOf(context).height / 1.2,
               child: FutureBuilder<dynamic>(
                   future: order(widget.id),
                   builder:
                       (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                     if (snapshot.hasData) {
-                      return Expanded(
-                        child: ListView.builder(
-                          itemCount: snapshot.data.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            Mcommande mcommande = snapshot.data[index];
-                            return Card(
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 8),
-                              elevation: 0,
-                              child: Padding(
-                                padding: const EdgeInsets.all(12),
-                                child: Row(
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: Image.asset(
-                                        'assets/bfull.jpg', // Remplace cette image par la tienne
-                                        width: 50,
-                                        height: 50,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text("N° ${mcommande.id}",
-                                              style: const TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold)),
-                                          const SizedBox(height: 4),
-                                          Text("Total : ${mcommande.total} F",
-                                              style: const TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.grey)),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                              "${DateTime.parse("${mcommande.dateCommande}")}",
-                                              style: const TextStyle(
-                                                  fontSize: 12,
-                                                  color: Colors.grey)),
-                                        ],
-                                      ),
-                                    ),
-                                    mcommande.statut == "0"
-                                        ? GestureDetector(
-                                            onTap: () {
-                                              Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          const Suivicommande()));
-                                            },
-                                            child: const Chip(
-                                              label: Text("Suivre la commande",
-                                                  style: TextStyle(
-                                                      color: Colors.white)),
-                                              backgroundColor: Colors.orange,
-                                            ),
-                                          )
-                                        : Column(
-                                            children: [
-                                              const Chip(
-                                                label: Text("Terminé",
-                                                    style: TextStyle(
-                                                        color: Colors.white)),
-                                                backgroundColor: Colors.green,
-                                              ),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                              IconButton(
-                                                  onPressed: () {
-                                                    showInformationDialog(
-                                                        context, mcommande.id);
-                                                  },
-                                                  icon: const Icon(Icons
-                                                      .question_mark_rounded))
-                                            ],
-                                          ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
+                      return ListView.builder(
+  itemCount: snapshot.data.length,
+  itemBuilder: (BuildContext context, int index) {
+    Mcommande mcommande = snapshot.data[index];
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      elevation: 0,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.asset(
+                'assets/bfull.jpg',
+                width: 50,
+                height: 50,
+                fit: BoxFit.cover,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("N° ${mcommande.id}",
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 4),
+                  Text("Total : ${mcommande.total} F",
+                      style: const TextStyle(fontSize: 14, color: Colors.grey)),
+                  const SizedBox(height: 4),
+                  Text("${DateTime.parse("${mcommande.dateCommande}")}",
+                      style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                ],
+              ),
+            ),
+            mcommande.statut == "0"
+                ? GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const Suivicommande(),
                         ),
                       );
+                    },
+                    child: const Chip(
+                      label: Text("Suivre la commande",
+                          style: TextStyle(color: Colors.white)),
+                      backgroundColor: Colors.orange,
+                    ),
+                  )
+                : Column(
+                    children: [
+                      const Chip(
+                        label: Text("Terminé",
+                            style: TextStyle(color: Colors.white)),
+                        backgroundColor: Colors.green,
+                      ),
+                      const SizedBox(height: 5),
+                      IconButton(
+                          onPressed: () {
+                            showInformationDialog(context, mcommande.id);
+                          },
+                          icon: const Icon(Icons.question_mark_rounded))
+                    ],
+                  ),
+          ],
+        ),
+      ),
+    );
+  },
+);
+
                     } else {
                       return const Center(
                         child: Text('Chargement...',

@@ -347,6 +347,7 @@ class _PanierState extends State<Panier> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text("Panier"),
       ),

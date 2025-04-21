@@ -18,7 +18,10 @@ Future<void> fetchAndStoreProducts() async {
       await dbHelper.insertProduct(
         product['id'], //?? 0, // par défaut 0 si null
         product['nom'],// ?? 'Dorade', // string par défaut
-        product['prix']
+        product['image'],
+        product['description'],
+        product['prix'],
+        product['categorie']
         //(product['price'] ?? 2000).toDouble(), // 0.0 si null
       );
     }

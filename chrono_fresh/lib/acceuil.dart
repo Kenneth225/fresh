@@ -99,8 +99,8 @@ class _AcceuilState extends State<Acceuil> {
                       icon: Icons.travel_explore_rounded,
                       text: 'Explorer',
                     ),
-                    GButton(
-                       leading: Stack(
+                    const GButton(
+                     /*  leading: Stack(
                         children: <Widget>[
                           const Icon(Icons.shopping_cart, size: 30),
                           Positioned(
@@ -126,7 +126,7 @@ class _AcceuilState extends State<Acceuil> {
                             ),
                           )
                         ],
-                      ),
+                      ),*/
                       icon: Icons.shopping_cart_outlined,
                       text: 'Panier',
                     ),

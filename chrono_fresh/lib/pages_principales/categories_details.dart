@@ -56,6 +56,7 @@ class _CategoriedetailsState extends State<Categoriedetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text("${widget.nom}"),
       ),
@@ -81,7 +82,7 @@ class _CategoriedetailsState extends State<Categoriedetails> {
                           child: Container(
                             color: Colors.white,
                             height: 300,
-                            width: 160,
+                            width: 165,
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: Column(
@@ -99,7 +100,6 @@ class _CategoriedetailsState extends State<Categoriedetails> {
                                                     categorie:
                                                         boutique.categorie,
                                                     image: boutique.image,
-                                                    stock: boutique.stock,
                                                   )));
                                     },
                                     child: ClipRRect(
@@ -126,7 +126,6 @@ class _CategoriedetailsState extends State<Categoriedetails> {
                                                       categorie:
                                                           boutique.categorie,
                                                       image: boutique.image,
-                                                      stock: boutique.stock,
                                                     )));
                                       },
                                       child: Text(
@@ -150,8 +149,8 @@ class _CategoriedetailsState extends State<Categoriedetails> {
                                   Row(
                                     children: [
                                       Text("${boutique.prix} fcfa"),
-                                      SizedBox(
-                                        width: 8,
+                                      const SizedBox(
+                                        width: 6,
                                       ),
                                       ElevatedButton(
                                         style: ButtonStyle(

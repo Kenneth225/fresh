@@ -3,6 +3,7 @@ import 'package:chrono_fresh/global_var.dart';
 import 'package:chrono_fresh/pages_principales/categorie_structure.dart';
 import 'package:chrono_fresh/pages_principales/categories_details.dart';
 import 'package:chrono_fresh/pages_principales/categoriesall_api.dart';
+import 'package:chrono_fresh/pages_principales/searchpage.dart';
 import 'package:flutter/material.dart';
 
 class Explorer extends StatefulWidget {
@@ -44,6 +45,7 @@ class _ExplorerState extends State<Explorer> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: Colors.white,
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: Colors.white,
@@ -53,17 +55,28 @@ class _ExplorerState extends State<Explorer> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: <Widget>[
-              TextField(
-                decoration: InputDecoration(
-                  hintText: 'Rechercher dans le magasin',
-                  prefixIcon: const Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
+              GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const Search()));
+                  },
+                  child: TextField(
+                    enabled: false,
+                    decoration: InputDecoration(
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          color: Color.fromRGBO(59, 59, 59, 1),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        //filled: true,
+                        hintStyle: TextStyle(color: Colors.grey),
+                        hintText: "Rechercher dans le magasin",
+                        fillColor: Colors.white,
+                        hoverColor: Colors.white),
                   ),
-                  filled: true,
-                  fillColor: Colors.grey[200],
                 ),
-              ),
               const SizedBox(height: 20),
               Expanded(
                 child: FutureBuilder<dynamic>(

@@ -66,6 +66,7 @@ class _RecettesState extends State<Recettes> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: Colors.white,
       appBar: AppBar(title: const Text('Recettes')),
       body: FutureBuilder<List<Mrecettes>>(
         future: recetteFuture,

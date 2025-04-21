@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           fontFamily: "Roboto",
           useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.green)
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.green, onBackground: Colors.white)
               .copyWith(background: Colors.white),
         ),
         home: const MyHomePage(title: 'CHRONO FRESH'),

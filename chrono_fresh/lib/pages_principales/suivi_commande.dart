@@ -14,6 +14,7 @@ class _SuivicommandeState extends State<Suivicommande> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.green,
         title: Text('Suivre la commande'),

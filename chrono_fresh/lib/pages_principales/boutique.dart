@@ -51,29 +51,28 @@ class _boutiqueState extends State<boutique> {
 
   var cart = FlutterCart();
 
-
-void getLocation() async{
-  LocationPermission permission =  await Geolocator.checkPermission();
-  if (permission == LocationPermission.denied){
-    permission = await Geolocator.requestPermission();
-    if(permission == LocationPermission.denied){
-      return Future.error('Acces refusé');
+  void getLocation() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Acces refusé');
+      }
     }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error('La permission est refuser de facon permanente');
+    }
+
+    final LocationSettings locationSettings = LocationSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 100,
+    );
+
+    Position position =
+        await Geolocator.getCurrentPosition(locationSettings: locationSettings);
+    print(position);
   }
-
-  if(permission == LocationPermission.deniedForever){
-    return Future.error('La permission est refuser de facon permanente'); 
-  } 
-  
-
-final LocationSettings locationSettings = LocationSettings(
-  accuracy: LocationAccuracy.high,
-  distanceFilter: 100,
-);
-
-Position position = await Geolocator.getCurrentPosition(locationSettings: locationSettings);
-print(position);
-}
 
   void autoLogIn() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -114,17 +113,12 @@ print(position);
             //discount: double.parse(prix),
             productDetails: mode));
 
-    
     Fluttertoast.showToast(
-        msg: "Article ajouté au panier",
-        toastLength: Toast.LENGTH_SHORT);
+        msg: "Article ajouté au panier", toastLength: Toast.LENGTH_SHORT);
     print(cart.cartLength);
     print(cart.subtotal);
     print(cart.total);
   }
-
-
-
 
   Future<void> _showMyDialog() async {
     return showDialog<void>(
@@ -194,9 +188,9 @@ print(position);
 
   Widget build(BuildContext context) {
     return Scaffold(
-       //backgroundColor: getRandomColor(),
-       backgroundColor: Colors.white,
-      body: /*Stack(fit: StackFit.expand, children: [
+        //backgroundColor: getRandomColor(),
+        backgroundColor: Colors.white,
+        body: /*Stack(fit: StackFit.expand, children: [
         Image.asset(
           "assets/roast_chicken.jpg",
           fit: BoxFit.cover,
@@ -207,7 +201,7 @@ print(position);
             color: Colors.black.withOpacity(0.3),
           ),
         ),*/
-        SingleChildScrollView(
+            SingleChildScrollView(
           child: Column(
             children: [
               const SizedBox(
@@ -215,13 +209,7 @@ print(position);
               ),
               const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.location_on,
-                    color: Color.fromRGBO(59, 59, 59, 1),
-                  ),
-                  Text("Akpakpa, Cotonou")
-                ],
+                children: [Text("Chrono Fresh")],
               ),
               Padding(
                 padding: const EdgeInsets.all(6.0),
@@ -444,7 +432,6 @@ print(position);
                                                                                 description: boutique.description,
                                                                                 categorie: boutique.categorie,
                                                                                 image: boutique.image,
-                                                                                stock: boutique.stock,
                                                                               )));
                                                                     },
                                                                     child:
@@ -471,7 +458,6 @@ print(position);
                                                                                 description: boutique.description,
                                                                                 categorie: boutique.categorie,
                                                                                 image: boutique.image,
-                                                                                stock: boutique.stock,
                                                                               )));
                                                                     },
                                                                     child: Text(
@@ -585,8 +571,8 @@ print(position);
             ],
           ),
         )
-     // ]
-      );
+        // ]
+        );
     //);
   }
 }

@@ -20,7 +20,10 @@ class DatabaseHelper {
           CREATE TABLE produits(
             id INTEGER PRIMARY KEY,
             name TEXT,
-            price REAL
+            foto TEXT,
+            info TEXT,
+            price REAL,
+            cat REAL
           )
         ''');
       },
@@ -28,19 +31,22 @@ class DatabaseHelper {
   }
 
   // Insert product
-  Future<void> insertProduct(String id, String name, String price) async {
-  final db = await database;
-  await db.insert(
-    'produits',
-    {
-      'id': id,
-      'name': name,
-      'price': price,
-    },
-    conflictAlgorithm: ConflictAlgorithm.replace,
-  );
-}
-
+  Future<void> insertProduct(String id, String name, String foto, String info,
+      String price, String cat) async {
+    final db = await database;
+    await db.insert(
+      'produits',
+      {
+        'id': id,
+        'name': name,
+        'foto': foto,
+        'info': info,
+        'price': price,
+        'cat': cat,
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
 
   // Search products
   Future<List<Map<String, dynamic>>> searchProducts(String query) async {
