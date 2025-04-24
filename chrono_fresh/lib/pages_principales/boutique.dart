@@ -474,7 +474,7 @@ class _boutiqueState extends State<boutique> {
                                                                               Colors.black),
                                                                     ),
                                                                   ),
-                                                                  Text(
+                                                                  const Text(
                                                                       "1kg,Prix"),
                                                                   Padding(
                                                                     padding:

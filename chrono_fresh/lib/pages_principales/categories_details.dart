@@ -56,7 +56,7 @@ class _CategoriedetailsState extends State<Categoriedetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text("${widget.nom}"),
       ),
@@ -84,7 +84,7 @@ class _CategoriedetailsState extends State<Categoriedetails> {
                             height: 300,
                             width: 165,
                             child: Padding(
-                              padding: const EdgeInsets.all(10.0),
+                              padding: const EdgeInsets.all(8.0),
                               child: Column(
                                 children: [
                                   GestureDetector(
@@ -103,7 +103,7 @@ class _CategoriedetailsState extends State<Categoriedetails> {
                                                   )));
                                     },
                                     child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(13),
+                                      // borderRadius: BorderRadius.circular(13),
                                       child: Image.network(
                                         "${api_link}/api_fresh/uploads/${boutique.image}",
                                         height: 60,
@@ -139,76 +139,73 @@ class _CategoriedetailsState extends State<Categoriedetails> {
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(
-                                    height: 7,
-                                  ),
-                                  Text("1kg,Prix"),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text("${boutique.prix} fcfa"),
-                                      const SizedBox(
-                                        width: 6,
-                                      ),
-                                      ElevatedButton(
-                                        style: ButtonStyle(
-                                          minimumSize:
-                                              MaterialStateProperty.all(
-                                                  const Size(10, 25)),
-                                          backgroundColor:
-                                              MaterialStateProperty.all(
-                                                  Color.fromRGBO(
-                                                      70, 225, 106, 1)),
+                                  const Text("1kg,Prix"),
+                                  Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: Row(
+                                      children: [
+                                        Text("${boutique.prix} fcfa"),
+                                        const SizedBox(
+                                          width: 3,
                                         ),
-                                        onPressed: () {
-                                          commande_fict(
-                                              boutique.id,
-                                              boutique.nom,
-                                              boutique.image,
-                                              1,
-                                              boutique.prix,
-                                              boutique.description);
-                                        },
-                                        child: const Icon(Icons.add_outlined,
-                                            size: 18, color: Colors.white),
-                                      ),
-                                      /* Container(
-                                        height: 25,
-                                              width: 40,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(30),
-                                            gradient:
-                                                const LinearGradient(colors: [
-                                              Color.fromRGBO(
-                                                  14, 232, 62, 0.667),
-                                              Color.fromRGBO(70, 225, 106, 1),
-                                            ])),
-                                        child: Center(
-                                          child: TextButton(
-                                            onPressed: () {},
-                                            child: const Row(
-                                              verticalDirection:
-                                                  VerticalDirection.up,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  "+",
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 20,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ],
+                                        ElevatedButton(
+                                          style: ButtonStyle(
+                                            minimumSize:
+                                                MaterialStateProperty.all(
+                                                    const Size(10, 25)),
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                                    Color.fromRGBO(
+                                                        70, 225, 106, 1)),
+                                          ),
+                                          onPressed: () {
+                                            commande_fict(
+                                                boutique.id,
+                                                boutique.nom,
+                                                boutique.image,
+                                                1,
+                                                boutique.prix,
+                                                boutique.description);
+                                          },
+                                          child: const Icon(Icons.add_outlined,
+                                              size: 18, color: Colors.white),
+                                        ),
+                                        /* Container(
+                                          height: 25,
+                                                width: 40,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
+                                              gradient:
+                                                  const LinearGradient(colors: [
+                                                Color.fromRGBO(
+                                                    14, 232, 62, 0.667),
+                                                Color.fromRGBO(70, 225, 106, 1),
+                                              ])),
+                                          child: Center(
+                                            child: TextButton(
+                                              onPressed: () {},
+                                              child: const Row(
+                                                verticalDirection:
+                                                    VerticalDirection.up,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    "+",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ),*/
-                                    ],
+                                        ),*/
+                                      ],
+                                    ),
                                   )
                                 ],
                               ),
