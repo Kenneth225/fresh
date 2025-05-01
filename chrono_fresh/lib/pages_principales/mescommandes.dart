@@ -1,7 +1,5 @@
 import 'dart:convert';
-import 'package:chrono_fresh/acceuil.dart';
 import 'package:chrono_fresh/global_var.dart';
-import 'package:chrono_fresh/pages_principales/profil.dart';
 import 'package:http/http.dart' as http;
 import 'package:chrono_fresh/pages_principales/mescommandes_api.dart';
 import 'package:chrono_fresh/pages_principales/mescommandes_structure.dart';
