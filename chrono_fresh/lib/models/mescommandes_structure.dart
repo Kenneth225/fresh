@@ -19,6 +19,13 @@ class Mcommande {
     String longitude;
     String latitude;
     String payment;
+    String livreurId;
+    dynamic createdById;
+    dynamic updatedById;
+    dynamic deletedById;
+    dynamic deletedAt;
+    dynamic createdAt;
+    dynamic updatedAt;
 
     Mcommande({
         required this.id,
@@ -31,6 +38,13 @@ class Mcommande {
         required this.longitude,
         required this.latitude,
         required this.payment,
+        required this.livreurId,
+        required this.createdById,
+        required this.updatedById,
+        required this.deletedById,
+        required this.deletedAt,
+        required this.createdAt,
+        required this.updatedAt,
     });
 
     factory Mcommande.fromJson(Map<String, dynamic> json) => Mcommande(
@@ -44,6 +58,13 @@ class Mcommande {
         longitude: json["longitude"],
         latitude: json["latitude"],
         payment: json["payment"],
+        livreurId: json["livreur_id"],
+        createdById: json["created_by_id"],
+        updatedById: json["updated_by_id"],
+        deletedById: json["deleted_by_id"],
+        deletedAt: json["deleted_at"],
+        createdAt: json["created_at"],
+        updatedAt: json["updated_at"],
     );
 
     Map<String, dynamic> toJson() => {
@@ -57,5 +78,12 @@ class Mcommande {
         "longitude": longitude,
         "latitude": latitude,
         "payment": payment,
+        "livreur_id": livreurId,
+        "created_by_id": createdById,
+        "updated_by_id": updatedById,
+        "deleted_by_id": deletedById,
+        "deleted_at": deletedAt,
+        "created_at": createdAt,
+        "updated_at": updatedAt,
     };
 }

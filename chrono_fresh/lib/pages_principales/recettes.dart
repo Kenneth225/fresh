@@ -1,5 +1,5 @@
-import 'package:chrono_fresh/pages_principales/recette_api_all.dart';
-import 'package:chrono_fresh/pages_principales/recette_structure.dart';
+import 'package:chrono_fresh/controlleurs/recette_api_all.dart';
+import 'package:chrono_fresh/models/recette_structure.dart';
 import 'package:flutter/material.dart';
 
 class Recettes extends StatefulWidget {

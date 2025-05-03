@@ -1,8 +1,8 @@
 import 'dart:math';
+import 'package:chrono_fresh/controlleurs/categoriesall_api.dart';
 import 'package:chrono_fresh/global_var.dart';
-import 'package:chrono_fresh/pages_principales/categorie_structure.dart';
+import 'package:chrono_fresh/models/categorie_structure.dart';
 import 'package:chrono_fresh/pages_principales/categories_details.dart';
-import 'package:chrono_fresh/pages_principales/categoriesall_api.dart';
 import 'package:chrono_fresh/pages_principales/searchpage.dart';
 import 'package:flutter/material.dart';
 

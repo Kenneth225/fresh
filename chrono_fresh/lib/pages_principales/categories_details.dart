@@ -1,6 +1,6 @@
+import 'package:chrono_fresh/controlleurs/boutique_all_api.dart';
 import 'package:chrono_fresh/global_var.dart';
-import 'package:chrono_fresh/pages_principales/boutique_all_api.dart';
-import 'package:chrono_fresh/pages_principales/boutique_structure.dart';
+import 'package:chrono_fresh/models/boutique_structure.dart';
 import 'package:chrono_fresh/pages_principales/details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cart/flutter_cart.dart';

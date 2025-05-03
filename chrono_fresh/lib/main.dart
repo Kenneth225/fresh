@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:chrono_fresh/acceuil.dart';
 import 'package:chrono_fresh/pages_login/connection.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +25,8 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           fontFamily: "Roboto",
           useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.green, onBackground: Colors.white)
+          colorScheme: ColorScheme.fromSeed(
+                  seedColor: Colors.green, onBackground: Colors.white)
               .copyWith(background: Colors.white),
         ),
         home: const MyHomePage(title: 'CHRONO FRESH'),
@@ -86,8 +86,6 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     autoLogIn();
   }
-
-  
 
   void autoLogIn() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();

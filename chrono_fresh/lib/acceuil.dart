@@ -1,10 +1,10 @@
+import 'package:chrono_fresh/livreur/statistiques.dart';
 import 'package:chrono_fresh/pages_principales/boutique.dart';
-import 'package:chrono_fresh/pages_principales/courses.dart';
+import 'package:chrono_fresh/livreur/courses.dart';
 import 'package:chrono_fresh/pages_principales/explorer.dart';
 import 'package:chrono_fresh/pages_principales/panier.dart';
 import 'package:chrono_fresh/pages_principales/profil.dart';
 import 'package:chrono_fresh/pages_principales/recettes.dart';
-import 'package:chrono_fresh/pages_principales/statistiques.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cart/cart.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';

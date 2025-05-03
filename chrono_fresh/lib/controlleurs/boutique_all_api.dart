@@ -1,15 +1,15 @@
 import 'dart:convert';
 import 'package:chrono_fresh/global_var.dart';
-import 'package:chrono_fresh/pages_principales/recette_structure.dart';
+import 'package:chrono_fresh/models/boutique_structure.dart';
 import 'package:http/http.dart' as http;
 
 
 
-Future<List<Mrecettes>>  viewrecall(id) async {
+Future<List<Boutique>>  viewboutique(name) async {
 
-  var url = Uri.parse("${api_link}/api_fresh/recette.php");
+  var url = Uri.parse("${api_link}/api_fresh/allmaboutique.php");
   var data = {
-     'mrq': id,
+    'categorie': name,
   };
 
   var res = await http.post(url, body: data);
@@ -18,5 +18,5 @@ Future<List<Mrecettes>>  viewrecall(id) async {
     final data = jsonDecode(res.body);
     print(data);
   }
-  return mrecettesFromJson(res.body);
+  return boutiqueFromJson(res.body);
   }

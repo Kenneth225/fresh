@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'package:chrono_fresh/global_var.dart';
-import 'package:chrono_fresh/pages_principales/categorie_structure.dart';
+import 'package:chrono_fresh/models/categorie_structure.dart';
 import 'package:http/http.dart' as http;
 
 
 
-Future<List<Categorie>>  viewcat() async {
+Future<List<Categorie>>  viewcatall() async {
 
-  var url = Uri.parse("${api_link}/api_fresh/mescategorieshome.php");
+  var url = Uri.parse("${api_link}/api_fresh/allcategories.php");
   var data = {
     
   };

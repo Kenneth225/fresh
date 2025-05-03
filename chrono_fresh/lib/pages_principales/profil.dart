@@ -4,9 +4,7 @@ import 'package:chrono_fresh/pages_principales/editprofil.dart';
 import 'package:chrono_fresh/pages_principales/favorite_adress.dart';
 import 'package:chrono_fresh/pages_principales/mescommandes.dart';
 import 'package:chrono_fresh/pages_principales/notifications.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

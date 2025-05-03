@@ -1,15 +1,15 @@
 import 'dart:convert';
 import 'package:chrono_fresh/global_var.dart';
-import 'package:chrono_fresh/pages_principales/categorie_structure.dart';
+import 'package:chrono_fresh/models/course_structure.dart';
 import 'package:http/http.dart' as http;
 
 
 
-Future<List<Categorie>>  viewcatall() async {
+Future<List<Course>> getCourseDetails(id) async {
 
-  var url = Uri.parse("${api_link}/api_fresh/allcategories.php");
+  var url = Uri.parse("${api_link}/api_fresh/suivicourse.php");
   var data = {
-    
+    'idL': id,
   };
 
   var res = await http.post(url, body: data);
@@ -18,5 +18,5 @@ Future<List<Categorie>>  viewcatall() async {
     final data = jsonDecode(res.body);
     print(data);
   }
-  return categorieFromJson(res.body);
+  return courseFromJson(res.body);
   }

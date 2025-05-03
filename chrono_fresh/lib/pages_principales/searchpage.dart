@@ -1,5 +1,4 @@
-import 'package:chrono_fresh/pages_principales/details.dart';
-import 'package:chrono_fresh/pages_principales/searchbar_api.dart';
+import 'package:chrono_fresh/controlleurs/searchbar_api.dart';
 import 'package:flutter/material.dart';
 
 class Search extends StatefulWidget {

@@ -1,6 +1,6 @@
+import 'package:chrono_fresh/controlleurs/recette_api.dart';
 import 'package:chrono_fresh/global_var.dart';
-import 'package:chrono_fresh/pages_principales/recette_api.dart';
-import 'package:chrono_fresh/pages_principales/recette_structure.dart';
+import 'package:chrono_fresh/models/recette_structure.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cart/flutter_cart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -75,7 +75,7 @@ class _DetailsState extends State<Details> {
       });
     }
   }
-
+/*
   Future<void> _showMyDialog() async {
     return showDialog<void>(
       context: context,
@@ -107,7 +107,7 @@ class _DetailsState extends State<Details> {
         );
       },
     );
-  }
+  }*/
 
   void showRecipeDetails(BuildContext context, titre, description) {
     showModalBottomSheet(

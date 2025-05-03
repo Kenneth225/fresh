@@ -42,8 +42,6 @@ dependencies:
   http: ^1.2.2
   flutter_cart: ^0.0.9
   fluttertoast: ^8.2.8
-  pin_code_fields: ^8.0.1
-  flutter_number_picker: ^1.0.4
   sqflite: ^2.0.0+4
   path_provider: ^2.0.11
   path: ^1.8.0
@@ -51,6 +49,9 @@ dependencies:
   kkiapay_flutter_sdk:
   geolocator: ^13.0.4
   image_picker: ^1.0.4
+  google_fonts: ^6.1.0
+  qr_flutter: ^4.0.0
+  mobile_scanner: ^3.2.0
 
 dev_dependencies:
   flutter_test:
