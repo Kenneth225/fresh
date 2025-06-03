@@ -17,7 +17,7 @@ class Statistique extends StatefulWidget {
 
 class _StatistiqueState extends State<Statistique> {
   bool isSwitchOn = false;
-  int totalLivraisons = 128;
+  int totalLivraisons = 228;
 
   late Future ordersFuture;
   late bool isLoggedIn;
@@ -58,8 +58,6 @@ class _StatistiqueState extends State<Statistique> {
     }
   }
 
-
-
   Future<void> addcourse(idC, idU, code) async {
     var url = Uri.parse("${api_link}/api_fresh/addcourse.php");
     var data = {"idc": idC, "idu": idU, "qrc": code};
@@ -68,45 +66,57 @@ class _StatistiqueState extends State<Statistique> {
     if (jsonDecode(res.body) == "true") {
       Fluttertoast.showToast(
           msg: "Merci, Course acceptée", toastLength: Toast.LENGTH_LONG);
-          setState(() {
-  order(id);
-});
+      setState(() {
+        order(id);
+      });
     } else if (jsonDecode(res.body) == "asaved") {
       Fluttertoast.showToast(
           msg: "Vous avez deja accepté cette course",
           toastLength: Toast.LENGTH_LONG);
-          setState(() {
-  order(id);
-});
+      setState(() {
+        order(id);
+      });
     } else {
       Fluttertoast.showToast(
           msg: "Erreur de connexion", toastLength: Toast.LENGTH_LONG);
     }
     setState(() {
-  order(id);
-});
+      order(id);
+    });
   }
 
-  Future<void> decline_course(idC, idU,  context) async {
+  Future<void> decline_course(idC, idU, context) async {
     var url = Uri.parse("${api_link}/api_fresh/rejectcourse.php");
     var data = {"idc": idC, "idu": idU};
     var res = await http.post(url, body: data);
 
     if (jsonDecode(res.body) == "true") {
       Fluttertoast.showToast(
-          msg: "Merci, commande rejeter",
-          toastLength: Toast.LENGTH_LONG);
-          setState(() {
-  order(id);
-});
-          
-          Navigator.of(context).pop();
-    }  else {
+          msg: "Merci, commande rejeter", toastLength: Toast.LENGTH_LONG);
+      setState(() {
+        order(id);
+      });
+
+      Navigator.of(context).pop();
+    } else {
       Fluttertoast.showToast(
           msg: "Erreur de connexion", toastLength: Toast.LENGTH_LONG);
     }
   }
 
+  Future<void> update_status(spec, idU) async {
+    var url = Uri.parse("${api_link}/api_fresh/pass_online.php");
+
+    var data = {"sp": spec, "idR": idU};
+    var res = await http.post(url, body: data);
+
+    if (jsonDecode(res.body) == "true") {
+      Fluttertoast.showToast(msg: "Merci", toastLength: Toast.LENGTH_LONG);
+    } else {
+      Fluttertoast.showToast(
+          msg: "Erreur de connexion", toastLength: Toast.LENGTH_LONG);
+    }
+  }
 
   Future<void> _showMyDialog(idC, idU) async {
     return showDialog<void>(
@@ -128,7 +138,7 @@ class _StatistiqueState extends State<Statistique> {
                 TextButton(
                   child: const Text("Annuler"),
                   onPressed: () {
-                     Navigator.of(context).pop();
+                    Navigator.of(context).pop();
                   },
                 ),
                 TextButton(
@@ -145,7 +155,6 @@ class _StatistiqueState extends State<Statistique> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -159,20 +168,56 @@ class _StatistiqueState extends State<Statistique> {
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            // Switch avec style
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  "Activer ma disponibilité",
+                  "Disponibilité",
                   style: TextStyle(fontSize: 18),
                 ),
+                isSwitchOn
+                    ? ElevatedButton(
+                        onPressed: () {
+                          update_status('false', id);
+                          setState(() {
+                            isSwitchOn = false;
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color.fromARGB(255, 142, 141, 141),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 22, vertical: 16),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                        ),
+                        child: const Text("Desactiver",
+                            style:
+                                TextStyle(fontSize: 16, color: Colors.white)),
+                      )
+                    : ElevatedButton(
+                        onPressed: () {
+                          update_status('true', id);
+                          setState(() {
+                            isSwitchOn = true;
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 22, vertical: 16),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                        ),
+                        child: const Text("Activer",
+                            style: TextStyle(fontSize: 16)),
+                      ),
                 Switch(
                   value: isSwitchOn,
                   onChanged: (bool value) {
-                    setState(() {
+                    /* setState(() {
                       isSwitchOn = value;
-                    });
+                    });*/
                   },
                   activeColor: Colors.white,
                   activeTrackColor: Colors.green,
@@ -237,100 +282,103 @@ class _StatistiqueState extends State<Statistique> {
             ),
 
             SizedBox(height: 30),
-          
-          Expanded(
-            child: FutureBuilder(
-              future: order(id),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return const Center(child: Text('Aucune demande de livraison disponible'));
-                } else if (!snapshot.hasData || snapshot.data.isEmpty) {
-                  return const Center(child: Text('Aucune demande de livraison disponible.'));
-                } else {
-                  final List commandes = snapshot.data;
-                  return ListView.builder(
-                    itemCount: commandes.length,
-                    itemBuilder: (BuildContext context, int index) {
-            final mcommande = commandes[index] as Mcommande;
-            return Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              elevation: 4,
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(Icons.local_shipping_outlined,
-                            size: 32, color: Colors.orange),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Demande de livraison',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
+
+            Expanded(
+              child: FutureBuilder(
+                future: order(id),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return const Center(
+                        child: Text('Aucune demande de livraison disponible'));
+                  } else if (!snapshot.hasData || snapshot.data.isEmpty) {
+                    return const Center(
+                        child: Text('Aucune demande de livraison disponible.'));
+                  } else {
+                    final List commandes = snapshot.data;
+                    return ListView.builder(
+                      itemCount: commandes.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final mcommande = commandes[index] as Mcommande;
+                        return Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          elevation: 4,
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    const Icon(Icons.local_shipping_outlined,
+                                        size: 32, color: Colors.orange),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            'Demande de livraison',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            'Commission estimée :  ${double.parse(mcommande.total) * 0.1} FCFA',
+                                            style: TextStyle(
+                                                color: Colors.grey[600]),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                'Commission estimée :  ${double.parse(mcommande.total) * 0.1} FCFA',
-                                style: TextStyle(color: Colors.grey[600]),
-                              ),
-                            ],
+                                const SizedBox(height: 16),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        addcourse(
+                                            mcommande.id, id, mcommande.iduniq);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.green,
+                                        foregroundColor: Colors.white,
+                                      ),
+                                      child: const Text("Accepter"),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        _showMyDialog(mcommande.id, id);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.red,
+                                        foregroundColor: Colors.white,
+                                      ),
+                                      child: const Text("Refuser"),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            addcourse(mcommande.id, id, mcommande.iduniq);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            foregroundColor: Colors.white,
-                          ),
-                          child: const Text("Accepter"),
-                        ),
-                        const SizedBox(width: 10),
-                        ElevatedButton(
-                          onPressed: () {
-                            _showMyDialog(mcommande.id, id);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
-                            foregroundColor: Colors.white,
-                          ),
-                          child: const Text("Refuser"),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                        );
+                      },
+                    );
+                  }
+                },
               ),
-            );
-                    },
-                  );
-                }
-              },
-            ),
-          )
-
-
-
+            )
           ],
         ),
       ),

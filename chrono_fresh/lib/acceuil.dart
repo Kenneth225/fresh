@@ -99,11 +99,11 @@ class _AcceuilState extends State<Acceuil> {
                       icon: Icons.travel_explore_rounded,
                       text: 'Explorer',
                     ),
-                    const GButton(
-                     /*  leading: Stack(
+                    GButton(
+                     leading: Stack(
                         children: <Widget>[
                           const Icon(Icons.shopping_cart, size: 30),
-                          Positioned(
+                        cart.cartLength > 0 ? Positioned(
                             right: 0,
                             child: Container(
                               padding: EdgeInsets.all(1),
@@ -115,25 +115,25 @@ class _AcceuilState extends State<Acceuil> {
                                 minWidth: 16,
                                 minHeight: 16,
                               ),
-                              child: Text(
-                                '${cart.cartLength}',
-                                style: const TextStyle(
+                              child: const Text(
+                                '!',
+                                style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 10,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
                             ),
-                          )
+                          ): SizedBox()
                         ],
-                      ),*/
+                      ),
                       icon: Icons.shopping_cart_outlined,
                       text: 'Panier',
                     ),
                     /*  GButton(icon: Icons.favorite_border_outlined, text: 'Favoris'),*/
-                    GButton(
+                    const GButton(
                         icon: Icons.soup_kitchen_outlined, text: 'Recettes'),
-                    GButton(icon: Icons.person_4_outlined, text: 'Compte'),
+                    const GButton(icon: Icons.person_4_outlined, text: 'Compte'),
                   ]
                 ,
             onTabChange: (index) {

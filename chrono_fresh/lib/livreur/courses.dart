@@ -118,7 +118,7 @@ class _CoursesState extends State<Courses> {
           ),
           const SizedBox(height: 20),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () { 
               _markArrival(x, 'fin');
             },
             style: ElevatedButton.styleFrom(
@@ -127,7 +127,7 @@ class _CoursesState extends State<Courses> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)),
             ),
-            child: Text("Marquer mon arrivée", style: TextStyle(fontSize: 16)),
+            child: const Text("Marquer mon arrivée", style: TextStyle(fontSize: 16)),
           ),
         ],
       );

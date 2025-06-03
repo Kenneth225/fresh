@@ -213,11 +213,11 @@ class _PanierState extends State<Panier> {
     );
   }
 
-  void _showPaymentModal(BuildContext context) {
+  void _showPaymentModal(BuildContext context, ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
@@ -229,12 +229,12 @@ class _PanierState extends State<Panier> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  const Text(
                     "Paiement",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   IconButton(
-                    icon: Icon(Icons.close),
+                    icon: const Icon(Icons.close),
                     onPressed: () => Navigator.pop(context),
                   ),
                 ],
@@ -248,7 +248,7 @@ class _PanierState extends State<Panier> {
               _buildOptionRow("Paiement", "🇧🇯"),
               _buildOptionRow("Coût total", "${cart.total} Fcfa"),
               const SizedBox(height: 10),
-              Text(
+              const Text(
                 "En passant une commande, vous acceptez nos Conditions générales",
                 style: TextStyle(fontSize: 12, color: Colors.grey),
               ),
@@ -256,16 +256,16 @@ class _PanierState extends State<Panier> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
-                  minimumSize: Size(double.infinity, 50),
+                  minimumSize: const Size(double.infinity, 50),
                 ),
                 onPressed: () {
                   if (isLoggedIn) {
-                  /*  Navigator.push(
+                   Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const KKiaPay(
-    amount: 2000 ,//
+                      MaterialPageRoute(builder: (context) =>  KKiaPay(
+    amount: cart.total.toInt(),//
     countries: ["BJ","CI","SN","TG"],//
-    phone: "22967341587",//
+    phone: "2290167341587",//
     name: "John Doe",//
     email: "email@mail.com",//
     reason: 'Paiement article reason',//
@@ -277,8 +277,8 @@ class _PanierState extends State<Panier> {
     partnerId: 'AxXxXXxId',//
     paymentMethods: ["momo","card"]//
 )),
-                    );*/
-                    commander(idArray, cart.cartLength, '${cart.total}');
+                    );
+                   // commander(idArray, cart.cartLength, '${cart.total}');
                    
                   } else {
                     _showMyDialog();
@@ -331,12 +331,12 @@ class _PanierState extends State<Panier> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(title,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
           Row(
             children: [
               Text(value,
                   style: TextStyle(fontSize: 16, color: Colors.grey[700])),
-              Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+              const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
             ],
           ),
         ],
@@ -349,10 +349,10 @@ class _PanierState extends State<Panier> {
     return Scaffold(
        backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Panier"),
+        title: const Text("Panier"),
       ),
       body: Padding(
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         child: taille >= 1
             ? SingleChildScrollView(
                 child: Column(children: [
@@ -416,7 +416,7 @@ class _PanierState extends State<Panier> {
                                                           5.0),
                                                 ),
                                                 //filled: true,
-                                                hintStyle: TextStyle(
+                                                hintStyle: const TextStyle(
                                                     color: Colors.grey),
                                                 hintText: "${item.quantity}",
                                                 fillColor: Colors.white,
@@ -446,15 +446,15 @@ class _PanierState extends State<Panier> {
                                   children: <Widget>[
                                     IconButton(
                                       icon:
-                                          Icon(Icons.close, color: Colors.grey),
+                                          const Icon(Icons.close, color: Colors.grey),
                                       onPressed: () => _removeItem(
                                           item.productId, item.variants),
                                     ),
                                     Text("${item.variants.first.price * item.quantity} FCFA",
-                                        style: TextStyle(fontSize: 16)),
+                                        style: const TextStyle(fontSize: 16)),
                                   ],
                                 ),
-                                Divider(),
+                                const Divider(),
                               ],
                             ),
                           ),
@@ -465,7 +465,7 @@ class _PanierState extends State<Panier> {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,
-                        minimumSize: Size(double.infinity, 50),
+                        minimumSize: const Size(double.infinity, 50),
                       ),
                       onPressed: () {
                         cart.cartItemsList.forEach((f) {
@@ -485,7 +485,7 @@ class _PanierState extends State<Panier> {
                         _showPaymentModal(context);
                       },
                       child: Text("Aller à la caisse •  ${cart.total} Fcfa",
-                          style: TextStyle(fontSize: 16, color: Colors.white)),
+                          style: const TextStyle(fontSize: 16, color: Colors.white)),
                     ),
                   ),
                 ]),

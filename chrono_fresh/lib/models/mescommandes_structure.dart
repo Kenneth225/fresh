@@ -19,7 +19,7 @@ class Mcommande {
     String longitude;
     String latitude;
     String payment;
-    String livreurId;
+    String? livreurId;
     dynamic createdById;
     dynamic updatedById;
     dynamic deletedById;
