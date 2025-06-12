@@ -1,4 +1,6 @@
 import 'package:chrono_fresh/controlleurs/boutique_all_api.dart';
+import 'package:chrono_fresh/controlleurs/cart_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:chrono_fresh/global_var.dart';
 import 'package:chrono_fresh/models/boutique_structure.dart';
 import 'package:chrono_fresh/pages_principales/details.dart';
@@ -42,6 +44,7 @@ class _CategoriedetailsState extends State<Categoriedetails> {
             ],
             //discount: double.parse(prix),
             productDetails: mode));
+            Provider.of<CartProvider>(context, listen: false).addItem();
 
     const snackBar = SnackBar(
       backgroundColor: Color.fromARGB(255, 131, 230, 167),

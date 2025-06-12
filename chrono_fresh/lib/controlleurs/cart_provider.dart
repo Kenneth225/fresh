@@ -10,7 +10,10 @@ class CartProvider with ChangeNotifier {
     notifyListeners();
   }
   
-
+void removeItem() {
+    _cartItemCount--;
+    notifyListeners();
+  }
   void clearCart() {
     _cartItemCount = 0;
     notifyListeners();

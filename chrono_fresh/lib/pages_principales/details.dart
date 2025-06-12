@@ -15,7 +15,7 @@ class Details extends StatefulWidget {
   String? description;
   String? categorie;
   String? image;
-  
+
   /* String? idVendeur;
   String? statut;
   String? qtreduc;
@@ -29,7 +29,7 @@ class Details extends StatefulWidget {
     this.description,
     this.categorie,
     this.image,
-   
+
     /* this.idVendeur,
       this.statut,
       this.qtreduc,
@@ -158,11 +158,11 @@ class _DetailsState extends State<Details> {
             ],
             //discount: double.parse(prix),
             productDetails: mode));
-                        Provider.of<CartProvider>(context, listen: false).addItem();
+    Provider.of<CartProvider>(context, listen: false).addItem();
 
     const snackBar = SnackBar(
       backgroundColor: Color.fromARGB(255, 131, 230, 167),
-      content: Text('Article ajouté au panier'),
+      content: Text('D---Article ajouté au panier'),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
     print(cart.cartLength);
@@ -175,7 +175,7 @@ class _DetailsState extends State<Details> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
@@ -291,7 +291,8 @@ class _DetailsState extends State<Details> {
                         return const Center(child: CircularProgressIndicator());
                       } else if (snapshot.hasError) {
                         return const Center(
-                          child: Text('Aucune recette disponible pour ce produit',
+                          child: Text(
+                              'Aucune recette disponible pour ce produit',
                               style: TextStyle(color: Colors.black)),
                         );
                       } else if (!snapshot.hasData || snapshot.data.isEmpty) {
@@ -327,7 +328,7 @@ class _DetailsState extends State<Details> {
               ],
             ),
             const Divider(),
-           /* ListTile(
+            /* ListTile(
               title: const Text(
                 'Notes',
                 style: TextStyle(fontWeight: FontWeight.bold),
@@ -356,10 +357,10 @@ class _DetailsState extends State<Details> {
               child: ElevatedButton(
                 onPressed: () {
                   print(isLoggedIn);
-                 // if (isLoggedIn) {
-                    commande_fict(widget.id, widget.nom, widget.image, quantity,
-                        widget.prix, widget.description);
-                 /* } else {
+                  // if (isLoggedIn) {
+                  commande_fict(widget.id, widget.nom, widget.image, quantity,
+                      widget.prix, widget.description);
+                  /* } else {
                     _showMyDialog();
                   }*/
                 },

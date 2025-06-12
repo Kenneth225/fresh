@@ -452,6 +452,7 @@ class _PanierState extends State<Panier> {
                                           const Icon(Icons.close, color: Colors.grey),
                                       onPressed:() { _removeItem(
                                           item.productId, item.variants);
+                                           Provider.of<CartProvider>(context, listen: false).removeItem();
                                           
                        }
                                     ),
