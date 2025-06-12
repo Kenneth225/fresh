@@ -1,5 +1,7 @@
 import 'dart:ui';
+import 'package:provider/provider.dart';
 import 'package:chrono_fresh/acceuil.dart';
+import 'package:chrono_fresh/controlleurs/cart_provider.dart';
 import 'package:chrono_fresh/pages_login/connection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cart/cart.dart';
@@ -11,7 +13,14 @@ Future<void> main() async {
   var cart = FlutterCart();
   await initializeDateFormatting('fr_FR', null);
   await cart.initializeCart(isPersistenceSupportEnabled: true);
-  runApp(const MyApp());
+  runApp(
+    
+    MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => CartProvider()),
+    ],
+    child: const MyApp(),
+  ),);
 }
 
 class MyApp extends StatelessWidget {
@@ -109,10 +118,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /*   appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),*/
       body: Stack(fit: StackFit.expand, children: [
         Image.asset(
           "assets/home.jpeg",

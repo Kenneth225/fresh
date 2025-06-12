@@ -16,7 +16,7 @@ class Statistique extends StatefulWidget {
 }
 
 class _StatistiqueState extends State<Statistique> {
-  bool isSwitchOn = false;
+  late bool isSwitchOn;
   int totalLivraisons = 228;
 
   late Future ordersFuture;
@@ -28,6 +28,7 @@ class _StatistiqueState extends State<Statistique> {
   String? avatar;
   String? telephone;
   String? mail;
+  String? dispo;
 
   @override
   void initState() {
@@ -44,6 +45,14 @@ class _StatistiqueState extends State<Statistique> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? usermail = prefs.getString('email');
     String? role = prefs.getString('role');
+    dispo = prefs.getString('dispo');
+    if (dispo == 'true') {
+      setState(() {
+        isSwitchOn = true;
+      });
+    } else {
+      isSwitchOn = false;
+    }
 
     if (usermail != null) {
       setState(() {
@@ -54,6 +63,7 @@ class _StatistiqueState extends State<Statistique> {
         prenom = prefs.getString('prenom');
         telephone = prefs.getString('telephone');
         id = prefs.getString('id');
+        dispo = prefs.getString('dispo');
       });
     }
   }
@@ -105,7 +115,8 @@ class _StatistiqueState extends State<Statistique> {
   }
 
   Future<void> update_status(spec, idU) async {
-    var url = Uri.parse("${api_link}/api_fresh/pass_online.php");
+    
+    /*var url = Uri.parse("${api_link}/api_fresh/pass_online.php");
 
     var data = {"sp": spec, "idR": idU};
     var res = await http.post(url, body: data);
@@ -115,7 +126,7 @@ class _StatistiqueState extends State<Statistique> {
     } else {
       Fluttertoast.showToast(
           msg: "Erreur de connexion", toastLength: Toast.LENGTH_LONG);
-    }
+    }*/
   }
 
   Future<void> _showMyDialog(idC, idU) async {
@@ -177,8 +188,10 @@ class _StatistiqueState extends State<Statistique> {
                 ),
                 isSwitchOn
                     ? ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           update_status('false', id);
+                          final SharedPreferences prefs = await SharedPreferences.getInstance();
+                          prefs.setString('dispo', 'false');
                           setState(() {
                             isSwitchOn = false;
                           });
@@ -196,8 +209,10 @@ class _StatistiqueState extends State<Statistique> {
                                 TextStyle(fontSize: 16, color: Colors.white)),
                       )
                     : ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           update_status('true', id);
+                          final SharedPreferences prefs = await SharedPreferences.getInstance();
+                          prefs.setString('dispo', 'true');
                           setState(() {
                             isSwitchOn = true;
                           });

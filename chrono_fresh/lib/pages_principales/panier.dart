@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:chrono_fresh/controlleurs/cart_provider.dart';
 import 'package:chrono_fresh/pages_principales/mescommandes.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
@@ -8,6 +9,7 @@ import 'package:flutter_cart/flutter_cart.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:kkiapay_flutter_sdk/kkiapay_flutter_sdk.dart';
+import 'package:provider/provider.dart';
 
 class Panier extends StatefulWidget {
   const Panier({super.key});
@@ -318,6 +320,7 @@ class _PanierState extends State<Panier> {
       unitprArray.clear();
       idArray.clear();
       imgArray.clear();
+       Provider.of<CartProvider>(context, listen: false).clearCart();
       _showOrderdone();
     } else {
       Fluttertoast.showToast(msg: "Erreur", toastLength: Toast.LENGTH_SHORT);
@@ -447,8 +450,10 @@ class _PanierState extends State<Panier> {
                                     IconButton(
                                       icon:
                                           const Icon(Icons.close, color: Colors.grey),
-                                      onPressed: () => _removeItem(
-                                          item.productId, item.variants),
+                                      onPressed:() { _removeItem(
+                                          item.productId, item.variants);
+                                          
+                       }
                                     ),
                                     Text("${item.variants.first.price * item.quantity} FCFA",
                                         style: const TextStyle(fontSize: 16)),

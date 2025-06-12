@@ -1,8 +1,9 @@
 import 'dart:math';
 import 'dart:ui';
-
+import 'package:provider/provider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chrono_fresh/controlleurs/boutique_api.dart';
+import 'package:chrono_fresh/controlleurs/cart_provider.dart';
 import 'package:chrono_fresh/controlleurs/categorie_api.dart';
 import 'package:chrono_fresh/controlleurs/searchbar_api.dart';
 import 'package:chrono_fresh/global_var.dart';
@@ -112,6 +113,7 @@ class _boutiqueState extends State<boutique> {
             ],
             //discount: double.parse(prix),
             productDetails: mode));
+            Provider.of<CartProvider>(context, listen: false).addItem();
 
     Fluttertoast.showToast(
         msg: "Article ajouté au panier", toastLength: Toast.LENGTH_SHORT);
