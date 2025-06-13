@@ -143,21 +143,31 @@ class _connectionState extends State<connection> {
 
       if (jsonDecode(res.body) != "pas de compte") {
         var jsonData = jsonDecode(res.body);
-        print(jsonData);
+
         final SharedPreferences prefs = await SharedPreferences.getInstance();
-        if (jsonData[0]["telephone"] != null) {
+        if (jsonData[0]["role"] != "2") {
+          if (jsonData[0]["telephone"] != null) {
+            prefs.setString('role', jsonData[0]["role"]);
+            prefs.setString('email', jsonData[0]["email"]);
+            prefs.setString('nom', jsonData[0]["nom"]);
+            prefs.setString('prenom', jsonData[0]["prenom"]);
+            prefs.setString('telephone', jsonData[0]["telephone"]);
+            prefs.setString('id', jsonData[0]["id"]);
+          } else {
+            prefs.setString('role', jsonData[0]["role"]);
+            prefs.setString('email', jsonData[0]["email"]);
+            prefs.setString('nom', jsonData[0]["nom"]);
+            prefs.setString('prenom', jsonData[0]["prenom"]);
+            prefs.setString('telephone', "...");
+            prefs.setString('id', jsonData[0]["id"]);
+          }
+        } else {
+          prefs.setString('dispo', jsonData[0]["statutDisponibilite"]);
           prefs.setString('role', jsonData[0]["role"]);
           prefs.setString('email', jsonData[0]["email"]);
           prefs.setString('nom', jsonData[0]["nom"]);
           prefs.setString('prenom', jsonData[0]["prenom"]);
           prefs.setString('telephone', jsonData[0]["telephone"]);
-          prefs.setString('id', jsonData[0]["id"]);
-        } else {
-          prefs.setString('role', jsonData[0]["role"]);
-          prefs.setString('email', jsonData[0]["email"]);
-          prefs.setString('nom', jsonData[0]["nom"]);
-          prefs.setString('prenom', jsonData[0]["prenom"]);
-          prefs.setString('telephone', "...");
           prefs.setString('id', jsonData[0]["id"]);
         }
 
@@ -168,7 +178,8 @@ class _connectionState extends State<connection> {
         Navigator.pushReplacementNamed(context, 'accueil');
       } else {
         Fluttertoast.showToast(
-            msg: "Le mail inscrit n'existe pas dans nos donnés", toastLength: Toast.LENGTH_LONG);
+            msg: "Le mail inscrit n'existe pas dans nos donnés",
+            toastLength: Toast.LENGTH_LONG);
       }
     }
   }

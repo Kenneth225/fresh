@@ -22,7 +22,7 @@ class _FavoriteAddressesPageState extends State<FavoriteAddressesPage> {
   final TextEditingController addressController = TextEditingController();
 
   int? editingIndex;
-
+  int max = 0;
   String? nom;
   String? prenom;
   String? role;
@@ -31,6 +31,7 @@ class _FavoriteAddressesPageState extends State<FavoriteAddressesPage> {
   String? mail;
   String? id;
   bool isLoggedIn = false;
+  bool load = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -85,17 +86,29 @@ class _FavoriteAddressesPageState extends State<FavoriteAddressesPage> {
         Fluttertoast.showToast(
             msg: "Merci, votre nouvelle adresse est pris en compte",
             toastLength: Toast.LENGTH_LONG);
+        setState(() {
+          load = false;
+        });
       } else if (jsonDecode(res.body) == "asaved") {
         Fluttertoast.showToast(
             msg: "Vous avez deja donner cette adresse",
             toastLength: Toast.LENGTH_LONG);
+        setState(() {
+          load = false;
+        });
       } else {
         Fluttertoast.showToast(
             msg: "Erreur de connexion", toastLength: Toast.LENGTH_LONG);
+        setState(() {
+          load = false;
+        });
       }
     } catch (e) {
       print('Error getting current position: $e');
       // Handle errors (e.g., location permission denied)
+      setState(() {
+        load = false;
+      });
     }
   }
 
@@ -109,9 +122,41 @@ class _FavoriteAddressesPageState extends State<FavoriteAddressesPage> {
     if (jsonDecode(res.body) == "true") {
       Fluttertoast.showToast(
           msg: "Adresse supprimer", toastLength: Toast.LENGTH_LONG);
+      setState(() {
+        load = false;
+      });
     } else {
       Fluttertoast.showToast(msg: "Erreur", toastLength: Toast.LENGTH_LONG);
+      setState(() {
+        load = false;
+      });
     }
+  }
+
+  Future<void> showInformationDialog(BuildContext context) async {
+    return await showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              title: const Text(
+                "Information !",
+                textAlign: TextAlign.center,
+              ),
+              content: const Text(
+                  "Le maximum d'adresse favorite que vous pouver enregistrer est de trois"),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text("D'accord"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
+        });
   }
 
   void _showAddModal() {
@@ -143,6 +188,9 @@ class _FavoriteAddressesPageState extends State<FavoriteAddressesPage> {
                 ElevatedButton(
                   onPressed: () {
                     _saveAddresses(id, nameController.text);
+                    setState(() {
+                      load = true;
+                    });
                     Navigator.pop(context);
                   },
                   child: Text('Ajouter'),
@@ -162,64 +210,76 @@ class _FavoriteAddressesPageState extends State<FavoriteAddressesPage> {
       appBar: AppBar(
         title: const Text('Mes adresses favorites'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: SizedBox(
-          height: MediaQuery.sizeOf(context).height / 1.2,
-          child: FutureBuilder<dynamic>(
-              future: adresses(id),
-              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                if (snapshot.hasData) {
-                  return ListView.builder(
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      Zones mzones = snapshot.data[index];
-                      print(snapshot.data.length);
-                      return Card(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
-                        elevation: 0,
-                        child: Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Icon(
-                                Icons.location_on_outlined,
-                                size: 30,
-                                weight: 30,
+      body: load
+          ? Center(child: const CircularProgressIndicator())
+          : Padding(
+              padding: const EdgeInsets.all(16),
+              child: SizedBox(
+                height: MediaQuery.sizeOf(context).height / 1.2,
+                child: FutureBuilder<dynamic>(
+                    future: adresses(id),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<dynamic> snapshot) {
+                      if (snapshot.hasData) {
+                        return ListView.builder(
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            max = snapshot.data.length;
+                            Zones mzones = snapshot.data[index];
+                            print(snapshot.data.length);
+                            return Card(
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              elevation: 0,
+                              child: Padding(
+                                padding: const EdgeInsets.all(20),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Icon(
+                                      Icons.location_on_outlined,
+                                      size: 30,
+                                      weight: 30,
+                                    ),
+                                    Text("${mzones.name}",
+                                        style: const TextStyle(
+                                            fontSize: 25, color: Colors.black)),
+                                    const SizedBox(width: 4),
+                                    IconButton(
+                                        onPressed: () {
+                                          _deleteAddress(mzones.id);
+                                          setState(() {
+                                            load = true;
+                                          });
+                                        },
+                                        icon: Icon(
+                                          Icons.restore_from_trash,
+                                          color: Colors.redAccent,
+                                        ))
+                                  ],
+                                ),
                               ),
-                              Text("${mzones.name}",
-                                  style: const TextStyle(
-                                      fontSize: 25, color: Colors.black)),
-                              const SizedBox(width: 4),
-                              IconButton(
-                                  onPressed: () {
-                                    _deleteAddress(mzones.id);
-                                  },
-                                  icon: Icon(
-                                    Icons.restore_from_trash,
-                                    color: Colors.redAccent,
-                                  ))
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                } else {
-                  return const Center(
-                    child: Text('Chargement...',
-                        style: TextStyle(color: Colors.black)),
-                  );
-                }
-              }),
-        ),
-      ),
+                            );
+                          },
+                        );
+                      } else {
+                        return const Center(
+                          child: Text('Aucune adresse enregistré',
+                              style: TextStyle(color: Colors.black)),
+                        );
+                      }
+                    }),
+              ),
+            ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.green[200],
         onPressed: () {
-          _showAddModal();
+          if (max >= 3) {
+            showInformationDialog(context);
+          } else {
+            _showAddModal();
+          }
         },
         child: Icon(Icons.add, color: Colors.black),
       ),

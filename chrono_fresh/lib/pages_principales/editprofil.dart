@@ -1,8 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:chrono_fresh/global_var.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class PersonalInfoPage extends StatefulWidget {
   const PersonalInfoPage({super.key});
@@ -16,6 +20,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   String _firstName = '';
   String _lastName = '';
   String _phone = '';
+  String _mail = '';
   String? nom;
   String? prenom;
   String? role;
@@ -24,12 +29,12 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   String? mail;
   String? id;
   bool isLoggedIn = false;
+  bool load = false;
 
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-
-  
+  final TextEditingController _mailController = TextEditingController();
 
   @override
   void initState() {
@@ -38,8 +43,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     autoLogIn();
   }
 
-
-void autoLogIn() async {
+  void autoLogIn() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? usermail = prefs.getString('email');
     String? role = prefs.getString('role');
@@ -57,31 +61,90 @@ void autoLogIn() async {
     }
   }
 
-  
   Future<void> _loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _imagePath = prefs.getString('user_image');
-      _firstName = prefs.getString('user_firstname') ?? '';
-      _lastName = prefs.getString('user_lastname') ?? '';
-      _phone = prefs.getString('user_phone') ?? '';
+      _firstName = prefs.getString('prenom') ?? '';
+      _lastName = prefs.getString('nom') ?? '';
+      _phone = prefs.getString('telephone') ?? '';
     });
   }
 
-  Future<void> _saveUserData() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('user_firstname', _firstName);
-    await prefs.setString('user_lastname', _lastName);
-    await prefs.setString('user_phone', _phone);
+  Future<void> _saveUserData(idcli, prenom, nom, mail, tel) async {
     if (_imagePath != null) {
-      await prefs.setString('user_image', _imagePath!);
+
+      var url = Uri.parse("${api_link}/api_fresh/editprofil.php");
+    
+    var data = {
+      "idc": idcli,
+      "prenom": prenom,
+      "nom": nom,
+      "Email": mail,
+      "phone": tel,
+      "avatar": _imagePath!
+    };
+    var res = await http.post(url, body: data);
+
+    if (jsonDecode(res.body) == "true") {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('prenom', _firstName);
+      await prefs.setString('nom', _lastName);
+      await prefs.setString('telephone', _phone);
+      await prefs.setString('email', _phone);
+      if (_imagePath != null) {
+        await prefs.setString('user_image', _imagePath!);
+      }
+
+      Fluttertoast.showToast(
+          msg: "Merci,  pris en compte",
+          toastLength: Toast.LENGTH_LONG);
+    }  else {
+      Fluttertoast.showToast(
+          msg: "Erreur de connexion", toastLength: Toast.LENGTH_LONG);
     }
+      
+    } else {
+
+      var url = Uri.parse("${api_link}/api_fresh/editprofil.php");
+    
+    var data = {
+      "idc": idcli,
+      "prenom": prenom,
+      "nom": nom,
+      "Email": mail,
+      "phone": tel,
+      
+    };
+    var res = await http.post(url, body: data);
+
+    if (jsonDecode(res.body) == "true") {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('prenom', _firstName);
+      await prefs.setString('nom', _lastName);
+      await prefs.setString('telephone', _phone);
+      await prefs.setString('email', _phone);
+      if (_imagePath != null) {
+        await prefs.setString('user_image', _imagePath!);
+      }
+
+      Fluttertoast.showToast(
+          msg: "Merci,  pris en compte",
+          toastLength: Toast.LENGTH_LONG);
+    }  else {
+      Fluttertoast.showToast(
+          msg: "Erreur de connexion", toastLength: Toast.LENGTH_LONG);
+    }
+      
+    }
+    
   }
 
   void _openEditModal() {
     _firstNameController.text = _firstName;
     _lastNameController.text = _lastName;
     _phoneController.text = _phone;
+    _mailController.text = _mail;
 
     showModalBottomSheet(
       isScrollControlled: true,
@@ -124,6 +187,11 @@ void autoLogIn() async {
                 decoration: const InputDecoration(labelText: 'Nom'),
               ),
               TextField(
+                controller: _mailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(labelText: 'Email'),
+              ),
+              TextField(
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
                 decoration: const InputDecoration(labelText: 'Téléphone'),
@@ -135,8 +203,9 @@ void autoLogIn() async {
                     _firstName = _firstNameController.text;
                     _lastName = _lastNameController.text;
                     _phone = _phoneController.text;
+                    _mail = _mailController.text;
                   });
-                  _saveUserData();
+                  _saveUserData(id, _firstName, _lastName, _mail, _phone);
                   Navigator.pop(context);
                 },
                 child: const Text("Enregistrer"),
@@ -162,7 +231,7 @@ void autoLogIn() async {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Données personnelles'),
       ),

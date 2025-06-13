@@ -16,47 +16,7 @@ class Panier extends StatefulWidget {
 
   @override
   State<Panier> createState() => _PanierState();
-
-
-  
 }
-
-void callback(response, context) {
-    switch (response['status']) {
-      case PAYMENT_CANCELLED:
-        Navigator.pop(context);
-        debugPrint(PAYMENT_CANCELLED);
-        break;
-
-      case PAYMENT_INIT:
-        debugPrint(PAYMENT_INIT);
-        break;
-
-      case PENDING_PAYMENT:
-        debugPrint(PENDING_PAYMENT);
-        break;
-
-      case PAYMENT_SUCCESS:
-        Navigator.pop(context);
-       // commander(idArray, cart.cartLength, '${cart.total}');
-        /*Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SuccessScreen(
-            amount: response['requestData']['amount'],
-            transactionId: response['transactionId'],
-          ),
-        ),
-      );*/
-        break;
-
-      default:
-        String? UNKNOWN_EVENT;
-        debugPrint(UNKNOWN_EVENT);
-        break;
-    }
-  }
-
 
 class _PanierState extends State<Panier> {
   String? nom;
@@ -78,15 +38,40 @@ class _PanierState extends State<Panier> {
   late int qt;
   var taille = FlutterCart().cartItemsList.length;
 
-  
-
   initState() {
     super.initState();
 
     autoLogIn();
   }
 
-  
+  void callback(response, context) {
+    switch (response['status']) {
+      case PAYMENT_CANCELLED:
+        Navigator.pop(context);
+        debugPrint(PAYMENT_CANCELLED);
+        _showMyinfo(response['status']);
+        break;
+
+      case PAYMENT_INIT:
+        debugPrint(PAYMENT_INIT);
+        break;
+
+      case PENDING_PAYMENT:
+        debugPrint(PENDING_PAYMENT);
+        break;
+
+      case PAYMENT_SUCCESS:
+        commander(idArray, cart.cartLength, '${cart.total}');
+        Navigator.pop(context);
+
+        break;
+
+      default:
+        String? UNKNOWN_EVENT;
+        debugPrint(UNKNOWN_EVENT);
+        break;
+    }
+  }
 
   void autoLogIn() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -110,6 +95,33 @@ class _PanierState extends State<Panier> {
     setState(() {
       cart.removeItem(id, variants);
     });
+  }
+
+  Future<void> _showMyinfo(message) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Information'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(message),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> _showMyDialog() async {
@@ -187,9 +199,14 @@ class _PanierState extends State<Panier> {
                   height: 250,
                   fit: BoxFit.cover,
                 ),
-                const Text("Votre commande a été accepté", textAlign: TextAlign.center,),
                 const Text(
-                    "Vos articles ont été placé et sont en cours de traitement", textAlign: TextAlign.center,),
+                  "Votre commande a été accepté",
+                  textAlign: TextAlign.center,
+                ),
+                const Text(
+                  "Vos articles ont été placé et sont en cours de traitement",
+                  textAlign: TextAlign.center,
+                ),
               ],
             ),
           ),
@@ -215,7 +232,9 @@ class _PanierState extends State<Panier> {
     );
   }
 
-  void _showPaymentModal(BuildContext context, ) {
+  void _showPaymentModal(
+    BuildContext context,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -262,26 +281,26 @@ class _PanierState extends State<Panier> {
                 ),
                 onPressed: () {
                   if (isLoggedIn) {
-                   Navigator.push(
+                    Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) =>  KKiaPay(
-    amount: cart.total.toInt(),//
-    countries: ["BJ","CI","SN","TG"],//
-    phone: "2290167341587",//
-    name: "John Doe",//
-    email: "email@mail.com",//
-    reason: 'Paiement article reason',//
-    data: 'Fake data',//
-    sandbox: true,//
-    apikey: "ed3a0460653111efbf02478c5adba4b8",//
-    callback: callback,//
-    theme: defaultTheme, // Ex : "#222F5A",
-    partnerId: 'AxXxXXxId',//
-    paymentMethods: ["momo","card"]//
-)),
+                      MaterialPageRoute(
+                          builder: (context) => KKiaPay(
+                              amount: cart.total.toInt(), //
+                              countries: ["BJ", "CI", "SN", "TG"], //
+                              phone: "22997000000", //
+                              name: "John Doe", //
+                              email: "email@mail.com", //
+                              reason: 'Paiement article reason', //
+                              data: 'Fake data', //
+                              sandbox: true, //
+                              apikey: "ed3a0460653111efbf02478c5adba4b8", //
+                              callback: callback, //
+                              theme: defaultTheme, // Ex : "#222F5A",
+                              partnerId: 'AxXxXXxId', //
+                              paymentMethods: ["momo", "card"] //
+                              )),
                     );
-                   // commander(idArray, cart.cartLength, '${cart.total}');
-                   
+                    // commander(idArray, cart.cartLength, '${cart.total}');
                   } else {
                     _showMyDialog();
                   }
@@ -320,7 +339,7 @@ class _PanierState extends State<Panier> {
       unitprArray.clear();
       idArray.clear();
       imgArray.clear();
-       Provider.of<CartProvider>(context, listen: false).clearCart();
+      Provider.of<CartProvider>(context, listen: false).clearCart();
       _showOrderdone();
     } else {
       Fluttertoast.showToast(msg: "Erreur", toastLength: Toast.LENGTH_SHORT);
@@ -334,7 +353,8 @@ class _PanierState extends State<Panier> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(title,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+              style:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
           Row(
             children: [
               Text(value,
@@ -350,7 +370,7 @@ class _PanierState extends State<Panier> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text("Panier"),
       ),
@@ -386,7 +406,8 @@ class _PanierState extends State<Panier> {
                                         style: const TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold)),
-                                     Text("1kg, ${item.variants.first.price} FCFA",
+                                    Text(
+                                        "1kg, ${item.variants.first.price} FCFA",
                                         style: const TextStyle(
                                             fontSize: 12, color: Colors.grey)),
                                     Row(
@@ -448,15 +469,17 @@ class _PanierState extends State<Panier> {
                                 Column(
                                   children: <Widget>[
                                     IconButton(
-                                      icon:
-                                          const Icon(Icons.close, color: Colors.grey),
-                                      onPressed:() { _removeItem(
-                                          item.productId, item.variants);
-                                           Provider.of<CartProvider>(context, listen: false).removeItem();
-                                          
-                       }
-                                    ),
-                                    Text("${item.variants.first.price * item.quantity} FCFA",
+                                        icon: const Icon(Icons.close,
+                                            color: Colors.grey),
+                                        onPressed: () {
+                                          _removeItem(
+                                              item.productId, item.variants);
+                                          Provider.of<CartProvider>(context,
+                                                  listen: false)
+                                              .removeItem();
+                                        }),
+                                    Text(
+                                        "${item.variants.first.price * item.quantity} FCFA",
                                         style: const TextStyle(fontSize: 16)),
                                   ],
                                 ),
@@ -491,7 +514,8 @@ class _PanierState extends State<Panier> {
                         _showPaymentModal(context);
                       },
                       child: Text("Aller à la caisse •  ${cart.total} Fcfa",
-                          style: const TextStyle(fontSize: 16, color: Colors.white)),
+                          style: const TextStyle(
+                              fontSize: 16, color: Colors.white)),
                     ),
                   ),
                 ]),

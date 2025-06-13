@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:chrono_fresh/controlleurs/nbcourse_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:chrono_fresh/global_var.dart';
@@ -16,7 +17,7 @@ class Statistique extends StatefulWidget {
 }
 
 class _StatistiqueState extends State<Statistique> {
-  late bool isSwitchOn;
+  bool isSwitchOn = false;
   int totalLivraisons = 228;
 
   late Future ordersFuture;
@@ -41,22 +42,21 @@ class _StatistiqueState extends State<Statistique> {
     return await viewsorders(id);
   }
 
+  nbcourse(id) async {
+    return await totalCourseDetails(id);
+  }
+
   void autoLogIn() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? usermail = prefs.getString('email');
     String? role = prefs.getString('role');
     dispo = prefs.getString('dispo');
-    if (dispo == 'true') {
-      setState(() {
-        isSwitchOn = true;
-      });
-    } else {
-      isSwitchOn = false;
-    }
+    print(dispo);
 
-    if (usermail != null) {
+    if (usermail != null && dispo != 0) {
       setState(() {
         isLoggedIn = true;
+        isSwitchOn = true;
         mail = usermail;
         role = role!;
         nom = prefs.getString('nom');
@@ -115,8 +115,7 @@ class _StatistiqueState extends State<Statistique> {
   }
 
   Future<void> update_status(spec, idU) async {
-    
-    /*var url = Uri.parse("${api_link}/api_fresh/pass_online.php");
+    var url = Uri.parse("${api_link}/api_fresh/pass_online.php");
 
     var data = {"sp": spec, "idR": idU};
     var res = await http.post(url, body: data);
@@ -126,7 +125,7 @@ class _StatistiqueState extends State<Statistique> {
     } else {
       Fluttertoast.showToast(
           msg: "Erreur de connexion", toastLength: Toast.LENGTH_LONG);
-    }*/
+    }
   }
 
   Future<void> _showMyDialog(idC, idU) async {
@@ -186,12 +185,10 @@ class _StatistiqueState extends State<Statistique> {
                   "Disponibilité",
                   style: TextStyle(fontSize: 18),
                 ),
-                isSwitchOn
+                dispo == "1"
                     ? ElevatedButton(
                         onPressed: () async {
                           update_status('false', id);
-                          final SharedPreferences prefs = await SharedPreferences.getInstance();
-                          prefs.setString('dispo', 'false');
                           setState(() {
                             isSwitchOn = false;
                           });
@@ -211,8 +208,7 @@ class _StatistiqueState extends State<Statistique> {
                     : ElevatedButton(
                         onPressed: () async {
                           update_status('true', id);
-                          final SharedPreferences prefs = await SharedPreferences.getInstance();
-                          prefs.setString('dispo', 'true');
+
                           setState(() {
                             isSwitchOn = true;
                           });
@@ -229,11 +225,7 @@ class _StatistiqueState extends State<Statistique> {
                       ),
                 Switch(
                   value: isSwitchOn,
-                  onChanged: (bool value) {
-                    /* setState(() {
-                      isSwitchOn = value;
-                    });*/
-                  },
+                  onChanged: (bool value) {},
                   activeColor: Colors.white,
                   activeTrackColor: Colors.green,
                   inactiveThumbColor: Colors.grey.shade400,
@@ -251,8 +243,7 @@ class _StatistiqueState extends State<Statistique> {
               color: Colors.white,
               shadowColor: Colors.grey.shade300,
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+                padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
                 child: Row(
                   children: [
                     // Icône de livraison
@@ -262,7 +253,7 @@ class _StatistiqueState extends State<Statistique> {
                         color: Colors.teal.shade50,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.local_shipping,
                         size: 36,
                         color: Colors.teal,
@@ -280,15 +271,30 @@ class _StatistiqueState extends State<Statistique> {
                             color: Colors.grey.shade600,
                           ),
                         ),
-                        const SizedBox(height: 5),
-                        Text(
-                          '$totalLivraisons',
-                          style: const TextStyle(
-                            fontSize: 36,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.teal,
-                          ),
-                        ),
+                        SizedBox(height: 5),
+                        FutureBuilder<int>(
+                          future: totalCourseDetails(id),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<int> snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              return Text('Erreur : ${snapshot.error}');
+                            } else if (snapshot.hasData) {
+                              return Text(
+                                '${snapshot.data}', // affichage du nombre
+                                style: const TextStyle(
+                                  fontSize: 36,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.teal,
+                                ),
+                              );
+                            } else {
+                              return Text('Aucune donnée');
+                            }
+                          },
+                        )
                       ],
                     ),
                   ],
