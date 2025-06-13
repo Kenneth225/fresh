@@ -11,11 +11,11 @@ class Recettes extends StatefulWidget {
 
 // Fonction pour récupérer toutes les recettes
 Future<List<Mrecettes>> viewallrec() async {
-  return await viewrecall('0');
+  return await viewrecall('0'); 
 }
 
 // Affichage du détail de la recette en bas de l'écran
-void showRecipeDetails(BuildContext context, String titre, String description) {
+void showRecipeDetails(BuildContext context, String titre, String description, image) {
   showModalBottomSheet(
     context: context,
     shape: RoundedRectangleBorder(
@@ -42,6 +42,14 @@ void showRecipeDetails(BuildContext context, String titre, String description) {
               ],
             ),
             const SizedBox(height: 10),
+            Center(
+              child: Image.network(
+                                image,
+                                width: 100,
+                                height: 100,
+                                fit: BoxFit.cover,
+                              ),
+            ),
             Text(
               description,
               style: const TextStyle(fontSize: 16),
@@ -96,6 +104,7 @@ class _RecettesState extends State<Recettes> {
                   context,
                   recette.nomPlat,
                   recette.description,
+                  recette.image
                 ),
                 child: Card(
                   color: Colors.white,

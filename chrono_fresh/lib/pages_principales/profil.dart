@@ -48,7 +48,7 @@ class _ProfilState extends State<Profil> {
       });
     }
   }
-
+/*
   void logout(context) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
@@ -61,7 +61,21 @@ class _ProfilState extends State<Profil> {
 
     Navigator.pushReplacementNamed(context, 'home');
     print("Done");
-  }
+  }*/
+
+  void logout(BuildContext context) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.clear();
+
+  Fluttertoast.showToast(msg: "Déconnexion", toastLength: Toast.LENGTH_SHORT);
+
+  Navigator.of(context).pushNamedAndRemoveUntil(
+    'home',
+    (route) => false,
+  );
+  print("Done");
+}
+
 
   void logpage(context) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
