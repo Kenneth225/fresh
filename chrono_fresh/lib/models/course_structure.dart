@@ -9,24 +9,28 @@ List<Course> courseFromJson(String str) => List<Course>.from(json.decode(str).ma
 String courseToJson(List<Course> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class Course {
-    String id;
-    String idLivreur;
-    String idCommande;
-    String livCourse;
+    String? id;
+    String? idLivreur;
+    String? idCommande;
+    String? livCourse;
+    String? longc;
+    String? latc;
     dynamic longitude;
     dynamic latitude;
-    dynamic test;
-    String finCourse;
+    String? test;
+    String? finCourse;
 
     Course({
-        required this.id,
-        required this.idLivreur,
-        required this.idCommande,
-        required this.livCourse,
-        required this.longitude,
-        required this.latitude,
-        required this.test,
-        required this.finCourse,
+        this.id,
+        this.idLivreur,
+        this.idCommande,
+        this.livCourse,
+        this.longc,
+        this.latc,
+        this.longitude,
+        this.latitude,
+        this.test,
+        this.finCourse,
     });
 
     factory Course.fromJson(Map<String, dynamic> json) => Course(
@@ -34,6 +38,8 @@ class Course {
         idLivreur: json["id_livreur"],
         idCommande: json["id_commande"],
         livCourse: json["liv_course"],
+        longc: json["longc"],
+        latc: json["latc"],
         longitude: json["longitude"],
         latitude: json["latitude"],
         test: json["test"],
@@ -45,6 +51,8 @@ class Course {
         "id_livreur": idLivreur,
         "id_commande": idCommande,
         "liv_course": livCourse,
+        "longc": longc,
+        "latc": latc,
         "longitude": longitude,
         "latitude": latitude,
         "test": test,

@@ -68,9 +68,9 @@ class _StatistiqueState extends State<Statistique> {
     }
   }
 
-  Future<void> addcourse(idC, idU, code) async {
+  Future<void> addcourse(idC, idU, code,long, lat) async {
     var url = Uri.parse("${api_link}/api_fresh/addcourse.php");
-    var data = {"idc": idC, "idu": idU, "qrc": code};
+    var data = {"idc": idC, "idu": idU, "qrc": code, "long":long, "lat": lat};
     var res = await http.post(url, body: data);
 
     if (jsonDecode(res.body) == "true") {
@@ -369,8 +369,8 @@ class _StatistiqueState extends State<Statistique> {
                                     ElevatedButton(
                                       onPressed: () {
                                         addcourse(
-                                            mcommande.id, id, mcommande.iduniq);
-                                      },
+                                            mcommande.id, id, mcommande.iduniq, mcommande.longitude, mcommande.latitude);
+                                      }, 
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Colors.green,
                                         foregroundColor: Colors.white,

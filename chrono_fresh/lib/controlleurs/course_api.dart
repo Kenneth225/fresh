@@ -4,7 +4,6 @@ import 'package:chrono_fresh/models/course_structure.dart';
 import 'package:http/http.dart' as http;
 
 
-
 Future<List<Course>> getCourseDetails(id) async {
 
   var url = Uri.parse("${api_link}/api_fresh/suivicourse.php");

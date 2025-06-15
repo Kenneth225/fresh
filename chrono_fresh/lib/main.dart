@@ -14,13 +14,13 @@ Future<void> main() async {
   await initializeDateFormatting('fr_FR', null);
   await cart.initializeCart(isPersistenceSupportEnabled: true);
   runApp(
-    
     MultiProvider(
-    providers: [
-      ChangeNotifierProvider(create: (_) => CartProvider()),
-    ],
-    child: const MyApp(),
-  ),);
+      providers: [
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -40,34 +40,39 @@ class MyApp extends StatelessWidget {
         ),
         home: const MyHomePage(title: 'CHRONO FRESH'),
         initialRoute: 'home',
-        onGenerateRoute: (settings) {
-          if (settings.name == 'accueil') {
-            final args = settings.arguments as Map<String, dynamic>?;
+          onGenerateRoute: (settings) {
+  if (settings.name == 'accueil') {
+    final args = settings.arguments as Map<String, dynamic>?;
 
-            return MaterialPageRoute(
-              builder: (context) => Acceuil(
-                initialTab: args?['initialTab'] ?? 0,
-              ),
-            );
-          }
+    return MaterialPageRoute(
+      builder: (context) => Acceuil(
+        initialTab: args?['initialTab'] ?? 0,
+      ),
+    );
+  }
 
-          if (settings.name == 'home') {
-            final args = settings.arguments as Map<String, dynamic>?;
+  if (settings.name == 'home') {
+    return MaterialPageRoute(
+      builder: (context) => const MyHomePage(
+        title: 'Bienvenue',
+      ),
+    );
+  }
 
-            return MaterialPageRoute(
-              builder: (context) => const MyHomePage(
-                title: 'Bienvenue',
-              ),
-            );
-          }
+  if (settings.name == 'connect') {
+    return MaterialPageRoute(
+      builder: (context) => const connection(),
+    );
+  }
 
-          if (settings.name == 'connect') {
-            final args = settings.arguments as Map<String, dynamic>?;
+  // 🔴 Route inconnue => crash si on ne gère pas ce cas !
+  return MaterialPageRoute(
+    builder: (context) => const Scaffold(
+      body: Center(child: Text('Page non trouvée')),
+    ),
+  );
 
-            return MaterialPageRoute(
-              builder: (context) => const connection(),
-            );
-          }
+
         });
   }
 }

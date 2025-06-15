@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:chrono_fresh/controlleurs/cart_provider.dart';
 import 'package:chrono_fresh/pages_principales/mescommandes.dart';
 import 'package:flutter/widgets.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:chrono_fresh/global_var.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ class _PanierState extends State<Panier> {
   String? mail;
   String? id;
   bool isLoggedIn = false;
+  bool load = false;
   var cart = FlutterCart();
   List imgArray = [];
   List idArray = [];
@@ -316,33 +318,49 @@ class _PanierState extends State<Panier> {
   }
 
   commander(idp, qtp, prixT) async {
-    var url = Uri.parse("${api_link}/api_fresh/addcommandes.php");
-    var data = {
-      "IDcli": "${id}",
-      "taille": qtp.toString(),
-      "namep": nomArray.toString(),
-      "imgp": imgArray.toString(),
-      "montantT": prixT.toString(),
-      "IDproduit": idArray.toString(),
-      "pu": unitprArray.toString(),
-      "quant": qtArray.toString(),
-      "nom": "${prenom}",
-    };
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high, // Or other accuracy levels
+      );
+      print('Latitude: ${position.latitude}');
+      print('Longitude: ${position.longitude}');
 
-    var res = await http.post(url, body: data);
-    if (jsonDecode(res.body) == "true") {
-      print("la reponse: ");
-      print(jsonDecode(res.body));
-      Fluttertoast.showToast(
-          msg: "Commande Effectué", toastLength: Toast.LENGTH_SHORT);
-      cart.clearCart();
-      unitprArray.clear();
-      idArray.clear();
-      imgArray.clear();
-      Provider.of<CartProvider>(context, listen: false).clearCart();
-      _showOrderdone();
-    } else {
-      Fluttertoast.showToast(msg: "Erreur", toastLength: Toast.LENGTH_SHORT);
+      var url = Uri.parse("${api_link}/api_fresh/addcommandes.php");
+      var data = {
+        "IDcli": "${id}",
+        "taille": qtp.toString(),
+        "namep": nomArray.toString(),
+        "imgp": imgArray.toString(),
+        "montantT": prixT.toString(),
+        "IDproduit": idArray.toString(),
+        "pu": unitprArray.toString(),
+        "quant": qtArray.toString(),
+        "nom": "${prenom}",
+        "lat": "${position.latitude}",
+        "long": "${position.longitude}"
+      };
+
+      var res = await http.post(url, body: data);
+      if (jsonDecode(res.body) == "true") {
+        print("la reponse: ");
+        print(jsonDecode(res.body));
+        Fluttertoast.showToast(
+            msg: "Commande Effectué", toastLength: Toast.LENGTH_SHORT);
+        cart.clearCart();
+        unitprArray.clear();
+        idArray.clear();
+        imgArray.clear();
+        Provider.of<CartProvider>(context, listen: false).clearCart();
+        _showOrderdone();
+      } else {
+        Fluttertoast.showToast(msg: "Erreur", toastLength: Toast.LENGTH_SHORT);
+      }
+    } catch (e) {
+      print('Error getting current position: $e');
+      // Handle errors (e.g., location permission denied)
+      setState(() {
+        load = false;
+      });
     }
   }
 
