@@ -26,7 +26,7 @@ class Categorie {
         nomCategorie: json["nom_categorie"],
         visuel: json["visuel"],
         ontop: json["ontop"],
-    );
+    ); 
 
     Map<String, dynamic> toJson() => {
         "id": id,

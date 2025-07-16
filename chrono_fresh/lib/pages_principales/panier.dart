@@ -291,11 +291,11 @@ class _PanierState extends State<Panier> {
                               countries: ["BJ", "CI", "SN", "TG"], //
                               phone: "22997000000", //
                               name: "John Doe", //
-                              email: "email@mail.com", //
+                              email: "test@mail.com", //
                               reason: 'Paiement article reason', //
                               data: 'Fake data', //
                               sandbox: true, //
-                              apikey: "ed3a0460653111efbf02478c5adba4b8", //
+                              apikey: "b59e46603af611f09dfd63ae9443e3ce", //
                               callback: callback, //
                               theme: defaultTheme, // Ex : "#222F5A",
                               partnerId: 'AxXxXXxId', //
@@ -390,7 +390,9 @@ class _PanierState extends State<Panier> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Panier"),
+        automaticallyImplyLeading: false,
+          backgroundColor: Colors.white,
+        title: Center(child: const Text("Panier")),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

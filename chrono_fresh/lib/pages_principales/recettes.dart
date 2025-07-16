@@ -75,7 +75,10 @@ class _RecettesState extends State<Recettes> {
   Widget build(BuildContext context) {
     return Scaffold(
        backgroundColor: Colors.white,
-      appBar: AppBar(title: const Text('Recettes')),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+          backgroundColor: Colors.white,
+        title: Center(child: const Text('Recettes'))),
       body: FutureBuilder<List<Mrecettes>>(
         future: recetteFuture,
         builder: (BuildContext context, AsyncSnapshot<List<Mrecettes>> snapshot) {

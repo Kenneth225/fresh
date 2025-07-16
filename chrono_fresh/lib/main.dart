@@ -166,12 +166,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Center(
                       child: TextButton(
                         onPressed: () {
-                          //Navigator.pushReplacementNamed(context, 'accueil');
-                          Navigator.pushReplacementNamed(
-                            context,
+                          Navigator.pushReplacementNamed(context, 'accueil');
+                         /* Navigator.pushReplacementNamed(
+                             context,
                             'accueil',
                             arguments: {'initialTab': 0}, // Forcer accueil
-                          );
+                          );*/
                         },
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,

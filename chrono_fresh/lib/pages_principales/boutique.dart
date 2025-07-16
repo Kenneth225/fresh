@@ -1,5 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
+import 'package:chrono_fresh/controlleurs/sboutique_api.dart';
+import 'package:chrono_fresh/controlleurs/scategorie_api.dart';
 import 'package:provider/provider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chrono_fresh/controlleurs/boutique_api.dart';
@@ -48,6 +50,8 @@ class _boutiqueState extends State<boutique> {
     fetchAndStoreProducts();
     boutiqueFuture = boutique("1");
     categorieFuture = homecat();
+    boutiqueFuture = sboutique("2");
+    categorieFuture = scat();
   }
 
   var cart = FlutterCart();
@@ -101,6 +105,14 @@ class _boutiqueState extends State<boutique> {
     return await viewcat();
   }
 
+  scat() async {
+    return await viewscat();
+  }
+
+  sboutique(categorie) async {
+    return await viewspromo(categorie);
+  }
+
   commande_fict(id, nom, image, int qt, prix, mode) async {
     cart.addToCart(
         cartModel: CartModel(
@@ -113,7 +125,7 @@ class _boutiqueState extends State<boutique> {
             ],
             //discount: double.parse(prix),
             productDetails: mode));
-            Provider.of<CartProvider>(context, listen: false).addItem();
+    Provider.of<CartProvider>(context, listen: false).addItem();
 
     Fluttertoast.showToast(
         msg: "Article ajouté au panier", toastLength: Toast.LENGTH_SHORT);
@@ -190,20 +202,8 @@ class _boutiqueState extends State<boutique> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        //backgroundColor: getRandomColor(),
         backgroundColor: Colors.white,
-        body: /*Stack(fit: StackFit.expand, children: [
-        Image.asset(
-          "assets/roast_chicken.jpg",
-          fit: BoxFit.cover,
-        ),
-        BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-          child: Container(
-            color: Colors.black.withOpacity(0.3),
-          ),
-        ),*/
-            SingleChildScrollView(
+        body: SingleChildScrollView(
           child: Column(
             children: [
               const SizedBox(
@@ -308,6 +308,238 @@ class _boutiqueState extends State<boutique> {
               ),
 
               //fin carousel
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SingleChildScrollView(
+                  child: Container(
+                    //height: MediaQuery.sizeOf(context).height / 1.6,
+                    child: FutureBuilder(
+                        future: scat(),
+                        builder: (context, AsyncSnapshot snapshot) {
+                          if (snapshot.hasData) {
+                            print('yes');
+                            return ListView.builder(
+                              itemCount: snapshot.data.length,
+                              shrinkWrap: true,
+                              itemBuilder: (BuildContext context, index) {
+                                Categorie cate = snapshot.data[index];
+                                return Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Text(
+                                            cate.nomCategorie,
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 25),
+                                          ),
+                                        ),
+                                        TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          Categoriedetails(
+                                                            nom:
+                                                                "${cate.nomCategorie}",
+                                                            cat: "${cate.id}",
+                                                          )));
+                                            },
+                                            child: const Text(
+                                              "...",
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.green),
+                                            )),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    SingleChildScrollView(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Container(
+                                          height: 200,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(18),
+                                          ),
+                                          child: FutureBuilder<dynamic>(
+                                              future: sboutique(cate.id),
+                                              builder: (BuildContext context,
+                                                  AsyncSnapshot<dynamic>
+                                                      snapshot) {
+                                                if (snapshot.hasData) {
+                                                  return GridView.builder(
+                                                    itemCount:
+                                                        snapshot.data.length,
+                                                    scrollDirection:
+                                                        Axis.horizontal,
+                                                    shrinkWrap: true,
+                                                    itemBuilder:
+                                                        (BuildContext context,
+                                                            int index) {
+                                                      Boutique boutique =
+                                                          snapshot.data[index];
+                                                      return Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Card(
+                                                            color: Colors.white,
+                                                            child: Container(
+                                                              color:
+                                                                  Colors.white,
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .all(
+                                                                        8.0),
+                                                                child: Column(
+                                                                  children: [
+                                                                    GestureDetector(
+                                                                      onTap:
+                                                                          () {
+                                                                        Navigator.of(context).push(MaterialPageRoute(
+                                                                            builder: (context) => Details(
+                                                                                  id: boutique.id,
+                                                                                  nom: boutique.nom,
+                                                                                  prix: boutique.prix,
+                                                                                  description: boutique.description,
+                                                                                  categorie: boutique.categorie,
+                                                                                  image: boutique.image,
+                                                                                )));
+                                                                      },
+                                                                      child:
+                                                                          ClipRRect(
+                                                                        child: Image
+                                                                            .network(
+                                                                          "${api_link}/api_fresh/uploads/${boutique.image}",
+                                                                          height:
+                                                                              60,
+                                                                          width:
+                                                                              80,
+                                                                          fit: BoxFit
+                                                                              .fitWidth,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    GestureDetector(
+                                                                      onTap:
+                                                                          () {
+                                                                        Navigator.of(context).push(MaterialPageRoute(
+                                                                            builder: (context) => Details(
+                                                                                  id: boutique.id,
+                                                                                  nom: boutique.nom,
+                                                                                  prix: boutique.prix,
+                                                                                  description: boutique.description,
+                                                                                  categorie: boutique.categorie,
+                                                                                  image: boutique.image,
+                                                                                )));
+                                                                      },
+                                                                      child:
+                                                                          Text(
+                                                                        "${boutique.nom}",
+                                                                        textAlign:
+                                                                            TextAlign.left,
+                                                                        style: const TextStyle(
+                                                                            fontSize:
+                                                                                20,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                            color: Colors.black),
+                                                                      ),
+                                                                    ),
+                                                                    const Text(
+                                                                        "1kg,Prix"),
+                                                                    Padding(
+                                                                      padding: const EdgeInsets
+                                                                          .all(
+                                                                          4.0),
+                                                                      child:
+                                                                          Row(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.spaceBetween,
+                                                                        children: [
+                                                                          Text(
+                                                                              "${boutique.prix} fcfa"),
+                                                                          const SizedBox(
+                                                                            width:
+                                                                                18,
+                                                                          ),
+                                                                          ElevatedButton(
+                                                                            style:
+                                                                                ButtonStyle(
+                                                                              minimumSize: MaterialStateProperty.all(const Size(10, 25)),
+                                                                              backgroundColor: MaterialStateProperty.all(Color.fromRGBO(70, 225, 106, 1)),
+                                                                            ),
+                                                                            onPressed:
+                                                                                () {
+                                                                              commande_fict(boutique.id, boutique.nom, boutique.image, 1, boutique.prix, boutique.description);
+                                                                            },
+                                                                            child: const Icon(Icons.add_outlined,
+                                                                                size: 18,
+                                                                                color: Colors.white),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    },
+                                                    gridDelegate:
+                                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                                      crossAxisCount: 1,
+                                                      childAspectRatio: (1 / 1),
+                                                      crossAxisSpacing: 10,
+                                                      mainAxisSpacing: 10,
+                                                    ),
+                                                  );
+                                                } else if (snapshot.hasError) {
+                                                  return const Center(
+                                                    child: Text('Erreur code',
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.black)),
+                                                  );
+                                                } else {
+                                                  return const Center(
+                                                    child: Text(
+                                                        'Aucun produit correspondant',
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.black)),
+                                                  );
+                                                }
+                                              }),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          } else {
+                            return const Text("Aucune donnée disponible");
+                          }
+                        }),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
 
               SingleChildScrollView(
                 child: Container(
@@ -354,30 +586,6 @@ class _boutiqueState extends State<boutique> {
                                                 fontSize: 16,
                                                 color: Colors.green),
                                           )),
-                                      /*    DropdownButton<String>(
-                                          value: dropdownValue,
-                                          icon: const Icon(Icons.arrow_downward),
-                                          elevation: 16,
-                                          style:
-                                              const TextStyle(color: Colors.deepPurple),
-                                          underline: Container(
-                                              height: 2,
-                                              color: Colors.deepPurpleAccent),
-                                          onChanged: (String? value) {
-                                            // This is called when the user selects an item.
-                                            setState(() {
-                                              dropdownValue = value!;
-                                            });
-                                          },
-                                          items: const ["Voir tout", "Autre"]
-                                              .map<DropdownMenuItem<String>>(
-                                                  (String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
-                                        ),*/
                                     ],
                                   ),
                                   SizedBox(
