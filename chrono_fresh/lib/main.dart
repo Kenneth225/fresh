@@ -40,39 +40,37 @@ class MyApp extends StatelessWidget {
         ),
         home: const MyHomePage(title: 'CHRONO FRESH'),
         initialRoute: 'home',
-          onGenerateRoute: (settings) {
-  if (settings.name == 'accueil') {
-    final args = settings.arguments as Map<String, dynamic>?;
+        onGenerateRoute: (settings) {
+          if (settings.name == 'accueil') {
+            final args = settings.arguments as Map<String, dynamic>?;
 
-    return MaterialPageRoute(
-      builder: (context) => Acceuil(
-        initialTab: args?['initialTab'] ?? 0,
-      ),
-    );
-  }
+            return MaterialPageRoute(
+              builder: (context) => Acceuil(
+                initialTab: args?['initialTab'] ?? 0,
+              ),
+            );
+          }
 
-  if (settings.name == 'home') {
-    return MaterialPageRoute(
-      builder: (context) => const MyHomePage(
-        title: 'Bienvenue',
-      ),
-    );
-  }
+          if (settings.name == 'home') {
+            return MaterialPageRoute(
+              builder: (context) => const MyHomePage(
+                title: 'Bienvenue',
+              ),
+            );
+          }
 
-  if (settings.name == 'connect') {
-    return MaterialPageRoute(
-      builder: (context) => const connection(),
-    );
-  }
+          if (settings.name == 'connect') {
+            return MaterialPageRoute(
+              builder: (context) => const connection(),
+            );
+          }
 
-  // 🔴 Route inconnue => crash si on ne gère pas ce cas !
-  return MaterialPageRoute(
-    builder: (context) => const Scaffold(
-      body: Center(child: Text('Page non trouvée')),
-    ),
-  );
-
-
+          // 🔴 Route inconnue => crash si on ne gère pas ce cas !
+          return MaterialPageRoute(
+            builder: (context) => const Scaffold(
+              body: Center(child: Text('Page non trouvée')),
+            ),
+          );
         });
   }
 }
@@ -167,7 +165,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: TextButton(
                         onPressed: () {
                           Navigator.pushReplacementNamed(context, 'accueil');
-                         /* Navigator.pushReplacementNamed(
+                          /* Navigator.pushReplacementNamed(
                              context,
                             'accueil',
                             arguments: {'initialTab': 0}, // Forcer accueil

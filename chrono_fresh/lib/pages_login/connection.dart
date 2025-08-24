@@ -145,7 +145,7 @@ class _connectionState extends State<connection> {
         var jsonData = jsonDecode(res.body);
 
         final SharedPreferences prefs = await SharedPreferences.getInstance();
-        if (jsonData[0]["role"] != "2") {
+       // if (jsonData[0]["role"] != "2") {
           if (jsonData[0]["telephone"] != null) {
             prefs.setString('role', jsonData[0]["role"]);
             prefs.setString('email', jsonData[0]["email"]);
@@ -161,7 +161,7 @@ class _connectionState extends State<connection> {
             prefs.setString('telephone', "...");
             prefs.setString('id', jsonData[0]["id"]);
           }
-        } else {
+      /*  } else {
           prefs.setString('dispo', jsonData[0]["statutDisponibilite"]);
           prefs.setString('role', jsonData[0]["role"]);
           prefs.setString('email', jsonData[0]["email"]);
@@ -169,7 +169,7 @@ class _connectionState extends State<connection> {
           prefs.setString('prenom', jsonData[0]["prenom"]);
           prefs.setString('telephone', jsonData[0]["telephone"]);
           prefs.setString('id', jsonData[0]["id"]);
-        }
+        }*/
 
         setState(() {
           isLoggedIn = true;

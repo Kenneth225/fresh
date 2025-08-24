@@ -176,46 +176,96 @@ class _DetailsState extends State<Details> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(Icons.backspace_outlined)),
-        actions: [
-          Icon(Icons.ios_share_rounded),
-        ],
-      ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.network(
-              "${api_link}/api_fresh/uploads/${widget.image}",
-              height: 200,
-              fit: BoxFit.fitWidth,
+            const SizedBox(height: 30,),
+            IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(Icons.backspace_outlined)),
+            Center(
+              child: Image.network(
+                "${api_link}/api_fresh/uploads/${widget.image}",
+                height: 200,
+                fit: BoxFit.fitWidth,
+              ),
             ),
-            Row(
-              children: [
-                Text(
-                  "${widget.nom}",
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 27),
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width / 3,
-                ),
-                const Icon(Icons.favorite_border_outlined)
-              ],
+            Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "${widget.nom}",
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
+                  /*SizedBox(
+                    width: MediaQuery.of(context).size.width / 3,
+                  ),*/
+                  const Text(
+                    "Prix au Kg",
+                    style: TextStyle(fontSize: 17, color: Colors.black45),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(
-              height: 8,
+            Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "${widget.prix} F CFA",
+                    style: const TextStyle(
+                        fontSize: 28,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      print(isLoggedIn);
+                      // if (isLoggedIn) {
+                      commande_fict(widget.id, widget.nom, widget.image,
+                          quantity, widget.prix, widget.description);
+                      /* } else {
+                      _showMyDialog();
+                    }*/
+                    },
+                    child: IntrinsicHeight(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          color: Color(0xFF006650),
+                        ),
+                        width: 35,
+                        //padding: const EdgeInsets.symmetric(vertical: 16),
+                        /* margin: const EdgeInsets.only(
+                            bottom: 225, left: 24, right: 24),*/
+                        //width: double.infinity,
+                        child: const Column(children: [
+                          Text(
+                            "+",
+                            style: TextStyle(
+                              color: Color(0xFFFFFFFF),
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ]),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            Text(
-              "1kg, ${widget.prix} FCFA",
-              style: const TextStyle(fontSize: 17, color: Colors.black45),
-            ),
-            Row(
+
+            /*  Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
@@ -256,101 +306,93 @@ class _DetailsState extends State<Details> {
                       fontWeight: FontWeight.bold, fontSize: 27),
                 ),
               ],
-            ),
-            const Divider(),
-            ExpansionTile(
-              title: const Text(
-                'Détail du produit',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              children: [
-                Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                  child: Text(
-                    "${widget.description}",
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                ),
-              ],
-            ),
-            const Divider(),
-            ExpansionTile(
-              title: const Text(
-                'Recettes',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: FutureBuilder<dynamic>(
-                    future: viewrec('${widget.id}'),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<dynamic> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return const Center(
-                          child: Text(
-                              'Aucune recette disponible pour ce produit',
-                              style: TextStyle(color: Colors.black)),
-                        );
-                      } else if (!snapshot.hasData || snapshot.data.isEmpty) {
-                        return const Center(
-                          child: Text('Aucune recette disponible',
-                              style: TextStyle(color: Colors.black)),
-                        );
-                      } else {
-                        List<Mrecettes> recettes = snapshot.data;
-
-                        return Wrap(
-                          spacing: 8.0,
-                          runSpacing: 8.0,
-                          children: recettes.map((recette) {
-                            return ActionChip(
-                              avatar: const Icon(Icons.remove_red_eye_sharp),
-                              label: Text(
-                                recette.nomPlat,
-                                style: const TextStyle(color: Colors.white),
-                              ),
-                              backgroundColor: Colors.greenAccent,
-                              onPressed: () {
-                                showRecipeDetails(context, recette.nomPlat,
-                                    recette.description);
-                              },
-                            );
-                          }).toList(),
-                        );
-                      }
-                    },
-                  ),
-                ),
-              ],
-            ),
-            const Divider(),
-            /* ListTile(
-              title: const Text(
-                'Notes',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: List.generate(
-                  5,
-                  (index) => const Icon(
-                    Icons.star,
-                    color: Colors.orange,
-                    size: 20,
-                  ),
-                )..add(const Icon(
-                    Icons.star_half,
-                    color: Colors.orange,
-                    size: 20,
-                  )),
-              ),
-              onTap: () {},
             ),*/
-            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: Column(
+                children: [
+                  const Divider(),
+                  ExpansionTile(
+                    initiallyExpanded: true,
+                    title: const Text(
+                      'Détail du produit',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 8.0),
+                        child: Text(
+                          "${widget.description}",
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Divider(),
+                  ExpansionTile(
+                    title: const Text(
+                      'Recettes avec ce produit',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: FutureBuilder<dynamic>(
+                          future: viewrec('${widget.id}'),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<dynamic> snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return const Center(
+                                child: Text(
+                                    'Aucune recette disponible pour ce produit',
+                                    style: TextStyle(color: Colors.black)),
+                              );
+                            } else if (!snapshot.hasData ||
+                                snapshot.data.isEmpty) {
+                              return const Center(
+                                child: Text('Aucune recette disponible',
+                                    style: TextStyle(color: Colors.black)),
+                              );
+                            } else {
+                              List<Mrecettes> recettes = snapshot.data;
+
+                              return Wrap(
+                                spacing: 8.0,
+                                runSpacing: 8.0,
+                                children: recettes.map((recette) {
+                                  return ActionChip(
+                                    avatar:
+                                        const Icon(Icons.remove_red_eye_sharp),
+                                    label: Text(
+                                      recette.nomPlat,
+                                      style:
+                                          const TextStyle(color: Colors.white),
+                                    ),
+                                    backgroundColor: Colors.greenAccent,
+                                    onPressed: () {
+                                      showRecipeDetails(context,
+                                          recette.nomPlat, recette.description);
+                                    },
+                                  );
+                                }).toList(),
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Divider(),
+                ],
+              ),
+            ),
+
+            /*  const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
               height: 50,
@@ -375,7 +417,7 @@ class _DetailsState extends State<Details> {
                   style: TextStyle(color: Colors.white),
                 ),
               ),
-            ),
+            ),*/
           ],
         ),
       ),

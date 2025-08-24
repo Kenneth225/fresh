@@ -1,3 +1,6 @@
+
+import 'package:chrono_fresh/setup/mon_compte.dart';
+import 'package:chrono_fresh/setup/resultat_recette.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,7 +13,6 @@ import 'package:chrono_fresh/livreur/courses.dart';
 import 'package:chrono_fresh/pages_principales/boutique.dart';
 import 'package:chrono_fresh/pages_principales/explorer.dart';
 import 'package:chrono_fresh/pages_principales/panier.dart';
-import 'package:chrono_fresh/pages_principales/recettes.dart';
 import 'package:chrono_fresh/pages_principales/profil.dart';
 
 class Acceuil extends StatefulWidget {
@@ -31,8 +33,9 @@ class _AcceuilState extends State<Acceuil> {
     boutique(),
     Explorer(),
     Panier(),
-    Recettes(),
-    Profil(),
+    ReSultatsCateGorieRecette(),
+    MonCompte()
+    //Profil(),
   ];
 
   final List<Widget> _tabsLivreur = const [
