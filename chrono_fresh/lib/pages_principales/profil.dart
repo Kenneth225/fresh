@@ -64,18 +64,17 @@ class _ProfilState extends State<Profil> {
   }*/
 
   void logout(BuildContext context) async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.clear();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
 
-  Fluttertoast.showToast(msg: "Déconnexion", toastLength: Toast.LENGTH_SHORT);
+    Fluttertoast.showToast(msg: "Déconnexion", toastLength: Toast.LENGTH_SHORT);
 
-  Navigator.of(context).pushNamedAndRemoveUntil(
-    'home',
-    (route) => false,
-  );
-  print("Done");
-}
-
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      'home',
+      (route) => false,
+    );
+    print("Done");
+  }
 
   void logpage(context) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -90,7 +89,8 @@ class _ProfilState extends State<Profil> {
 
   void info(context) async {
     Fluttertoast.showToast(
-        msg: "Faite un appui long pour vous deconnecté",);
+      msg: "Faite un appui long pour vous deconnecté",
+    );
     print(role);
   }
 
@@ -101,12 +101,29 @@ class _ProfilState extends State<Profil> {
     print("Done");
   }*/
 
+  Widget buildListTile(IconData icon, String title, Function onTap) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.green), // icône à gauche
+      title: Text(
+        title,
+        style: TextStyle(
+          fontSize: 16,
+          color: Colors.black,
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+      trailing: Icon(Icons.arrow_forward_ios,
+          size: 16, color: Colors.grey), // icône de flèche
+      onTap: () => onTap(),
+    );
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: isLoggedIn
           ? Center(
-              child: role == "1"
+              child: role == "2"
                   ? Column(
                       children: [
                         Padding(
@@ -427,7 +444,167 @@ class _ProfilState extends State<Profil> {
                         )
                       ],
                     )
-                  : Column(
+                  :
+                  // Définir une fonction pour créer un widget de ligne pour la liste
+// Le corps de la page
+// Nous utiliserons un Stack pour superposer les widgets
+                  Column(
+                      children: [
+                        Column(
+                          children: [
+                            // En-tête de la page ("Mon compte")
+                            const Padding(
+                              padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                              child: Text(
+                                'Mon compte',
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+
+                            // Section du profil utilisateur
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 20.0),
+                              child: Row(
+                                children: [
+                                  const CircleAvatar(
+                                    maxRadius: 40,
+                                    backgroundImage: AssetImage(
+                                        "assets/moon.jpg"), // Remplacez par le chemin de votre image
+                                  ),
+                                  const SizedBox(width: 20),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                              "$prenom $nom",
+                                              style: const TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            const Icon(Icons.edit,
+                                                color: Colors.grey, size: 18),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          "$mail",
+                                          style: TextStyle(color: Colors.grey),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            const Divider(), // Ligne de séparation
+
+                            // Liste des options
+                            buildListTile(Icons.folder_open, 'Mes commandes',
+                                () {
+                              Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  Mescommandes(
+                                                    id: "${id}",
+                                                  )));
+                            }),
+                            const Divider(),
+                            buildListTile(Icons.person_outline,
+                                'Mes informations personnelles', () {
+                              Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  PersonalInfoPage()));
+                            }),
+                            const Divider(),
+                            buildListTile(Icons.location_on_outlined,
+                                'Mon adresses de livraison', () {
+                              Navigator.of(context).push(
+                              MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const FavoriteAddressesPage()));
+                            }),
+                            const Divider(),
+                            buildListTile(Icons.info_outline, 'À propos', () {
+                              MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const HelpPage());
+                            }),
+                            const Divider(),
+                          ],
+                        ),
+                        Expanded(
+                          child: Stack(
+                            children: [
+                              // 1. Image de fond qui couvre toute la hauteur disponible
+                              Positioned.fill(
+                                child: Image.asset(
+                                  'assets/fresh.png', // Remplacez par le chemin de votre image
+                                  fit: BoxFit.fitWidth,
+                                ),
+                              ),
+                              // 2. Contenu principal de la page, enveloppé dans un SingleChildScrollView
+                              SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    // Bouton de déconnexion
+                                    Padding(
+                                      padding: const EdgeInsets.all(30.0),
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          // Logique de déconnexion
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.green[
+                                              800], // Couleur de fond du bouton
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                                30.0), // Bords arrondis
+                                          ),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 50, vertical: 15),
+                                          minimumSize: Size(double.infinity,
+                                              50), // S'étend sur toute la largeur
+                                        ),
+                                        child: const Row(
+                                          mainAxisSize: MainAxisSize
+                                              .min, // La Row ne prend pas toute la largeur
+                                          children: [
+                                            Icon(Icons.logout,
+                                                color: Colors
+                                                    .white), // Icône de déconnexion
+                                            SizedBox(width: 10),
+                                            Text(
+                                              'Me déconnecter',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
+              /*Column(
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(30.0),
@@ -659,8 +836,8 @@ class _ProfilState extends State<Profil> {
                           ),
                         )
                       ],
-                    ),
-            )
+                    ),*/
+              )
           : Center(
               child: GestureDetector(
                 onTap: () {

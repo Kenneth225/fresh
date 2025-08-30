@@ -45,11 +45,151 @@ class _ExplorerState extends State<Explorer> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+  backgroundColor: Colors.white,
+  appBar: AppBar(
+    automaticallyImplyLeading: false,
+    backgroundColor: Colors.white,
+    elevation: 0,
+    title: const Center(
+      child: Text(
+        "Catégories",
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        ),
+      ),
+    ),
+  ),
+  body: Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        // Barre de recherche
+        GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const Search()),
+            );
+          },
+          child: TextField(
+            enabled: false,
+            decoration: InputDecoration(
+              prefixIcon: const Icon(
+                Icons.search,
+                color: Color.fromRGBO(59, 59, 59, 1),
+              ),
+              hintText: "Recherchez un produit",
+              hintStyle: const TextStyle(color: Colors.grey),
+              filled: true,
+              fillColor: Colors.grey.shade100,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 20),
+
+        // Liste des catégories
+        Expanded(
+          child: FutureBuilder<dynamic>(
+            future: homecat(),
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              if (snapshot.hasData) {
+                return ListView.builder(
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (context, index) {
+                    Categorie cate = snapshot.data[index];
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => Categoriedetails(
+                              nom: cate.nomCategorie,
+                              cat: "${cate.id}",
+                            ),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 16),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            // Image catégorie
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(18),
+                              child: Image.network(
+                                "${api_link}/api_fresh/uploads/${cate.visuel}",
+                                height: 120,
+                                width: 120,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+
+                            // Nom de la catégorie
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    cate.nomCategorie.toUpperCase(),
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    cate.nomCategorie,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            // Flèche
+                            const Icon(
+                              Icons.chevron_right,
+                              color: Colors.black54,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              } else {
+                return const Center(
+                  child: Text(
+                    'Aucune donnée disponible',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                );
+              }
+            },
+          ),
+        ),
+      ],
+    ),
+  ),
+);
+
+
+    /* Scaffold(
        backgroundColor: Colors.white,
-        appBar: AppBar(
+        appBar: AppBar( 
           automaticallyImplyLeading: false,
           backgroundColor: Colors.white,
-          title: Center(child: const Text("Trouver des produits")),
+          title: Center(child: const Text("Catégories")),
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -143,6 +283,6 @@ class _ExplorerState extends State<Explorer> {
               )
             ],
           ),
-        ));
+        ));*/
   }
 }

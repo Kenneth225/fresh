@@ -61,7 +61,8 @@ class _CategoriedetailsState extends State<Categoriedetails> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("${widget.nom}"),
+        backgroundColor: Colors.white,
+        title: Center(child: Text("${widget.nom}")),
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -77,7 +78,129 @@ class _CategoriedetailsState extends State<Categoriedetails> {
                   shrinkWrap: true,
                   itemBuilder: (BuildContext context, int index) {
                     Boutique boutique = snapshot.data[index];
-                    return Row(
+                    return Container(
+                                    width: 180,
+                                    margin: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        // Image + overlay
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        Details(
+                                                          id: boutique.id,
+                                                          nom: boutique.nom,
+                                                          prix: boutique.prix,
+                                                          description: boutique
+                                                              .description,
+                                                          categorie:
+                                                              boutique.categorie,
+                                                          image: boutique.image,
+                                                        )));
+                                          },
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            child: Stack(
+                                              children: [
+                                                Image.network(
+                                                  "$api_link/api_fresh/uploads/${boutique.image}",
+                                                  height: 120,
+                                                  width: 180,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                                Container(
+                                                  height: 120,
+                                                  decoration: BoxDecoration(
+                                                    gradient: LinearGradient(
+                                                      colors: [
+                                                        Colors.black
+                                                            .withOpacity(0.5),
+                                                        Colors.transparent,
+                                                      ],
+                                                      begin: Alignment
+                                                          .bottomCenter,
+                                                      end:
+                                                          Alignment.topCenter,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Positioned(
+                                                  left: 8,
+                                                  bottom: 8,
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        "${boutique.nom}",
+                                                        style: const TextStyle(
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      const Text(
+                                                        "Prix au kg",
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 12),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 5),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              "${boutique.prix} F CFA",
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                commande_fict(
+                                                  boutique.id,
+                                                  boutique.nom,
+                                                  boutique.image,
+                                                  1,
+                                                  boutique.prix,
+                                                  boutique.description,
+                                                );
+                                              },
+                                              child: Container(
+                                                decoration:
+                                                    const BoxDecoration(
+                                                  color: Color(0xFF006650),
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                padding:
+                                                    const EdgeInsets.all(6),
+                                                child: const Icon(
+                                                  Icons.add,
+                                                  color: Colors.white,
+                                                  size: 18,
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  );
+                    /*Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Card(
@@ -216,7 +339,7 @@ class _CategoriedetailsState extends State<Categoriedetails> {
                           ),
                         ),
                       ],
-                    );
+                    );*/
                   },
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,

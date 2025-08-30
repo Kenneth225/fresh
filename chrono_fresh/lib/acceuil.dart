@@ -34,8 +34,8 @@ class _AcceuilState extends State<Acceuil> {
     Explorer(),
     Panier(),
     ReSultatsCateGorieRecette(),
-    MonCompte()
-    //Profil(),
+   // MonCompte()
+    Profil(),
   ];
 
   final List<Widget> _tabsLivreur = const [
@@ -82,11 +82,11 @@ class _AcceuilState extends State<Acceuil> {
                 builder: (context, cartProvider, _) {
                   return GNav(
                     backgroundColor: Colors.white,
-                    style: GnavStyle.google,
+                    style: GnavStyle.oldSchool,
                     color: Colors.black,
                     activeColor: const Color.fromARGB(255, 36, 246, 117),
                     selectedIndex: _tabNum,
-                    gap: 5,
+                    //gap: 6,
                     padding: const EdgeInsets.all(8),
                     onTabChange: (index) {
                       setState(() {

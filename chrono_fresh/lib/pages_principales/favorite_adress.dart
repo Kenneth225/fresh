@@ -208,7 +208,8 @@ class _FavoriteAddressesPageState extends State<FavoriteAddressesPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Mes adresses favorites'),
+        backgroundColor: Colors.white,
+        title: const Text('Mes adresses'),
       ),
       body: load
           ? Center(child: const CircularProgressIndicator())

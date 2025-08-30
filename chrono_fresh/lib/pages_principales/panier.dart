@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:chrono_fresh/controlleurs/cart_provider.dart';
+import 'package:chrono_fresh/controlleurs/meszones_api.dart';
+import 'package:chrono_fresh/models/zones_structure.dart';
 import 'package:chrono_fresh/pages_principales/mescommandes.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
@@ -20,6 +22,7 @@ class Panier extends StatefulWidget {
 }
 
 class _PanierState extends State<Panier> {
+  int max = 0;
   String? nom;
   String? prenom;
   String? role;
@@ -99,6 +102,10 @@ class _PanierState extends State<Panier> {
     });
   }
 
+  adresses(id) async {
+    return await viewlocation(id);
+  }
+
   Future<void> _showMyinfo(message) async {
     return showDialog<void>(
       context: context,
@@ -169,6 +176,7 @@ class _PanierState extends State<Panier> {
                   height: 150,
                   fit: BoxFit.cover,
                 ),
+                
               ],
             ),
           ),
@@ -179,6 +187,41 @@ class _PanierState extends State<Panier> {
                 Navigator.of(context).pop();
               },
             ),
+            // afficher les autres adresses enregistrer
+           /* Expanded(
+              child: SizedBox(
+                height: 100,
+                child: FutureBuilder<dynamic>(
+                    future: adresses(id),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                      if (snapshot.hasData) {
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            max = snapshot.data.length;
+                            Zones mzones = snapshot.data[index];
+                            print(snapshot.data.length);
+                            return TextButton(
+                              child: Text("${mzones.name}"),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            );
+                
+                           
+                          },
+                        );
+                      } else {
+                        return const Center(
+                          child: Text('Aucune adresse enregistré',
+                              style: TextStyle(color: Colors.black)),
+                        );
+                      }
+                    }),
+              ),
+            ),*/
           ],
         );
       },
@@ -391,164 +434,219 @@ class _PanierState extends State<Panier> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-          backgroundColor: Colors.white,
-        title: Center(child: const Text("Panier")),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: const Text(
+          "Mon panier",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+        centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: taille >= 1
-            ? SingleChildScrollView(
-                child: Column(children: [
-                  ListView.builder(
-                      itemCount: cart.cartLength,
-                      shrinkWrap: true,
-                      itemBuilder: (BuildContext context, int index) {
-                        var item = cart.cartItemsList[index];
-                        return Padding(
-                          padding: const EdgeInsets.all(5),
-                          child: Card(
-                            color: Colors.white,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Column(children: [
-                                  Image.network(
-                                    "${api_link}/api_fresh/uploads/${item.productImages?[0]}",
-                                    height: 50,
-                                    width: 60,
-                                    fit: BoxFit.fitWidth,
-                                  ),
-                                  const SizedBox(width: 16),
-                                ]),
-                                Column(
-                                  children: [
-                                    Text('${item.productName}',
-                                        style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold)),
-                                    Text(
-                                        "1kg, ${item.variants.first.price} FCFA",
-                                        style: const TextStyle(
-                                            fontSize: 12, color: Colors.grey)),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        IconButton(
-                                            onPressed: () {
-                                              if (item.quantity <= 1) {
-                                                print("rien a faire");
-                                              } else {
-                                                setState(() {
-                                                  cart.updateQuantity(
-                                                      item.productId,
-                                                      item.variants,
-                                                      item.quantity - 1);
-                                                });
-                                              }
-                                            },
-                                            icon: const Icon(Icons.minimize)),
-                                        Container(
-                                          height: 60,
-                                          width: 45,
-                                          child: TextField(
-                                            enabled: false,
-                                            decoration: InputDecoration(
-                                                border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          5.0),
-                                                ),
-                                                //filled: true,
-                                                hintStyle: const TextStyle(
-                                                    color: Colors.grey),
-                                                hintText: "${item.quantity}",
-                                                fillColor: Colors.white,
-                                                hoverColor: Colors.white),
-                                          ),
-                                        ),
-                                        IconButton(
-                                            onPressed: () {
-                                              if (item.quantity >= 10) {
-                                                print("rien a faire");
-                                              } else {
-                                                setState(() {
-                                                  cart.updateQuantity(
-                                                      item.productId,
-                                                      item.variants,
-                                                      item.quantity + 1);
-                                                });
-                                              }
-                                            },
-                                            icon:
-                                                const Icon(Icons.add_outlined)),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: <Widget>[
-                                    IconButton(
-                                        icon: const Icon(Icons.close,
-                                            color: Colors.grey),
-                                        onPressed: () {
-                                          _removeItem(
-                                              item.productId, item.variants);
-                                          Provider.of<CartProvider>(context,
-                                                  listen: false)
-                                              .removeItem();
-                                        }),
-                                    Text(
-                                        "${item.variants.first.price * item.quantity} FCFA",
-                                        style: const TextStyle(fontSize: 16)),
-                                  ],
-                                ),
-                                const Divider(),
-                              ],
-                            ),
-                          ),
-                        );
-                      }),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        minimumSize: const Size(double.infinity, 50),
-                      ),
-                      onPressed: () {
-                        cart.cartItemsList.forEach((f) {
-                          nomArray.add(f.productName);
-                          qtArray.add(f.quantity);
-                          imgArray.add(f.productImages?[0]);
-                          unitprArray.add(f.variants.isNotEmpty
-                              ? f.variants[0].price
-                              : null); // Ajout du prix
-                          idArray.add(f.productId);
-                        });
-                        print('$nomArray');
-                        print('$qtArray');
-                        print('$unitprArray');
-                        print('$imgArray');
-                        print(cart.cartLength);
-                        _showPaymentModal(context);
-                      },
-                      child: Text("Aller à la caisse •  ${cart.total} Fcfa",
-                          style: const TextStyle(
-                              fontSize: 16, color: Colors.white)),
+      body: taille >= 1
+          ? Column(
+              children: [
+                // Nombre d'articles
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "${cart.cartLength} articles",
+                      style: const TextStyle(color: Colors.grey, fontSize: 14),
                     ),
                   ),
-                ]),
-              )
-            : Center(
-                child: Column(
-                  children: [
-                    Image.asset("assets/bempty.jpg"),
-                    const Text("Vous n'avez aucun article dans votre panier")
-                  ],
                 ),
+
+                // Liste des produits
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: cart.cartLength,
+                    itemBuilder: (BuildContext context, int index) {
+                      var item = cart.cartItemsList[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Image produit
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                "${api_link}/api_fresh/uploads/${item.productImages?[0]}",
+                                height: 100,
+                                width: 100,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+
+                            // Nom + détail + bouton +/-
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    item.productName,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    "${item.variants.first.price} F CFA ",
+                                    style: const TextStyle(
+                                        fontSize: 13, color: Colors.grey),
+                                  ),
+                                  const SizedBox(height: 8),
+
+                                  // Boutons +/-
+                                  Row(
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(Icons.remove_circle,
+                                            color: Colors.green),
+                                        onPressed: () {
+                                          if (item.quantity > 1) {
+                                            setState(() {
+                                              cart.updateQuantity(
+                                                  item.productId,
+                                                  item.variants,
+                                                  item.quantity - 1);
+                                            });
+                                          }
+                                        },
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 12, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          border:
+                                              Border.all(color: Colors.grey),
+                                          borderRadius:
+                                              BorderRadius.circular(6),
+                                        ),
+                                        child: Text(
+                                          "${item.quantity}",
+                                          style: const TextStyle(fontSize: 16),
+                                        ),
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.add_circle,
+                                            color: Colors.green),
+                                        onPressed: () {
+                                          if (item.quantity < 10) {
+                                            setState(() {
+                                              cart.updateQuantity(
+                                                  item.productId,
+                                                  item.variants,
+                                                  item.quantity + 1);
+                                            });
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+
+                            // Prix + bouton supprimer
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.delete_outline,
+                                      color: Colors.green),
+                                  onPressed: () {
+                                    _removeItem(item.productId, item.variants);
+                                    Provider.of<CartProvider>(context,
+                                            listen: false)
+                                        .removeItem();
+                                  },
+                                ),
+                                Text(
+                                  "${item.variants.first.price * item.quantity} F CFA",
+                                  style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+
+                // Vider panier
+                TextButton.icon(
+                  onPressed: () {
+                    cart.clearCart();
+                  },
+                  icon: const Icon(Icons.delete_outline, color: Colors.green),
+                  label: const Text("Vider mon panier",
+                      style: TextStyle(color: Colors.black)),
+                ),
+
+                // Footer avec total + bouton valider
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 5,
+                        offset: const Offset(0, -2),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        "${cart.total} F CFA",
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      const Spacer(),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 14),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                        ),
+                        onPressed: () {
+                          _showPaymentModal(context);
+                        },
+                        child: const Text(
+                          "Valider mon panier",
+                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            )
+          : Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset("assets/bempty.jpg", height: 150),
+                  const SizedBox(height: 12),
+                  const Text("Vous n'avez aucun article dans votre panier"),
+                ],
               ),
-      ),
+            ),
     );
   }
 }
