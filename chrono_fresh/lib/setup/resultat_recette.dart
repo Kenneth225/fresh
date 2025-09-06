@@ -1,4 +1,5 @@
 import 'package:chrono_fresh/controlleurs/recette_api_all.dart';
+import 'package:chrono_fresh/global_var.dart';
 import 'package:chrono_fresh/models/recette_structure.dart';
 import 'package:chrono_fresh/pages_principales/recettes.dart';
 import 'package:flutter/material.dart';
@@ -102,13 +103,25 @@ class ReSultatsCateGorieRecetteState extends State<ReSultatsCateGorieRecette> {
                                                 itemBuilder: (context, index) {
                                                   final recette = recettes[index];
                                                   return GestureDetector(
-                                                      onTap:
-                                                          () => showRecipeDetails(
+                                                      onTap: (){
+                                                        Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        Recettes(
+                                                                   nom: recette.nomPlat,
+                                                          
+                                                          description: recette
+                                                                  .description,
+                                                          
+                                                          image: recette.image,
+                                                        )));
+                                                      },
+                                                         /* () => showRecipeDetails(
                                                               context,
                                                               recette.nomPlat,
                                                               recette
                                                                   .description,
-                                                              recette.image),
+                                                              recette.image),*/
                                                       child: IntrinsicHeight(
                                                           child: Container(
                                                               margin:
@@ -135,17 +148,12 @@ class ReSultatsCateGorieRecetteState extends State<ReSultatsCateGorieRecette> {
                                                                           140,
                                                                       height:
                                                                           97,
-                                                                      child: Image
-                                                                          .asset(
-                                                                        recette
-                                                                            .image,
-                                                                        height:
-                                                                            60,
-                                                                        errorBuilder: (context,
-                                                                                error,
-                                                                                stackTrace) =>
-                                                                            const Icon(Icons.image_not_supported),
-                                                                      ),
+                                                                      child: Image.network(
+                                                  "$api_link/api_fresh/uploads/${recette.image}",
+                                                  height: 60,
+                                                  width: 180,
+                                                  fit: BoxFit.cover,
+                                                ),
                                                                     ),
                                                                     Expanded(
                                                                         child: IntrinsicHeight(

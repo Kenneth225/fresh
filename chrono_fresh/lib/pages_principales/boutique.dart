@@ -1,7 +1,9 @@
 import 'dart:math';
 import 'dart:ui';
+import 'package:chrono_fresh/controlleurs/notif_pub_api.dart';
 import 'package:chrono_fresh/controlleurs/sboutique_api.dart';
 import 'package:chrono_fresh/controlleurs/scategorie_api.dart';
+import 'package:chrono_fresh/models/notifs_pub_structure.dart';
 import 'package:provider/provider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chrono_fresh/controlleurs/boutique_api.dart';
@@ -100,6 +102,10 @@ class _boutiqueState extends State<boutique> {
 
   boutique(categorie) async {
     return await viewboutique(categorie);
+  }
+
+  notif() async {
+    return await viewnotif();
   }
 
   homecat() async {
@@ -266,70 +272,87 @@ class _boutiqueState extends State<boutique> {
         const SizedBox(height: 15),
 
         // ==== CAROUSEL ====
-        Center(
-          child: CarouselSlider.builder(
-            itemCount: sliderData.length,
-            options: CarouselOptions(
-              height: 100,
-              autoPlay: true,
-              enlargeCenterPage: true,
-              aspectRatio: 16 / 9,
-              viewportFraction: 0.8,
-            ),
-            itemBuilder: (context, index, realIndex) {
-              final item = sliderData[index];
-              return Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 5,
-                      offset: Offset(2, 2),
-                    )
-                  ],
-                  color: Colors.white,
+
+        FutureBuilder(
+  future: notif(), // doit renvoyer Future<List<Notifications>>
+  builder: (context, AsyncSnapshot<List<Notifications>> snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (!snapshot.hasData || snapshot.data!.isEmpty) {
+      return const Center(child: Text("Aucune donnée trouvée"));
+    }
+
+    final notifications = snapshot.data!;
+
+    return CarouselSlider.builder(
+      itemCount: notifications.length,
+      options: CarouselOptions(
+        height: 120,
+        autoPlay: true,
+        enlargeCenterPage: true,
+        aspectRatio: 16 / 9,
+        viewportFraction: 0.8,
+      ),
+      itemBuilder: (context, index, realIndex) {
+        final notif = notifications[index];
+
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 5,
+                offset: Offset(2, 2),
+              )
+            ],
+            color: Colors.white,
+          ),
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Image.network(
+                  "$api_link/api_fresh/uploads/${notif.image}" ?? "", // sécurité si null
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image),
                 ),
-                child: Row(
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child: Image.network(
-                        item['image']!,
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
+                    Text(
+                      notif.titre ?? "",
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            item['title']!,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            item['discount']!,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Color(0xFF006650),
-                            ),
-                          ),
-                        ],
+                    Text(
+                      notif.sousTitre ?? "",
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Color(0xFF006650),
                       ),
-                    )
+                    ),
                   ],
                 ),
-              );
-            },
+              )
+            ],
           ),
-        ),
+        );
+      },
+    );
+  },
+),
+
 
         const SizedBox(height: 10),
 

@@ -123,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: Stack(fit: StackFit.expand, children: [
         Image.asset(
-          "assets/home.jpeg",
+          "assets/fresh.png",
           fit: BoxFit.cover,
         ),
         BackdropFilter(

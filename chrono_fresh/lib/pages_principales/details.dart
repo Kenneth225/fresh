@@ -175,24 +175,40 @@ class _DetailsState extends State<Details> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      //backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 30,),
-            IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(Icons.backspace_outlined)),
-            Center(
-              child: Image.network(
-                "${api_link}/api_fresh/uploads/${widget.image}",
-                height: 200,
-                fit: BoxFit.fitWidth,
-              ),
+            Stack(
+              children: [
+                // IMAGE
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    bottom: Radius.circular(30),
+                  ),
+                  child: Image.network(
+                    "${api_link}/api_fresh/uploads/${widget.image}",
+                    height: 250,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+
+                // ICONE RETOUR
+                Positioned(
+                  top: 40, // padding du haut
+                  left: 16,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.black54,
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ),
+                ),
+              ],
             ),
             Padding(
               padding: const EdgeInsets.all(18.0),
@@ -337,103 +353,128 @@ class _DetailsState extends State<Details> {
                     ),
                     children: [
                       Padding(
-  padding: const EdgeInsets.all(12.0),
-  child: FutureBuilder<dynamic>(
-    future: viewrec('${widget.id}'),
-    builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return const Center(child: CircularProgressIndicator());
-      } else if (snapshot.hasError) {
-        return const Center(
-          child: Text(
-            'Aucune recette disponible pour ce produit',
-            style: TextStyle(color: Colors.black),
-          ),
-        );
-      } else if (!snapshot.hasData || snapshot.data.isEmpty) {
-        return const Center(
-          child: Text(
-            'Aucune recette disponible',
-            style: TextStyle(color: Colors.black),
-          ),
-        );
-      } else {
-        List<Mrecettes> recettes = snapshot.data;
+                        padding: const EdgeInsets.all(12.0),
+                        child: FutureBuilder<dynamic>(
+                          future: viewrec('${widget.id}'),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<dynamic> snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return const Center(
+                                child: Text(
+                                  'Aucune recette disponible pour ce produit',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              );
+                            } else if (!snapshot.hasData ||
+                                snapshot.data.isEmpty) {
+                              return const Center(
+                                child: Text(
+                                  'Aucune recette disponible',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              );
+                            } else {
+                              List<Mrecettes> recettes = snapshot.data;
 
-        // Remplacement du `Wrap` par un `GridView.builder`
-        return GridView.builder(
-          // Pour éviter les problèmes de débordement de scrolling
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          // Configuration de la grille
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, // 2 colonnes comme dans la maquette
-            crossAxisSpacing: 10.0, // Espacement horizontal entre les cartes
-            mainAxisSpacing: 5.0, // Espacement vertical entre les cartes
-            childAspectRatio: 0.8, // Ratio pour que les cartes aient la bonne taille
-          ),
-          itemCount: recettes.length,
-          itemBuilder: (context, index) {
-            final recette = recettes[index];
-            return GestureDetector(
-              onTap: () {
-                showRecipeDetails(context, recette.nomPlat, recette.description);
-              },
-              // Utilisation d'un `Card` pour une meilleure élévation et des bords arrondis
-              child: Card(
-                elevation: 4.0, // Ombre légère pour un effet 3D
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                clipBehavior: Clip.antiAlias, // Permet à l'image d'avoir des bords arrondis
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    // Image de la recette
-                    Expanded(
-                      child: Image.network(
-                        // Assurez-vous que l'objet `Mrecettes` a une propriété `imageUrl`
-                        "recette.imageUrl",
-                        fit: BoxFit.cover, // L'image remplit l'espace sans déformation
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return Center(
-                            child: CircularProgressIndicator(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes!
-                                  : null,
-                            ),
-                          );
-                        },
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Center(child: Icon(Icons.broken_image));
-                        },
-                      ),
-                    ),
-                    // Nom de la recette
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        recette.nomPlat,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.green, // Couleur verte comme dans la maquette
+                              // Remplacement du `Wrap` par un `GridView.builder`
+                              return GridView.builder(
+                                // Pour éviter les problèmes de débordement de scrolling
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                // Configuration de la grille
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount:
+                                      2, // 2 colonnes comme dans la maquette
+                                  crossAxisSpacing:
+                                      10.0, // Espacement horizontal entre les cartes
+                                  mainAxisSpacing:
+                                      5.0, // Espacement vertical entre les cartes
+                                  childAspectRatio:
+                                      0.8, // Ratio pour que les cartes aient la bonne taille
+                                ),
+                                itemCount: recettes.length,
+                                itemBuilder: (context, index) {
+                                  final recette = recettes[index];
+                                  return GestureDetector(
+                                    onTap: () {
+                                      showRecipeDetails(context,
+                                          recette.nomPlat, recette.description);
+                                    },
+                                    // Utilisation d'un `Card` pour une meilleure élévation et des bords arrondis
+                                    child: Card(
+                                      elevation:
+                                          4.0, // Ombre légère pour un effet 3D
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                      ),
+                                      clipBehavior: Clip
+                                          .antiAlias, // Permet à l'image d'avoir des bords arrondis
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.stretch,
+                                        children: <Widget>[
+                                          // Image de la recette
+                                          Expanded(
+                                            child: Image.network(
+                                              // Assurez-vous que l'objet `Mrecettes` a une propriété `imageUrl`
+                                              "$api_link/api_fresh/uploads/${recette.image}",
+                                              fit: BoxFit
+                                                  .cover, // L'image remplit l'espace sans déformation
+                                              loadingBuilder: (context, child,
+                                                  loadingProgress) {
+                                                if (loadingProgress == null)
+                                                  return child;
+                                                return Center(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    value: loadingProgress
+                                                                .expectedTotalBytes !=
+                                                            null
+                                                        ? loadingProgress
+                                                                .cumulativeBytesLoaded /
+                                                            loadingProgress
+                                                                .expectedTotalBytes!
+                                                        : null,
+                                                  ),
+                                                );
+                                              },
+                                              errorBuilder:
+                                                  (context, error, stackTrace) {
+                                                return const Center(
+                                                    child: Icon(
+                                                        Icons.broken_image));
+                                              },
+                                            ),
+                                          ),
+                                          // Nom de la recette
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              recette.nomPlat,
+                                              textAlign: TextAlign.center,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors
+                                                    .green, // Couleur verte comme dans la maquette
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            }
+                          },
                         ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      }
-    },
-  ),
-)
-                     
+                      )
                     ],
                   ),
                   const Divider(),
