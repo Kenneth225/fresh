@@ -7,14 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class connection extends StatefulWidget {
-  const connection({super.key});
+class Connection extends StatefulWidget {
+  const Connection({super.key});
 
   @override
-  State<connection> createState() => _connectionState();
+  State<Connection> createState() => _ConnectionState();
 }
 
-class _connectionState extends State<connection> {
+class _ConnectionState extends State<Connection> {
   late TextEditingController nomctrl;
   late TextEditingController prenomctrl;
   late TextEditingController mailctrl;

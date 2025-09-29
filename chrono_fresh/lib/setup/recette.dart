@@ -35,9 +35,9 @@ class RecetteState extends State<Recette> {
 																	child: Container(
 																		padding: const EdgeInsets.only( top: 4, bottom: 737),
 																		width: double.infinity,
-																		decoration: BoxDecoration(
+																		decoration: const BoxDecoration(
 																			image: DecorationImage(
-																				image: NetworkImage("https://storage.googleapis.com/tagjs-prod.appspot.com/v1/ZHnJsOCkm0/6sqt2ddm_expires_30_days.png"),
+																				image: AssetImage("assets/recettepg.jpg"),
 																				fit: BoxFit.cover
 																			),
 																		),

@@ -9,17 +9,18 @@ List<Mcommande> mcommandeFromJson(String str) => List<Mcommande>.from(json.decod
 String mcommandeToJson(List<Mcommande> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class Mcommande {
-    String id;
-    DateTime dateCommande;
-    String statut;
-    String client;
-    String iduniq;
-    String total;
-    String adresse;
-    String longitude;
-    String latitude;
-    String payment;
-    String? livreurId;
+    String? id;
+    DateTime? dateCommande;
+    String? statut;
+    String? client;
+    String? iduniq;
+    String  total;
+    String? ptotal;
+    String? adresse;
+    String? longitude;
+    String? latitude;
+    String? payment;
+    dynamic livreurId;
     dynamic createdById;
     dynamic updatedById;
     dynamic deletedById;
@@ -28,32 +29,34 @@ class Mcommande {
     dynamic updatedAt;
 
     Mcommande({
-        required this.id,
-        required this.dateCommande,
-        required this.statut,
-        required this.client,
-        required this.iduniq,
-        required this.total,
-        required this.adresse,
-        required this.longitude,
-        required this.latitude,
-        required this.payment,
-        required this.livreurId,
-        required this.createdById,
-        required this.updatedById,
-        required this.deletedById,
-        required this.deletedAt,
-        required this.createdAt,
-        required this.updatedAt,
+        this.id,
+        this.dateCommande,
+        this.statut,
+        this.client,
+        this.iduniq,
+        required  this.total,
+        this.ptotal,
+        this.adresse,
+        this.longitude,
+        this.latitude,
+        this.payment,
+        this.livreurId,
+        this.createdById,
+        this.updatedById,
+        this.deletedById,
+        this.deletedAt,
+        this.createdAt,
+        this.updatedAt,
     });
 
     factory Mcommande.fromJson(Map<String, dynamic> json) => Mcommande(
         id: json["id"],
-        dateCommande: DateTime.parse(json["date_commande"]),
+        dateCommande: json["date_commande"] == null ? null : DateTime.parse(json["date_commande"]),
         statut: json["statut"],
         client: json["client"],
         iduniq: json["iduniq"],
         total: json["total"],
+        ptotal: json["ptotal"],
         adresse: json["adresse"],
         longitude: json["longitude"],
         latitude: json["latitude"],
@@ -69,11 +72,12 @@ class Mcommande {
 
     Map<String, dynamic> toJson() => {
         "id": id,
-        "date_commande": "${dateCommande.year.toString().padLeft(4, '0')}-${dateCommande.month.toString().padLeft(2, '0')}-${dateCommande.day.toString().padLeft(2, '0')}",
+        "date_commande": "${dateCommande!.year.toString().padLeft(4, '0')}-${dateCommande!.month.toString().padLeft(2, '0')}-${dateCommande!.day.toString().padLeft(2, '0')}",
         "statut": statut,
         "client": client,
         "iduniq": iduniq,
         "total": total,
+        "ptotal": ptotal,
         "adresse": adresse,
         "longitude": longitude,
         "latitude": latitude,

@@ -174,26 +174,7 @@ class _boutiqueState extends State<boutique> {
     );
   }
 
-  final List<Map<String, String>> sliderData = [
-    {
-      "image":
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRVpVsl8RtO8Pj6kzTsT-3cuabT-IYp5FfOw&s",
-      "title": "Viandes fraîches",
-      "discount": "Obtenez jusqu'à 40% de réduction"
-    },
-    {
-      "image":
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5_Oj_I2EAsrflzWY2kNHuZ21hqtb1T_8Y4g&s",
-      "title": "Fruits bio",
-      "discount": "Jusqu'à 30% de réduction"
-    },
-    {
-      "image":
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrcWfCyI0ywqGG7J9r476leb1XqfANgoCC_g&s",
-      "title": "Légumes frais",
-      "discount": "Offre spéciale 25% de réduction"
-    },
-  ];
+  
 
   Color getRandomColor() {
     final Random random = Random();

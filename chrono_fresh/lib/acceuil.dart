@@ -1,5 +1,4 @@
 
-import 'package:chrono_fresh/setup/mon_compte.dart';
 import 'package:chrono_fresh/setup/resultat_recette.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -34,7 +33,6 @@ class _AcceuilState extends State<Acceuil> {
     Explorer(),
     Panier(),
     ReSultatsCateGorieRecette(),
-   // MonCompte()
     Profil(),
   ];
 
@@ -48,6 +46,12 @@ class _AcceuilState extends State<Acceuil> {
   void initState() {
     super.initState();
     _tabNum = widget.initialTab;
+
+    // ✅ Sécurisation pour éviter RangeError
+    if (_tabNum >= _tabsUser.length) {
+      _tabNum = 0;
+    }
+
     _autoLogIn();
   }
 
@@ -67,11 +71,12 @@ class _AcceuilState extends State<Acceuil> {
   @override
   Widget build(BuildContext context) {
     final bool isLivreur = _role == "2";
+    final tabs = isLivreur ? _tabsLivreur : _tabsUser;
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: _isLoggedIn
-          ? (isLivreur ? _tabsLivreur[_tabNum] : _tabsUser[_tabNum])
+          ? tabs[_tabNum] // ✅ plus sûr
           : const Center(child: CircularProgressIndicator()),
       bottomNavigationBar: _isLoggedIn
           ? Container(
@@ -86,7 +91,6 @@ class _AcceuilState extends State<Acceuil> {
                     color: Colors.black,
                     activeColor: const Color.fromARGB(255, 36, 246, 117),
                     selectedIndex: _tabNum,
-                    //gap: 6,
                     padding: const EdgeInsets.all(8),
                     onTabChange: (index) {
                       setState(() {
@@ -119,36 +123,36 @@ class _AcceuilState extends State<Acceuil> {
                             ),
                             GButton(
                               leading: Stack(
-                                  clipBehavior: Clip.none,
-                                  children: [
-                                    const Icon(Icons.shopping_cart, size: 30),
-                                    if (cartProvider.cartItemCount > 0)
-                                      Positioned(
-                                        right: -6,
-                                        top: -6,
-                                        child: Container(
-                                          padding: const EdgeInsets.all(4),
-                                          decoration: BoxDecoration(
-                                            color: Colors.red,
-                                            borderRadius:
-                                                BorderRadius.circular(12),
+                                clipBehavior: Clip.none,
+                                children: [
+                                  const Icon(Icons.shopping_cart, size: 30),
+                                  if (cartProvider.cartItemCount > 0)
+                                    Positioned(
+                                      right: -6,
+                                      top: -6,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        constraints: const BoxConstraints(
+                                          minWidth: 20,
+                                          minHeight: 20,
+                                        ),
+                                        child: Text(
+                                          '${cartProvider.cartItemCount}',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
                                           ),
-                                          constraints: const BoxConstraints(
-                                            minWidth: 20,
-                                            minHeight: 20,
-                                          ),
-                                          child: Text(
-                                            '${cartProvider.cartItemCount}',
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 12,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
+                                          textAlign: TextAlign.center,
                                         ),
                                       ),
-                                  ],
-                                ),
+                                    ),
+                                ],
+                              ),
                               icon: Icons.shopping_cart_outlined,
                               text: 'Panier',
                             ),

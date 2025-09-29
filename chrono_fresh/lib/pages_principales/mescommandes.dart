@@ -157,112 +157,150 @@ class _MescommandesState extends State<Mescommandes> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SingleChildScrollView(
-            child: SizedBox(
-              height: MediaQuery.sizeOf(context).height / 1.2,
-              child: FutureBuilder<dynamic>(
-                  future: order(widget.id),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                    if (snapshot.hasData) {
-                      return ListView.builder(
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          Mcommande mcommande = snapshot.data[index];
-                          return Card(
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
-                            elevation: 0,
-                            child: Padding(
-                              padding: const EdgeInsets.all(12),
-                              child: Row(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: Image.asset(
-                                      'assets/bfull.jpg',
-                                      width: 50,
-                                      height: 50,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: SizedBox(
+                height: MediaQuery.sizeOf(context).height / 1.2,
+                child: FutureBuilder<dynamic>(
+                    future: order(widget.id), 
+                    builder:
+                        (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                      if (snapshot.hasData) {
+                        return ListView.builder(
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            Mcommande mcommande = snapshot.data[index];
+                            return Column(
+                              children: [
+                                mcommande.statut == "0" || mcommande.statut == "3"
+                                    ? const Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Icon(
+                                            Icons.radio_button_on_sharp,
+                                            color: Colors.amberAccent,
+                                          ),
+                                          Text("Traitement..."),
+                                        ],
+                                      )
+                                    : const Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Icon(
+                                            Icons.radio_button_on_sharp,
+                                            color: Colors.green,
+                                          ),
+                                          Text("Livrée"),
+                                        ],
+                                      ),
+                                Card(
+                                  color: Color(0xFF006650),
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 8),
+                                  elevation: 0,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12),
+                                    child: Row(
                                       children: [
-                                        Text("N° ${mcommande.id}",
-                                            style: const TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold)),
-                                        const SizedBox(height: 4),
-                                        Text("Total : ${mcommande.total} F",
+                                        Text("${mcommande.total} F CFA",
                                             style: const TextStyle(
                                                 fontSize: 14,
-                                                color: Colors.grey)),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                            "${DateTime.parse("${mcommande.dateCommande}")}",
-                                            style: const TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.grey)),
+                                                color: Colors.white)),
+                                       const VerticalDivider(
+                  color: Colors.grey,
+                  thickness: 2,
+                  indent: 10,
+                  endIndent: 10,
+                ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text("Commande N° ${mcommande.id}",
+                                                  style: const TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.white)),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                  "Payé le ${DateTime.parse("${mcommande.dateCommande}")}",
+                                                  style: const TextStyle(
+                                                      fontSize: 13,
+                                                      color: Colors.white)),
+                                                      const SizedBox(height: 4),
+                                                       Text("${mcommande.ptotal} Produits",
+                                                  style: const TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.white)),
+                                            ],
+                                          ),
+                                        ),
+                                        mcommande.statut == "0" ||
+                                                mcommande.statut == "3"
+                                            ? GestureDetector(
+                                                onTap: () {
+                                                  Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          Suivicommande(
+                                                        idU:
+                                                            '${mcommande.iduniq}',
+                                                        idC: '${mcommande.id}',
+                                                        idL:
+                                                            '${mcommande.livreurId}',
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                                child: Icon(
+                                                  Icons.arrow_forward_ios,
+                                                  color: Colors.white,
+                                                )
+                                                /* const Chip(
+                                                  label: Text("Suivre la commande",
+                                                      style: TextStyle(
+                                                          color: Colors.white)),
+                                                  backgroundColor: Colors.orange,
+                                                ),*/
+                                                )
+                                            :  Column(
+                                                children: [
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      showInformationDialog(
+                                                            context,
+                                                            mcommande.id);
+                                                    },
+                                                    child:const Chip(
+                                                    label: Text("Avis ?",
+                                                        style: TextStyle(
+                                                            color: Colors.white)),
+                                                    backgroundColor: Colors.green,
+                                                  ) ,),
+                                                  
+                                                ],
+                                              ),
                                       ],
                                     ),
                                   ),
-                                  mcommande.statut == "0" ||
-                                          mcommande.statut == "3"
-                                      ? GestureDetector(
-                                          onTap: () {
-                                            Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    Suivicommande(
-                                                  idU: '${mcommande.iduniq}',
-                                                  idC: '${mcommande.id}',
-                                                  idL: '${mcommande.livreurId}',
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                          child: const Chip(
-                                            label: Text("Suivre la commande",
-                                                style: TextStyle(
-                                                    color: Colors.white)),
-                                            backgroundColor: Colors.orange,
-                                          ),
-                                        )
-                                      : Column(
-                                          children: [
-                                            const Chip(
-                                              label: Text("Terminé",
-                                                  style: TextStyle(
-                                                      color: Colors.white)),
-                                              backgroundColor: Colors.green,
-                                            ),
-                                            const SizedBox(height: 5),
-                                            
-                                            IconButton(
-                                                onPressed: () {
-                                                  showInformationDialog(
-                                                      context, mcommande.id);
-                                                },
-                                                icon: const Icon(Icons
-                                                    .question_mark_rounded))
-                                          ],
-                                        ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    } else {
-                      return const Center(
-                        child: Text('Chargement...',
-                            style: TextStyle(color: Colors.black)),
-                      );
-                    }
-                  }),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      } else {
+                        return const Center(
+                          child: Text('Chargement...',
+                              style: TextStyle(color: Colors.black)),
+                        );
+                      }
+                    }),
+              ),
             ),
           )
         ],

@@ -563,6 +563,7 @@ class _ProfilState extends State<Profil> {
                                       padding: const EdgeInsets.all(30.0),
                                       child: ElevatedButton(
                                         onPressed: () {
+                                           logout(context);
                                           // Logique de déconnexion
                                         },
                                         style: ElevatedButton.styleFrom(

@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:chrono_fresh/controlleurs/detailscommandes_api.dart';
 import 'package:chrono_fresh/global_var.dart';
+import 'package:chrono_fresh/models/detailscommande_structure.dart';
 import 'package:http/http.dart' as http;
 import 'package:chrono_fresh/controlleurs/course_api.dart';
 import 'package:chrono_fresh/models/course_structure.dart';
@@ -9,21 +11,36 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 
 class Suivicommande extends StatefulWidget {
   final String idC;
-final String idU;
- final String idL;
-  Suivicommande( {required this.idL, required this.idC, required this.idU});
+  final String idU;
+  final String idL;
+  Suivicommande({required this.idL, required this.idC, required this.idU});
 
   @override
   State<Suivicommande> createState() => _SuivicommandeState();
 }
 
 class _SuivicommandeState extends State<Suivicommande> {
+  late Future ordersFuture;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    ordersFuture = order(widget.idC);
+  }
+
+  order(id) async {
+    return await viewsdetorders(id);
+  }
 
   void _goToScanner(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => QRScannerPage(expectedCode: widget.idU, idC: widget.idC,),
+        builder: (_) => QRScannerPage(
+          expectedCode: widget.idU,
+          idC: widget.idC,
+        ),
       ),
     );
   }
@@ -31,9 +48,9 @@ class _SuivicommandeState extends State<Suivicommande> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.green,
+        backgroundColor: Color(0xFF006650),
         title: Text('Suivre la commande'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -42,80 +59,179 @@ class _SuivicommandeState extends State<Suivicommande> {
           },
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: widget.idL == null ? Center(child: OrderStep(
-              icon: Icons.receipt_long,
-              title: 'Commande prise',
-              isCompleted: true,
-            ),) : FutureBuilder(
-            future: getCourseDetails(widget.idL),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return  Center(child: OrderStep(
-              icon: Icons.receipt_long,
-              title: 'Commande prise',
-              isCompleted: true,
-            ),);
-              } else if (!snapshot.hasData || snapshot.data.isEmpty) {
-                return  Center(child: OrderStep(
-              icon: Icons.receipt_long,
-              title: 'Commande prise',
-              isCompleted: true,
-            ),);
-              } else {
-                final List course = snapshot.data;
-                return ListView.builder(
-                  itemCount: course.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    final mc = course[index] as Course;
-                    return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            
-            OrderStep(
-              icon: Icons.kitchen,
-              title: 'La commande est en cours de préparation',
-              isCompleted: true,
-            ),
-            mc.livCourse == "1" ?
-            OrderStep(
-              icon: Icons.delivery_dining,
-              title: 'Livraison en cours',
-              subtitle: 'Le livreur est en route',
-              isCompleted: false,
-              showCallIcon: false,
-              onLivraison: true,
-            )
-            :SizedBox(height: 10),
-            mc.finCourse == "1" ?
-            Container(
-              height: 150,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.grey[300],
-              ),
-              child: Center(child: ElevatedButton(
-              onPressed: () => _goToScanner(context),
-              child: Text("Scanner QR Code"),
-            ),),
-            ):
-            SizedBox(height: 10),
-          /*  OrderStep(
-              icon: Icons.check_circle,
-              title: 'Commande reçue',
-              isCompleted: true,
-              isFinalStep: true,
-            ),*/
-          ],
-        );
-        },
-                );
-              }
-            },
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(16.0),
+            child: widget.idL == null
+                ? Center(
+                    child: OrderStep(
+                      icon: Icons.receipt_long,
+                      title: 'Commande prise',
+                      isCompleted: true,
+                    ),
+                  )
+                : FutureBuilder(
+                    future: getCourseDetails(widget.idL),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: OrderStep(
+                            icon: Icons.receipt_long,
+                            title: 'Commande prise',
+                            isCompleted: true,
+                          ),
+                        );
+                      } else if (!snapshot.hasData || snapshot.data.isEmpty) {
+                        return Center(
+                          child: OrderStep(
+                            icon: Icons.receipt_long,
+                            title: 'Commande prise',
+                            isCompleted: true,
+                          ),
+                        );
+                      } else {
+                        final List course = snapshot.data;
+                        return ListView.builder(
+                          itemCount: course.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final mc = course[index] as Course;
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                OrderStep(
+                                  icon: Icons.kitchen,
+                                  title:
+                                      'La commande est en cours de préparation',
+                                  isCompleted: true,
+                                ),
+                                mc.livCourse == "1"
+                                    ? OrderStep(
+                                        icon: Icons.delivery_dining,
+                                        title: 'Livraison en cours',
+                                        subtitle: 'Le livreur est en route',
+                                        isCompleted: false,
+                                        showCallIcon: false,
+                                        onLivraison: true,
+                                      )
+                                    : SizedBox(height: 10),
+                                mc.finCourse == "1"
+                                    ? Container(
+                                        height: 150,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: Colors.grey[300],
+                                        ),
+                                        child: Center(
+                                          child: ElevatedButton(
+                                            onPressed: () =>
+                                                _goToScanner(context),
+                                            child: Text("Scanner QR Code"),
+                                          ),
+                                        ),
+                                      )
+                                    : SizedBox(height: 10),
+                                /*  OrderStep(
+                  icon: Icons.check_circle,
+                  title: 'Commande reçue',
+                  isCompleted: true,
+                  isFinalStep: true,
+                ),*/
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    },
+                  ),
           ),
+          Divider(),
+          const Text("ARTICLES COMMANDES", style:  TextStyle (fontWeight: FontWeight.bold, fontStyle: FontStyle.italic)),
+          const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Divider(),
+                Text("Produits",
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black)),
+                SizedBox(width: 12),
+                Text("Quantité",
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black)),
+                SizedBox(width: 12),
+                Text("Prix unitaire ",
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black)),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SizedBox(
+                height: MediaQuery.sizeOf(context).height / 1.2,
+                child: FutureBuilder<dynamic>(
+                    future: order(widget.idU),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<dynamic> snapshot) {
+                      if (snapshot.hasData) {
+                        return ListView.builder(
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            Dcom mcommande = snapshot.data[index];
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Divider(),
+                                Column(
+                                  children: [
+                                    Image.network(
+                                      "${api_link}/api_fresh/uploads/${mcommande.image}",
+                                      height: 100,
+                                      width: 100,
+                                      fit: BoxFit.contain,
+                                    ),
+                                    Text(" ${mcommande.nom}",
+                                        style: const TextStyle(
+                                            fontSize: 14, color: Colors.black)),
+                                  ],
+                                ),
+                                const SizedBox(width: 10),
+                                Text(" ${mcommande.quantite}",
+                                    style: const TextStyle(
+                                        fontSize: 14, color: Colors.black)),
+                                const SizedBox(width: 10),
+                                Text("${mcommande.prixUnitaire} F CFA",
+                                    style: const TextStyle(
+                                        fontSize: 14, color: Colors.black)),
+                              ],
+                            );
+                          },
+                        );
+                      } else {
+                        return const Center(
+                          child: Text('Chargement...',
+                              style: TextStyle(color: Colors.black)),
+                        );
+                      }
+                    }),
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
@@ -130,15 +246,14 @@ class OrderStep extends StatelessWidget {
   final bool isFinalStep;
   final bool onLivraison;
 
-  OrderStep({
-    required this.icon,
-    required this.title,
-    this.subtitle,
-    this.isCompleted = false,
-    this.showCallIcon = false,
-    this.isFinalStep = false,
-    this.onLivraison = false
-  });
+  OrderStep(
+      {required this.icon,
+      required this.title,
+      this.subtitle,
+      this.isCompleted = false,
+      this.showCallIcon = false,
+      this.isFinalStep = false,
+      this.onLivraison = false});
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +268,8 @@ class OrderStep extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               if (subtitle != null)
                 Text(
@@ -163,17 +279,18 @@ class OrderStep extends StatelessWidget {
             ],
           ),
         ),
-        if (isCompleted)
-          Icon(Icons.check_circle, color: Colors.green),
-        if (showCallIcon)
-          Icon(Icons.call, color: Colors.orange),
-          if(onLivraison)
-          Text("- 4.5 km", style: TextStyle(color: Colors.amberAccent, fontWeight: FontWeight.bold),)
+        if (isCompleted) Icon(Icons.check_circle, color: Colors.green),
+        if (showCallIcon) Icon(Icons.call, color: Colors.orange),
+        if (onLivraison)
+          Text(
+            "- 4.5 km",
+            style: TextStyle(
+                color: Colors.amberAccent, fontWeight: FontWeight.bold),
+          )
       ],
     );
   }
 }
-
 
 class QRScannerPage extends StatelessWidget {
   final String expectedCode;
@@ -186,43 +303,40 @@ class QRScannerPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text("Scanner")),
       body: MobileScanner(
-        onDetect: (capture) async{
+        onDetect: (capture) async {
           final barcode = capture.barcodes.first;
           final String? code = barcode.rawValue;
 
           if (code != null) {
             bool result = code == expectedCode;
             Navigator.pop(context);
-            if (result){
-              
-    var url = Uri.parse("${api_link}/api_fresh/validatecourse.php");
-    var data = {"idc": idC};
-    var res = await http.post(url, body: data);
+            if (result) {
+              var url = Uri.parse("${api_link}/api_fresh/validatecourse.php");
+              var data = {"idc": idC};
+              var res = await http.post(url, body: data);
 
-    if (jsonDecode(res.body) == "true") {
-      Fluttertoast.showToast(
-          msg: "Course Terminé", toastLength: Toast.LENGTH_LONG);
-      
-    } else {
-      Fluttertoast.showToast(
-          msg: "Erreur de connexion", toastLength: Toast.LENGTH_LONG);
-    }
-  
-            }
-            else {
+              if (jsonDecode(res.body) == "true") {
+                Fluttertoast.showToast(
+                    msg: "Course Terminé", toastLength: Toast.LENGTH_LONG);
+              } else {
+                Fluttertoast.showToast(
+                    msg: "Erreur de connexion", toastLength: Toast.LENGTH_LONG);
+              }
+            } else {
               showDialog(
-              context: context,
-              builder: (_) => AlertDialog(
-                title: Text('Résultat'),
-                content: Text(result ? '✅ Code reconnu' : '❌ Code NON reconnu'),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text('Fermer'),
-                  ),
-                ],
-              ),
-            );
+                context: context,
+                builder: (_) => AlertDialog(
+                  title: Text('Résultat'),
+                  content:
+                      Text(result ? '✅ Code reconnu' : '❌ Code NON reconnu'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text('Fermer'),
+                    ),
+                  ],
+                ),
+              );
             }
           }
         },
