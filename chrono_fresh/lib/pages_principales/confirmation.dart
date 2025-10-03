@@ -23,8 +23,8 @@ class ConfirmationPage extends StatelessWidget {
             ),
 
             // Texte de confirmation
-            Column(
-              children: const [
+            const Column(
+              children: [
                 Text(
                   "Votre commande a bien\nété prise en compte",
                   textAlign: TextAlign.center,

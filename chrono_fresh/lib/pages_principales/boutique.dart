@@ -37,7 +37,7 @@ class _boutiqueState extends State<boutique> {
   late Future boutiqueFuture;
   late Future categorieFuture;
   String categorie = "";
-  late bool isLoggedIn;
+  bool isLoggedIn = false;
   String? nom;
   String? prenom;
   String? role;
@@ -97,6 +97,7 @@ class _boutiqueState extends State<boutique> {
         prenom = prefs.getString('prenom');
         telephone = prefs.getString('telephone');
         id = prefs.getString('id');
+        
       });
     }
   }
@@ -122,7 +123,8 @@ class _boutiqueState extends State<boutique> {
   }
 
   commande_fict(id, nom, image, int qt, prix, mode) async {
-    cart.addToCart(
+    if (isLoggedIn) {
+      cart.addToCart(
         cartModel: CartModel(
             productId: id,
             productName: nom,
@@ -140,6 +142,11 @@ class _boutiqueState extends State<boutique> {
     print(cart.cartLength);
     print(cart.subtotal);
     print(cart.total);
+    } else {
+      _showMyDialog();
+    }
+
+    
   }
 
   Future<void> _showMyDialog() async {

@@ -78,7 +78,7 @@ class _AcceuilState extends State<Acceuil> {
       backgroundColor: Colors.white,
       body: _isLoggedIn
           ? tabs[_tabNum] // ✅ plus sûr
-          : const Center(child: CircularProgressIndicator()),
+          : _tabsUser[_tabNum],
       bottomNavigationBar: _isLoggedIn
           ? Container(
               color: Colors.white,

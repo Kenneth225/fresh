@@ -145,23 +145,23 @@ class _ConnectionState extends State<Connection> {
         var jsonData = jsonDecode(res.body);
 
         final SharedPreferences prefs = await SharedPreferences.getInstance();
-       // if (jsonData[0]["role"] != "2") {
-          if (jsonData[0]["telephone"] != null) {
-            prefs.setString('role', jsonData[0]["role"]);
-            prefs.setString('email', jsonData[0]["email"]);
-            prefs.setString('nom', jsonData[0]["nom"]);
-            prefs.setString('prenom', jsonData[0]["prenom"]);
-            prefs.setString('telephone', jsonData[0]["telephone"]);
-            prefs.setString('id', jsonData[0]["id"]);
-          } else {
-            prefs.setString('role', jsonData[0]["role"]);
-            prefs.setString('email', jsonData[0]["email"]);
-            prefs.setString('nom', jsonData[0]["nom"]);
-            prefs.setString('prenom', jsonData[0]["prenom"]);
-            prefs.setString('telephone', "...");
-            prefs.setString('id', jsonData[0]["id"]);
-          }
-      /*  } else {
+        // if (jsonData[0]["role"] != "2") {
+        if (jsonData[0]["telephone"] != null) {
+          prefs.setString('role', jsonData[0]["role"]);
+          prefs.setString('email', jsonData[0]["email"]);
+          prefs.setString('nom', jsonData[0]["nom"]);
+          prefs.setString('prenom', jsonData[0]["prenom"]);
+          prefs.setString('telephone', jsonData[0]["telephone"]);
+          prefs.setString('id', jsonData[0]["id"]);
+        } else {
+          prefs.setString('role', jsonData[0]["role"]);
+          prefs.setString('email', jsonData[0]["email"]);
+          prefs.setString('nom', jsonData[0]["nom"]);
+          prefs.setString('prenom', jsonData[0]["prenom"]);
+          prefs.setString('telephone', "...");
+          prefs.setString('id', jsonData[0]["id"]);
+        }
+        /*  } else {
           prefs.setString('dispo', jsonData[0]["statutDisponibilite"]);
           prefs.setString('role', jsonData[0]["role"]);
           prefs.setString('email', jsonData[0]["email"]);
@@ -248,152 +248,136 @@ class _ConnectionState extends State<Connection> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          Image.asset(
-            "assets/roast_chicken.jpg",
-            fit: BoxFit.cover,
-          ),
-          BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-            child: Container(
-              color: Colors.black.withOpacity(0.3),
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Image.asset(
+              "assets/fresh.png",
+              height: 330,
+              width: double.infinity,
+              fit: BoxFit.cover,
             ),
-          ),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
+            Padding(
+              padding: const EdgeInsets.all(10),
               child: have_acount
-                  ? Column(mainAxisSize: MainAxisSize.min, children: [
-                      SizedBox(
-                        height: MediaQuery.sizeOf(context).height * 0.2,
-                      ),
-                      const Text(
-                        "Faites vos courses avec Chrono Fresh",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 28,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      const Text(
-                        "Connexion",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 14,
-                      ),
-                      TextField(
-                        controller: mailctrl,
-                        style: TextStyle(color: Colors.white),
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                            prefixIcon: const Icon(
-                              Icons.mail,
-                              color: Colors.black,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            //filled: true,
-                            hintStyle: TextStyle(color: Colors.grey),
-                            hintText: "Entrez votre adresse mail",
-                            fillColor: Colors.white,
-                            hoverColor: Colors.white),
-                      ),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      Center(
-                        child: Container(
-                          height: 55,
-                          //width: 150,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              gradient: const LinearGradient(colors: [
-                                Color.fromRGBO(14, 209, 223, 0.667),
-                                Color.fromRGBO(87, 118, 192, 1),
-                              ])),
-                          child: Center(
-                            child: TextButton(
-                              onPressed: () {
-                                decidor(context, mailctrl.text);
-                              },
-                              child: const Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "Se connecté",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            "Pas encore de compte ?",
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold,
-                                fontStyle: FontStyle.italic),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              setState(() {
-                                have_acount = !have_acount;
-                              });
-                            },
-                            child: Text(
-                              "S'inscrire",
-                              style: TextStyle(
-                                  color: Colors.blueGrey,
-                                  fontWeight: FontWeight.bold,
-                                  fontStyle: FontStyle.italic),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ])
-                  : SingleChildScrollView(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SizedBox(
-                            height: MediaQuery.sizeOf(context).height * 0.2,
-                          ),
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
                           const Text(
                             "Faites vos courses avec Chrono Fresh",
                             style: TextStyle(
-                              color: Colors.white,
+                              color: Colors.black,
                               fontSize: 28,
                             ),
                           ),
                           const SizedBox(
-                            height: 16,
+                            height: 8,
                           ),
                           const Text(
-                            "Inscription",
+                            "Connexion",
                             style: TextStyle(
-                              color: Colors.white,
+                              color: Colors.black,
                               fontSize: 20,
                             ),
                           ),
                           const SizedBox(
-                            height: 14,
+                            height: 10,
+                          ),
+                          TextField(
+                            controller: mailctrl,
+                            style: TextStyle(color: Colors.white),
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: InputDecoration(
+                                prefixIcon: const Icon(
+                                  Icons.mail,
+                                  color: Colors.black,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                //filled: true,
+                                hintStyle: TextStyle(color: Colors.grey),
+                                hintText: "Entrez votre adresse mail",
+                                fillColor: Colors.white,
+                                hoverColor: Colors.white),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Center(
+                            child: Container(
+                              height: 55,
+                              //width: 150,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  gradient: const LinearGradient(colors: [
+                                    Color.fromRGBO(14, 189, 17, 0.667),
+                                    Color.fromRGBO(81, 230, 133, 1),
+                                  ])),
+                              child: Center(
+                                child: TextButton(
+                                  onPressed: () {
+                                    decidor(context, mailctrl.text);
+                                  },
+                                  child: const Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Se connecté",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                "Pas encore de compte ?",
+                                style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FontStyle.italic),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    have_acount = !have_acount;
+                                  });
+                                },
+                                child: const Text(
+                                  "S'inscrire",
+                                  style: TextStyle(
+                                      color: Colors.blueGrey,
+                                      fontWeight: FontWeight.bold,
+                                      fontStyle: FontStyle.italic),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ])
+                  : SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                                                    const Text(
+                            "Inscription",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 11,
                           ),
                           TextField(
                             controller: nomctrl,
@@ -425,6 +409,7 @@ class _ConnectionState extends State<Connection> {
                                 fillColor: Colors.white,
                                 hoverColor: Colors.white),
                           ),
+                          // ignore: prefer_const_constructors
                           SizedBox(
                             height: 8,
                           ),
@@ -447,7 +432,7 @@ class _ConnectionState extends State<Connection> {
                           ),
                           Center(
                             child: Container(
-                              height: 55,
+                              height: 50,
                               //width: 150,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(15),
@@ -507,8 +492,8 @@ class _ConnectionState extends State<Connection> {
                       ),
                     ),
             ),
-          )
-        ],
+          ],
+        ),
       ),
     );
   }

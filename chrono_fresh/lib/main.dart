@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:provider/provider.dart';
 import 'package:chrono_fresh/acceuil.dart';
@@ -9,9 +10,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   var cart = FlutterCart();
   await initializeDateFormatting('fr_FR');
   await cart.initializeCart(isPersistenceSupportEnabled: true);
@@ -140,113 +141,144 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          Image.asset(
-            "assets/fresh.png",
-            fit: BoxFit.cover,
-          ),
-          BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-            child: Container(
-              color: Colors.black.withOpacity(0.3),
+      body: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            // Image en haut
+            Image.asset(
+              "assets/fresh.png", // ton image ici
+              height: 350,
+              width: double.infinity,
+              fit: BoxFit.fitWidth,
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 420.25),
-            child: Column(
-              children: [
-                const Text(
-                  "Bienvenue dans notre magasin",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30,
-                    fontStyle: FontStyle.normal,
-                  ),
-                ),
-                const Text(
-                  "Faites vos courses sans vous déplacer",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
-                const SizedBox(height: 24),
-                _buildButton(
-                  label: "Commencer",
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color.fromRGBO(14, 232, 62, 0.667),
-                      Color.fromRGBO(70, 225, 106, 1),
-                    ],
-                  ),
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(
-                      context,
-                      'accueil',
-                      arguments: {'initialTab': 0},
-                    );
-                  },
-                ),
-                const SizedBox(height: 16),
-                _buildButton(
-                  label: "Connectez-vous",
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color.fromRGBO(14, 209, 223, 0.667),
-                      Color.fromRGBO(87, 118, 192, 1),
-                    ],
-                  ),
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(context, 'connect');
-                  },
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildButton({
-    required String label,
-    required LinearGradient gradient,
-    required VoidCallback onPressed,
-  }) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-          height: 55,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            gradient: gradient,
-          ),
-          child: Center(
-            child: TextButton(
-              onPressed: onPressed,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+            Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    label,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
+                  // Ligne "CHRONOFRESH"
+                  RichText(
+                    text: const TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "CHRONO",
+                          style: TextStyle(
+                            fontSize: 45,
+                            fontWeight: FontWeight.normal,
+                            color: Colors.black26,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "FRESH",
+                          style: TextStyle(
+                            fontSize: 45,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black, // vert foncé
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+
+                  // Ligne "Vos courses"
+                  const Text(
+                    "Vos courses",
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xFF00796B),
+                    ),
+                  ),
+
+                  // Ligne "à portée de clic"
+                  const Text(
+                    "à portée de clic",
+                    style: TextStyle(
+                      fontSize: 30,
                       fontWeight: FontWeight.bold,
+                      color: Color(0xFF00796B),
+                    ),
+                  ),
+
+                  const SizedBox(height: 4),
+
+                  // Ligne "Livraison à domicile"
+                  const Text(
+                    "Livraison à domicile",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.grey,
                     ),
                   ),
                 ],
               ),
             ),
-          ),
+
+            // Boutons en bas
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  // Bouton principal
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green[700],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                      ),
+                      onPressed: () {
+                         Navigator.pushReplacementNamed(context, 'connect');
+                      },
+                      child: const Text(
+                        "Faites vos course",
+                        style: TextStyle(fontSize: 16, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Bouton secondaire
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: Colors.green[700]!),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                      ),
+                      onPressed: () {
+                       /* Navigator.pushReplacementNamed(
+                      context,
+                      'accueil',
+                      arguments: {'initialTab': 0},
+                    );*/ Navigator.pushReplacementNamed(context, 'accueil');
+                      },
+                      child: Text(
+                        "Decouvrir",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.green[700],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
         ),
       ),
+
+      
     );
   }
 }
