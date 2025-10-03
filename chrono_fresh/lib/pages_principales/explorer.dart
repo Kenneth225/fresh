@@ -128,7 +128,7 @@ class _ExplorerState extends State<Explorer> {
                                       style: const TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.green,
+                                        color:Color(0xFF006650),
                                       ),
                                     ),
                                     ClipRRect(
@@ -155,7 +155,7 @@ class _ExplorerState extends State<Explorer> {
                                     style: const TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.green,
+                                      color:Color(0xFF006650),
                                     ),
                                   ),*/
                                       const SizedBox(height: 4),

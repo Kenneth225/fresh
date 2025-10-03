@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:provider/provider.dart';
 import 'package:chrono_fresh/acceuil.dart';
 import 'package:chrono_fresh/controlleurs/cart_provider.dart';
@@ -7,12 +6,14 @@ import 'package:chrono_fresh/pages_login/connection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cart/cart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   var cart = FlutterCart();
-  await initializeDateFormatting('fr_FR', null);
+  await initializeDateFormatting('fr_FR');
   await cart.initializeCart(isPersistenceSupportEnabled: true);
 
   runApp(
@@ -40,6 +41,15 @@ class MyApp extends StatelessWidget {
           onBackground: Colors.white,
         ).copyWith(background: Colors.white),
       ),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('fr', 'FR'),
+        Locale('en', 'US'),
+      ],
       home: const MyHomePage(title: 'CHRONO FRESH'),
       onGenerateRoute: (settings) {
         if (settings.name == 'accueil') {

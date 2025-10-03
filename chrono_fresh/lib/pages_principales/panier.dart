@@ -3,6 +3,7 @@ import 'package:chrono_fresh/controlleurs/cart_provider.dart';
 import 'package:chrono_fresh/controlleurs/meszones_api.dart';
 import 'package:chrono_fresh/models/zones_structure.dart';
 import 'package:chrono_fresh/pages_principales/mescommandes.dart';
+import 'package:chrono_fresh/pages_principales/recap_paiement.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
@@ -176,7 +177,6 @@ class _PanierState extends State<Panier> {
                   height: 150,
                   fit: BoxFit.cover,
                 ),
-                
               ],
             ),
           ),
@@ -188,7 +188,7 @@ class _PanierState extends State<Panier> {
               },
             ),
             // afficher les autres adresses enregistrer
-           /* Expanded(
+            /* Expanded(
               child: SizedBox(
                 height: 100,
                 child: FutureBuilder<dynamic>(
@@ -509,7 +509,10 @@ class _PanierState extends State<Panier> {
                                   Container(
                                     width: 103,
                                     height: 30,
-                                    decoration: const BoxDecoration(color: Color(0xFF006650), borderRadius: BorderRadius.all(Radius.circular(18))),
+                                    decoration: const BoxDecoration(
+                                        color: Color(0xFF006650),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(18))),
                                     //color: Color(0xFF006650),
                                     child: Row(
                                       children: [
@@ -528,12 +531,12 @@ class _PanierState extends State<Panier> {
                                             }
                                           },
                                         ),
-                                       
-                                           Text(
-                                            "${item.quantity}",
-                                            style: const TextStyle(fontSize: 12, color: Colors.white),
-                                          ),
-                                       
+                                        Text(
+                                          "${item.quantity}",
+                                          style: const TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.white),
+                                        ),
                                         IconButton(
                                           iconSize: 12,
                                           icon: const Icon(Icons.add,
@@ -590,7 +593,8 @@ class _PanierState extends State<Panier> {
                   onPressed: () {
                     cart.clearCart();
                   },
-                  icon: const Icon(Icons.delete_outline, color: Color(0xFF006650)),
+                  icon: const Icon(Icons.delete_outline,
+                      color: Color(0xFF006650)),
                   label: const Text("Vider mon panier",
                       style: TextStyle(color: Colors.black)),
                 ),
@@ -625,23 +629,31 @@ class _PanierState extends State<Panier> {
                               borderRadius: BorderRadius.circular(10)),
                         ),
                         onPressed: () {
-                            //Ajout des produits au tableaux 
+                          //Ajout des produits au tableaux
                           cart.cartItemsList.forEach((f) {
-                          nomArray.add(f.productName);
-                          qtArray.add(f.quantity);
-                          imgArray.add(f.productImages?[0]);
-                          unitprArray.add(f.variants.isNotEmpty
-                              ? f.variants[0].price
-                              : null); // Ajout du prix
-                          idArray.add(f.productId);
-                        });
-                        print('$nomArray');
-                        print('$qtArray');
-                        print('$unitprArray');
-                        print('$imgArray');
-                        print(cart.cartLength);
-                          _showPaymentModal(context); 
-                           
+                            nomArray.add(f.productName);
+                            qtArray.add(f.quantity);
+                            imgArray.add(f.productImages?[0]);
+                            unitprArray.add(f.variants.isNotEmpty
+                                ? f.variants[0].price
+                                : null); // Ajout du prix
+                            idArray.add(f.productId);
+                          });
+                          print('$nomArray');
+                          print('$qtArray');
+                          print('$unitprArray');
+                          print('$imgArray');
+                          print(cart.cartLength);
+                          //  _showPaymentModal(context);
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => CheckoutPage(
+                                    imgArray: [imgArray],
+                                    idArray: [idArray],
+                                    priceArray: [priceArray],
+                                    nomArray: [nomArray],
+                                    qtArray: [qtArray],
+                                    unitprArray: [unitprArray],
+                                  )));
                           //commander(idArray, cart.cartLength, '${cart.total}');
                         },
                         child: const Text(

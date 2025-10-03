@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:chrono_fresh/pages_principales/suivi_commande.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: must_be_immutable
@@ -162,9 +163,9 @@ class _MescommandesState extends State<Mescommandes> {
               child: SizedBox(
                 height: MediaQuery.sizeOf(context).height / 1.2,
                 child: FutureBuilder<dynamic>(
-                    future: order(widget.id), 
-                    builder:
-                        (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    future: order(widget.id),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<dynamic> snapshot) {
                       if (snapshot.hasData) {
                         return ListView.builder(
                           itemCount: snapshot.data.length,
@@ -172,7 +173,8 @@ class _MescommandesState extends State<Mescommandes> {
                             Mcommande mcommande = snapshot.data[index];
                             return Column(
                               children: [
-                                mcommande.statut == "0" || mcommande.statut == "3"
+                                mcommande.statut == "0" ||
+                                        mcommande.statut == "3"
                                     ? const Row(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -208,34 +210,38 @@ class _MescommandesState extends State<Mescommandes> {
                                             style: const TextStyle(
                                                 fontSize: 14,
                                                 color: Colors.white)),
-                                       const VerticalDivider(
-                  color: Colors.grey,
-                  thickness: 2,
-                  indent: 10,
-                  endIndent: 10,
-                ),
+                                        const VerticalDivider(
+                                          color: Colors.grey,
+                                          thickness: 2,
+                                          indent: 10,
+                                          endIndent: 10,
+                                        ),
                                         const SizedBox(width: 12),
                                         Expanded(
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Text("Commande N° ${mcommande.id}",
+                                              Text(
+                                                  "Commande N° ${mcommande.id}",
                                                   style: const TextStyle(
                                                       fontSize: 16,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       color: Colors.white)),
                                               const SizedBox(height: 4),
                                               Text(
-                                                  "Payé le ${DateTime.parse("${mcommande.dateCommande}")}",
+                                                  "Payé le ${DateFormat("EEEE d MMMM yyyy", "fr_FR").format(DateTime.parse("${mcommande.dateCommande}"))}",
                                                   style: const TextStyle(
                                                       fontSize: 13,
                                                       color: Colors.white)),
-                                                      const SizedBox(height: 4),
-                                                       Text("${mcommande.ptotal} Produits",
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                  "${mcommande.ptotal} Produits",
                                                   style: const TextStyle(
                                                       fontSize: 12,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       color: Colors.white)),
                                             ],
                                           ),
@@ -268,21 +274,23 @@ class _MescommandesState extends State<Mescommandes> {
                                                   backgroundColor: Colors.orange,
                                                 ),*/
                                                 )
-                                            :  Column(
+                                            : Column(
                                                 children: [
                                                   GestureDetector(
-                                                    onTap: (){
+                                                    onTap: () {
                                                       showInformationDialog(
-                                                            context,
-                                                            mcommande.id);
+                                                          context,
+                                                          mcommande.id);
                                                     },
-                                                    child:const Chip(
-                                                    label: Text("Avis ?",
-                                                        style: TextStyle(
-                                                            color: Colors.white)),
-                                                    backgroundColor: Colors.green,
-                                                  ) ,),
-                                                  
+                                                    child: const Chip(
+                                                      label: Text("Avis ?",
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .white)),
+                                                      backgroundColor:
+                                                          Colors.green,
+                                                    ),
+                                                  ),
                                                 ],
                                               ),
                                       ],

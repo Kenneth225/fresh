@@ -537,9 +537,9 @@ class _ProfilState extends State<Profil> {
                             }),
                             const Divider(),
                             buildListTile(Icons.info_outline, 'À propos', () {
-                              MaterialPageRoute(
+                           Navigator.of(context).push(   MaterialPageRoute(
                                               builder: (context) =>
-                                                  const HelpPage());
+                                                  const HelpPage()));
                             }),
                             const Divider(),
                           ],
@@ -551,7 +551,7 @@ class _ProfilState extends State<Profil> {
                               Positioned.fill(
                                 child: Image.asset(
                                   'assets/fresh.png', // Remplacez par le chemin de votre image
-                                  fit: BoxFit.fitWidth,
+                                  fit: BoxFit.cover,
                                 ),
                               ),
                               // 2. Contenu principal de la page, enveloppé dans un SingleChildScrollView

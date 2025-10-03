@@ -1,4 +1,3 @@
-
 import 'package:chrono_fresh/setup/resultat_recette.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -68,6 +67,8 @@ class _AcceuilState extends State<Acceuil> {
     }
   }
 
+  var cart = FlutterCart();
+
   @override
   Widget build(BuildContext context) {
     final bool isLivreur = _role == "2";
@@ -82,14 +83,14 @@ class _AcceuilState extends State<Acceuil> {
           ? Container(
               color: Colors.white,
               padding:
-                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+                  const EdgeInsets.symmetric(horizontal: 14.0, vertical: 20.0),
               child: Consumer<CartProvider>(
                 builder: (context, cartProvider, _) {
                   return GNav(
                     backgroundColor: Colors.white,
                     style: GnavStyle.oldSchool,
                     color: Colors.black,
-                    activeColor: const Color.fromARGB(255, 36, 246, 117),
+                    activeColor: const Color(0xFF006650),
                     selectedIndex: _tabNum,
                     padding: const EdgeInsets.all(8),
                     onTabChange: (index) {
@@ -126,7 +127,8 @@ class _AcceuilState extends State<Acceuil> {
                                 clipBehavior: Clip.none,
                                 children: [
                                   const Icon(Icons.shopping_cart, size: 30),
-                                  if (cartProvider.cartItemCount > 0)
+                                  // cartProvider.cartItemCount > 0
+                                  if (cart.cartLength > 0)
                                     Positioned(
                                       right: -6,
                                       top: -6,
@@ -142,7 +144,8 @@ class _AcceuilState extends State<Acceuil> {
                                           minHeight: 20,
                                         ),
                                         child: Text(
-                                          '${cartProvider.cartItemCount}',
+                                          // '${cartProvider.cartItemCount}',
+                                          '${cart.cartLength}',
                                           style: const TextStyle(
                                             color: Colors.white,
                                             fontSize: 12,
