@@ -76,6 +76,40 @@ class _ProfilState extends State<Profil> {
     print("Done");
   }
 
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Information'),
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Vous allez être déconnecté de votre profil CHRONOFRESH'),
+                Text('Poursuivre cette action:'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("NON"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text("OUI"),
+              onPressed: () {
+                logout(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void logpage(context) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
@@ -557,13 +591,17 @@ class _ProfilState extends State<Profil> {
                               // 2. Contenu principal de la page, enveloppé dans un SingleChildScrollView
                               SingleChildScrollView(
                                 child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     // Bouton de déconnexion
                                     Padding(
                                       padding: const EdgeInsets.all(30.0),
                                       child: ElevatedButton(
                                         onPressed: () {
-                                           logout(context);
+                                           
+
+
+                                           _showMyDialog();
                                           // Logique de déconnexion
                                         },
                                         style: ElevatedButton.styleFrom(
@@ -573,9 +611,9 @@ class _ProfilState extends State<Profil> {
                                             borderRadius: BorderRadius.circular(
                                                 30.0), // Bords arrondis
                                           ),
-                                          padding: EdgeInsets.symmetric(
+                                          padding: const EdgeInsets.symmetric(
                                               horizontal: 50, vertical: 15),
-                                          minimumSize: Size(double.infinity,
+                                          minimumSize: const Size(double.infinity,
                                               50), // S'étend sur toute la largeur
                                         ),
                                         child: const Row(

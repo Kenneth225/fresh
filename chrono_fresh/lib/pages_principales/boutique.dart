@@ -4,12 +4,10 @@ import 'package:chrono_fresh/controlleurs/categoriesall_api.dart';
 import 'package:chrono_fresh/controlleurs/notif_pub_api.dart';
 import 'package:chrono_fresh/controlleurs/sboutique_api.dart';
 import 'package:chrono_fresh/controlleurs/scategorie_api.dart';
-import 'package:chrono_fresh/models/notifs_pub_structure.dart';
 import 'package:provider/provider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chrono_fresh/controlleurs/boutique_api.dart';
 import 'package:chrono_fresh/controlleurs/cart_provider.dart';
-import 'package:chrono_fresh/controlleurs/categorie_api.dart';
 import 'package:chrono_fresh/controlleurs/searchbar_api.dart';
 import 'package:chrono_fresh/global_var.dart';
 import 'package:chrono_fresh/models/boutique_structure.dart';
@@ -24,7 +22,6 @@ import 'package:flutter_cart/model/cart_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:chrono_fresh/global_var.dart';
 
 class boutique extends StatefulWidget {
   const boutique({super.key});
@@ -36,6 +33,7 @@ class boutique extends StatefulWidget {
 class _boutiqueState extends State<boutique> {
   late Future boutiqueFuture;
   late Future categorieFuture;
+  late Future notificationFuture;
   String categorie = "";
   bool isLoggedIn = false;
   String? nom;
@@ -56,6 +54,7 @@ class _boutiqueState extends State<boutique> {
     categorieFuture = homecat();
     boutiqueFuture = sboutique("2");
     categorieFuture = scat();
+    notificationFuture = notif();
   }
 
   var cart = FlutterCart();
@@ -97,7 +96,6 @@ class _boutiqueState extends State<boutique> {
         prenom = prefs.getString('prenom');
         telephone = prefs.getString('telephone');
         id = prefs.getString('id');
-        
       });
     }
   }
@@ -125,28 +123,26 @@ class _boutiqueState extends State<boutique> {
   commande_fict(id, nom, image, int qt, prix, mode) async {
     if (isLoggedIn) {
       cart.addToCart(
-        cartModel: CartModel(
-            productId: id,
-            productName: nom,
-            productImages: [image],
-            quantity: 1,
-            variants: [
-              ProductVariant(price: double.parse(prix)),
-            ],
-            //discount: double.parse(prix),
-            productDetails: mode));
-    Provider.of<CartProvider>(context, listen: false).addItem();
+          cartModel: CartModel(
+              productId: id,
+              productName: nom,
+              productImages: [image],
+              quantity: 1,
+              variants: [
+                ProductVariant(price: double.parse(prix)),
+              ],
+              //discount: double.parse(prix),
+              productDetails: mode));
+      Provider.of<CartProvider>(context, listen: false).addItem();
 
-    Fluttertoast.showToast(
-        msg: "Article ajouté au panier", toastLength: Toast.LENGTH_SHORT);
-    print(cart.cartLength);
-    print(cart.subtotal);
-    print(cart.total);
+      Fluttertoast.showToast(
+          msg: "Article ajouté au panier", toastLength: Toast.LENGTH_SHORT);
+      print(cart.cartLength);
+      print(cart.subtotal);
+      print(cart.total);
     } else {
       _showMyDialog();
     }
-
-    
   }
 
   Future<void> _showMyDialog() async {
@@ -182,26 +178,16 @@ class _boutiqueState extends State<boutique> {
     );
   }
 
-  Color getRandomColor() {
-    final Random random = Random();
-    return Color.fromARGB(
-      255,
-      random.nextInt(200) + 50,
-      random.nextInt(200) + 50,
-      random.nextInt(200) + 50,
-    ).withOpacity(0.2);
-  }
-
-  String dropdownValue = "...";
 
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
+      body: SafeArea(
         child: Column(
           children: [
             // ==== HEADER ====
             Container(
+              height: 150,
               decoration: const BoxDecoration(
                 color: Color(0xFF006650),
                 borderRadius: BorderRadius.only(
@@ -256,649 +242,715 @@ class _boutiqueState extends State<boutique> {
                 ],
               ),
             ),
-
-            const SizedBox(height: 15),
-
-            // ==== CAROUSEL ====
-
-            FutureBuilder(
-              future: notif(), // doit renvoyer Future<List<Notifications>>
-              builder: (context, AsyncSnapshot<List<Notifications>> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text("Aucune donnée trouvée"));
-                }
-
-                final notifications = snapshot.data!;
-
-                return CarouselSlider.builder(
-                  itemCount: notifications.length,
-                  options: CarouselOptions(
-                    height: 120,
-                    autoPlay: true,
-                    enlargeCenterPage: true,
-                    aspectRatio: 16 / 9,
-                    viewportFraction: 0.8,
-                  ),
-                  itemBuilder: (context, index, realIndex) {
-                    final notif = notifications[index];
-
-                    return Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 5,
-                            offset: Offset(2, 2),
-                          )
-                        ],
-                        color: Colors.white,
-                      ),
-                      child: Row(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image.network(
-                              "$api_link/api_fresh/uploads/${notif.image}" ??
-                                  "", // sécurité si null
-                              width: 100,
-                              height: 100,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  const Icon(Icons.broken_image),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  notif.titre ?? "",
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  notif.sousTitre ?? "",
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Color(0xFF006650),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-
             const SizedBox(height: 10),
 
-            const Padding(
-              padding: EdgeInsets.only(left: 12.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Catégories",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-                  ),
-                ],
-              ),
-            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    // ==== CAROUSEL ====
 
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: FutureBuilder<dynamic>(
-                future: homecat(),
-                builder:
-                    (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return const Center(
-                      child: Text(
-                        'Aucune categorie disponible',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    );
-                  } else if (!snapshot.hasData || snapshot.data.isEmpty) {
-                    return const Center(
-                      child: Text(
-                        'Aucune categorie disponible',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    );
-                  } else {
-                    List<Categorie> cate = snapshot.data;
+                    FutureBuilder(
+                      future:
+                          notificationFuture, // doit renvoyer Future<List<Notifications>>
+                      builder: (context, AsyncSnapshot<dynamic> snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
 
-                    // Remplacement du `Wrap` par un `GridView.builder`
-                    return GridView.builder(
-                      // Pour éviter les problèmes de débordement de scrolling
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      // Configuration de la grille
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3, // 2 colonnes comme dans la maquette
-                        crossAxisSpacing:
-                            10.0, // Espacement horizontal entre les cartes
-                        mainAxisSpacing:
-                            5.0, // Espacement vertical entre les cartes
-                        childAspectRatio:
-                            0.8, // Ratio pour que les cartes aient la bonne taille
-                      ),
-                      itemCount: cate.length,
-                      itemBuilder: (context, index) {
-                        Categorie cate = snapshot.data[index];
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => Categoriedetails(
-                                  nom: cate.nomCategorie,
-                                  cat: "${cate.id}",
-                                ),
+                        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return const Center(
+                              child: Text("Aucune donnée trouvée"));
+                        }
+
+                        final notifications = snapshot.data!;
+
+                        return CarouselSlider.builder(
+                          itemCount: notifications.length,
+                          options: CarouselOptions(
+                            height: 120,
+                            autoPlay: true,
+                            enlargeCenterPage: true,
+                            aspectRatio: 16 / 9,
+                            viewportFraction: 0.8,
+                          ),
+                          itemBuilder: (context, index, realIndex) {
+                            final notif = notifications[index];
+
+                            return Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    blurRadius: 5,
+                                    offset: Offset(2, 2),
+                                  )
+                                ],
+                                color: Colors.white,
+                              ),
+                              child: Row(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(15),
+                                    child: Image.network(
+                                      "$api_link/api_fresh/uploads/${notif.image}" ??
+                                          "", // sécurité si null
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              const Icon(Icons.broken_image),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          notif.titre ?? "",
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          notif.sousTitre ?? "",
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Color(0xFF006650),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
                               ),
                             );
                           },
-                          // Utilisation d'un `Card` pour une meilleure élévation et des bords arrondis
-                          child: Card(
-                            color: Colors.white,
-                           // elevation: 4.0, // Ombre légère pour un effet 3D
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-                            ),
-                            clipBehavior: Clip
-                                .antiAlias, // Permet à l'image d'avoir des bords arrondis
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: <Widget>[
-                                // Image de la recette
-                                Expanded(
-                                  child: Image.network(
-                                    // Assurez-vous que l'objet `Mrecettes` a une propriété `imageUrl`
-                                    "$api_link/api_fresh/uploads/${cate.visuel}",
-                                    fit: BoxFit.fitWidth, // L'image remplit l'espace sans déformation
-                                    loadingBuilder:
-                                        (context, child, loadingProgress) {
-                                      if (loadingProgress == null) return child;
-                                      return Center(
-                                        child: CircularProgressIndicator(
-                                          value: loadingProgress
-                                                      .expectedTotalBytes !=
-                                                  null
-                                              ? loadingProgress
-                                                      .cumulativeBytesLoaded /
-                                                  loadingProgress
-                                                      .expectedTotalBytes!
-                                              : null,
-                                        ),
-                                      );
-                                    },
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return const Center(
-                                          child: Icon(Icons.broken_image));
-                                    },
-                                  ),
-                                ),
-                                // Nom de la recette
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    cate.nomCategorie,
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors
-                                          .black, // Couleur verte comme dans la maquette
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
                         );
                       },
-                    );
-                  }
-                },
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    const Padding(
+                      padding: EdgeInsets.only(left: 12.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Catégories",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 22),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: FutureBuilder<dynamic>(
+                        future: homecat(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<dynamic> snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return const Center(
+                              child: Text(
+                                'Aucune categorie disponible',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            );
+                          } else if (!snapshot.hasData ||
+                              snapshot.data.isEmpty) {
+                            return const Center(
+                              child: Text(
+                                'Aucune categorie disponible',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            );
+                          } else {
+                            List<Categorie> cate = snapshot.data;
+
+                            // Remplacement du `Wrap` par un `GridView.builder`
+                            return GridView.builder(
+                              // Pour éviter les problèmes de débordement de scrolling
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              // Configuration de la grille
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount:
+                                    3, // 2 colonnes comme dans la maquette
+                                crossAxisSpacing:
+                                    10.0, // Espacement horizontal entre les cartes
+                                mainAxisSpacing:
+                                    5.0, // Espacement vertical entre les cartes
+                                childAspectRatio:
+                                    0.8, // Ratio pour que les cartes aient la bonne taille
+                              ),
+                              itemCount: cate.length,
+                              itemBuilder: (context, index) {
+                                Categorie cate = snapshot.data[index];
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => Categoriedetails(
+                                          nom: cate.nomCategorie,
+                                          cat: "${cate.id}",
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  // Utilisation d'un `Card` pour une meilleure élévation et des bords arrondis
+                                  child: Card(
+                                    color: Colors.white,
+                                    // elevation: 4.0, // Ombre légère pour un effet 3D
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          topRight: Radius.circular(10)),
+                                    ),
+                                    clipBehavior: Clip
+                                        .antiAlias, // Permet à l'image d'avoir des bords arrondis
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: <Widget>[
+                                        // Image de la recette
+                                        Expanded(
+                                          child: Image.network(
+                                            // Assurez-vous que l'objet `Mrecettes` a une propriété `imageUrl`
+                                            "$api_link/api_fresh/uploads/${cate.visuel}",
+                                            fit: BoxFit
+                                                .fitWidth, // L'image remplit l'espace sans déformation
+                                            loadingBuilder: (context, child,
+                                                loadingProgress) {
+                                              if (loadingProgress == null)
+                                                return child;
+                                              return Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  value: loadingProgress
+                                                              .expectedTotalBytes !=
+                                                          null
+                                                      ? loadingProgress
+                                                              .cumulativeBytesLoaded /
+                                                          loadingProgress
+                                                              .expectedTotalBytes!
+                                                      : null,
+                                                ),
+                                              );
+                                            },
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
+                                              return const Center(
+                                                  child:
+                                                      Icon(Icons.broken_image));
+                                            },
+                                          ),
+                                        ),
+                                        // Nom de la recette
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            cate.nomCategorie,
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors
+                                                  .black, // Couleur verte comme dans la maquette
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          }
+                        },
+                      ),
+                    ),
+
+                    const SizedBox(
+                      height: 10,
+                    ),
+
+                    // ==== LISTE DES CATÉGORIES SPECIAL====
+                    FutureBuilder(
+                      future: scat(),
+                      builder: (context, AsyncSnapshot snapshot) {
+                        if (snapshot.hasData) {
+                          return ListView.builder(
+                            itemCount: snapshot.data.length,
+                            shrinkWrap: true,
+                            physics:
+                                const NeverScrollableScrollPhysics(), // ✅ évite double scroll
+                            itemBuilder: (BuildContext context, index) {
+                              Categorie cate = snapshot.data[index];
+                              return Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          cate.nomCategorie,
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 22),
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  Categoriedetails(
+                                                nom: cate.nomCategorie,
+                                                cat: "${cate.id}",
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        child: const Text(
+                                          "Voir plus",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: Color(0xFF006650)),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 5),
+
+                                  // ==== PRODUITS PAR CATÉGORIE ====
+                                  SizedBox(
+                                    height: 200,
+                                    child: FutureBuilder<dynamic>(
+                                      future: sboutique(cate.id),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot<dynamic> snapshot) {
+                                        if (snapshot.hasData) {
+                                          return ListView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            itemCount: snapshot.data.length,
+                                            itemBuilder: (context, index) {
+                                              Boutique boutique =
+                                                  snapshot.data[index];
+                                              return Container(
+                                                width: 180,
+                                                margin:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    // Image + overlay
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        Navigator.of(context).push(
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        Details(
+                                                                          id: boutique
+                                                                              .id,
+                                                                          nom: boutique
+                                                                              .nom,
+                                                                          prix:
+                                                                              boutique.prix,
+                                                                          description:
+                                                                              boutique.description,
+                                                                          categorie:
+                                                                              boutique.categorie,
+                                                                          image:
+                                                                              boutique.image,
+                                                                        )));
+                                                      },
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(12),
+                                                        child: Stack(
+                                                          children: [
+                                                            Image.network(
+                                                              "$api_link/api_fresh/uploads/${boutique.image}",
+                                                              height: 120,
+                                                              width: 180,
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                            Container(
+                                                              height: 120,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                gradient:
+                                                                    LinearGradient(
+                                                                  colors: [
+                                                                    Colors.black
+                                                                        .withOpacity(
+                                                                            0.5),
+                                                                    Colors
+                                                                        .transparent,
+                                                                  ],
+                                                                  begin: Alignment
+                                                                      .bottomCenter,
+                                                                  end: Alignment
+                                                                      .topCenter,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Positioned(
+                                                              left: 8,
+                                                              bottom: 8,
+                                                              child: Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Text(
+                                                                    "${boutique.nom}",
+                                                                    style:
+                                                                        const TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                    ),
+                                                                  ),
+                                                                  const Text(
+                                                                    "Prix au kg",
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            12),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 5),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Text(
+                                                          "${boutique.prix} F CFA",
+                                                          style:
+                                                              const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            commande_fict(
+                                                              boutique.id,
+                                                              boutique.nom,
+                                                              boutique.image,
+                                                              1,
+                                                              boutique.prix,
+                                                              boutique
+                                                                  .description,
+                                                            );
+                                                          },
+                                                          child: Container(
+                                                            decoration:
+                                                                const BoxDecoration(
+                                                              color: Color(
+                                                                  0xFF006650),
+                                                              shape: BoxShape
+                                                                  .circle,
+                                                            ),
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(6),
+                                                            child: const Icon(
+                                                              Icons.add,
+                                                              color:
+                                                                  Colors.white,
+                                                              size: 18,
+                                                            ),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    )
+                                                  ],
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        } else {
+                                          return const Center(
+                                              child: Text("Chargement..."));
+                                        }
+                                      },
+                                    ),
+                                  )
+                                ],
+                              );
+                            },
+                          );
+                        } else {
+                          return const Center();
+                        }
+                      },
+                    ),
+
+                    // ==== LISTE DES CATÉGORIES ====
+                    FutureBuilder(
+                      future: homecat(),
+                      builder: (context, AsyncSnapshot snapshot) {
+                        if (snapshot.hasData) {
+                          return ListView.builder(
+                            itemCount: snapshot.data.length,
+                            shrinkWrap: true,
+                            physics:
+                                const NeverScrollableScrollPhysics(), // ✅ évite double scroll
+                            itemBuilder: (BuildContext context, index) {
+                              Categorie cate = snapshot.data[index];
+                              return Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          cate.nomCategorie,
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 22),
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  Categoriedetails(
+                                                nom: cate.nomCategorie,
+                                                cat: "${cate.id}",
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        child: const Text(
+                                          "Voir plus",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: Color(0xFF006650)),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 5),
+
+                                  // ==== PRODUITS PAR CATÉGORIE ====
+                                  SizedBox(
+                                    height: 200,
+                                    child: FutureBuilder<dynamic>(
+                                      future: boutique(cate.id),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot<dynamic> snapshot) {
+                                        if (snapshot.hasData) {
+                                          return ListView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            itemCount: snapshot.data.length,
+                                            itemBuilder: (context, index) {
+                                              Boutique boutique =
+                                                  snapshot.data[index];
+                                              return Container(
+                                                width: 180,
+                                                margin:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    // Image + overlay
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        Navigator.of(context).push(
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        Details(
+                                                                          id: boutique
+                                                                              .id,
+                                                                          nom: boutique
+                                                                              .nom,
+                                                                          prix:
+                                                                              boutique.prix,
+                                                                          description:
+                                                                              boutique.description,
+                                                                          categorie:
+                                                                              boutique.categorie,
+                                                                          image:
+                                                                              boutique.image,
+                                                                        )));
+                                                      },
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(12),
+                                                        child: Stack(
+                                                          children: [
+                                                            Image.network(
+                                                              "$api_link/api_fresh/uploads/${boutique.image}",
+                                                              height: 120,
+                                                              width: 180,
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                            Container(
+                                                              height: 120,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                gradient:
+                                                                    LinearGradient(
+                                                                  colors: [
+                                                                    Colors.black
+                                                                        .withOpacity(
+                                                                            0.5),
+                                                                    Colors
+                                                                        .transparent,
+                                                                  ],
+                                                                  begin: Alignment
+                                                                      .bottomCenter,
+                                                                  end: Alignment
+                                                                      .topCenter,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Positioned(
+                                                              left: 8,
+                                                              bottom: 8,
+                                                              child: Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Text(
+                                                                    "${boutique.nom}",
+                                                                    style:
+                                                                        const TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                    ),
+                                                                  ),
+                                                                  const Text(
+                                                                    "Prix au kg",
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            12),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 5),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Text(
+                                                          "${boutique.prix} F CFA",
+                                                          style:
+                                                              const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            commande_fict(
+                                                              boutique.id,
+                                                              boutique.nom,
+                                                              boutique.image,
+                                                              1,
+                                                              boutique.prix,
+                                                              boutique
+                                                                  .description,
+                                                            );
+                                                          },
+                                                          child: Container(
+                                                            decoration:
+                                                                const BoxDecoration(
+                                                              color: Color(
+                                                                  0xFF006650),
+                                                              shape: BoxShape
+                                                                  .circle,
+                                                            ),
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(6),
+                                                            child: const Icon(
+                                                              Icons.add,
+                                                              color:
+                                                                  Colors.white,
+                                                              size: 18,
+                                                            ),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    )
+                                                  ],
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        } else {
+                                          return const Center(
+                                              child: Text("Chargement..."));
+                                        }
+                                      },
+                                    ),
+                                  )
+                                ],
+                              );
+                            },
+                          );
+                        } else {
+                          return const Center(
+                              child: Text("Aucune donnée disponible"));
+                        }
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
-
-            const SizedBox(
-              height: 10,
-            ),
-
-            // ==== LISTE DES CATÉGORIES SPECIAL====
-            FutureBuilder(
-              future: scat(),
-              builder: (context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData) {
-                  return ListView.builder(
-                    itemCount: snapshot.data.length,
-                    shrinkWrap: true,
-                    physics:
-                        const NeverScrollableScrollPhysics(), // ✅ évite double scroll
-                    itemBuilder: (BuildContext context, index) {
-                      Categorie cate = snapshot.data[index];
-                      return Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  cate.nomCategorie,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 22),
-                                ),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => Categoriedetails(
-                                        nom: cate.nomCategorie,
-                                        cat: "${cate.id}",
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: const Text(
-                                  "Voir plus",
-                                  style: TextStyle(
-                                      fontSize: 16, color: Color(0xFF006650)),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 5),
-
-                          // ==== PRODUITS PAR CATÉGORIE ====
-                          SizedBox(
-                            height: 200,
-                            child: FutureBuilder<dynamic>(
-                              future: sboutique(cate.id),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<dynamic> snapshot) {
-                                if (snapshot.hasData) {
-                                  return ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: snapshot.data.length,
-                                    itemBuilder: (context, index) {
-                                      Boutique boutique = snapshot.data[index];
-                                      return Container(
-                                        width: 180,
-                                        margin: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            // Image + overlay
-                                            GestureDetector(
-                                              onTap: () {
-                                                Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            Details(
-                                                              id: boutique.id,
-                                                              nom: boutique.nom,
-                                                              prix:
-                                                                  boutique.prix,
-                                                              description: boutique
-                                                                  .description,
-                                                              categorie: boutique
-                                                                  .categorie,
-                                                              image: boutique
-                                                                  .image,
-                                                            )));
-                                              },
-                                              child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                child: Stack(
-                                                  children: [
-                                                    Image.network(
-                                                      "$api_link/api_fresh/uploads/${boutique.image}",
-                                                      height: 120,
-                                                      width: 180,
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                    Container(
-                                                      height: 120,
-                                                      decoration: BoxDecoration(
-                                                        gradient:
-                                                            LinearGradient(
-                                                          colors: [
-                                                            Colors.black
-                                                                .withOpacity(
-                                                                    0.5),
-                                                            Colors.transparent,
-                                                          ],
-                                                          begin: Alignment
-                                                              .bottomCenter,
-                                                          end: Alignment
-                                                              .topCenter,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Positioned(
-                                                      left: 8,
-                                                      bottom: 8,
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text(
-                                                            "${boutique.nom}",
-                                                            style:
-                                                                const TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
-                                                          ),
-                                                          const Text(
-                                                            "Prix au kg",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 12),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(height: 5),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  "${boutique.prix} F CFA",
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    commande_fict(
-                                                      boutique.id,
-                                                      boutique.nom,
-                                                      boutique.image,
-                                                      1,
-                                                      boutique.prix,
-                                                      boutique.description,
-                                                    );
-                                                  },
-                                                  child: Container(
-                                                    decoration:
-                                                        const BoxDecoration(
-                                                      color: Color(0xFF006650),
-                                                      shape: BoxShape.circle,
-                                                    ),
-                                                    padding:
-                                                        const EdgeInsets.all(6),
-                                                    child: const Icon(
-                                                      Icons.add,
-                                                      color: Colors.white,
-                                                      size: 18,
-                                                    ),
-                                                  ),
-                                                )
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  );
-                                } else {
-                                  return const Center(
-                                      child: Text("Chargement..."));
-                                }
-                              },
-                            ),
-                          )
-                        ],
-                      );
-                    },
-                  );
-                } else {
-                  return const Center();
-                }
-              },
-            ),
-
-            // ==== LISTE DES CATÉGORIES ====
-            FutureBuilder(
-              future: homecat(),
-              builder: (context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData) {
-                  return ListView.builder(
-                    itemCount: snapshot.data.length,
-                    shrinkWrap: true,
-                    physics:
-                        const NeverScrollableScrollPhysics(), // ✅ évite double scroll
-                    itemBuilder: (BuildContext context, index) {
-                      Categorie cate = snapshot.data[index];
-                      return Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  cate.nomCategorie,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 22),
-                                ),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => Categoriedetails(
-                                        nom: cate.nomCategorie,
-                                        cat: "${cate.id}",
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: const Text(
-                                  "Voir plus",
-                                  style: TextStyle(
-                                      fontSize: 16, color: Color(0xFF006650)),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 5),
-
-                          // ==== PRODUITS PAR CATÉGORIE ====
-                          SizedBox(
-                            height: 200,
-                            child: FutureBuilder<dynamic>(
-                              future: boutique(cate.id),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<dynamic> snapshot) {
-                                if (snapshot.hasData) {
-                                  return ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: snapshot.data.length,
-                                    itemBuilder: (context, index) {
-                                      Boutique boutique = snapshot.data[index];
-                                      return Container(
-                                        width: 180,
-                                        margin: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            // Image + overlay
-                                            GestureDetector(
-                                              onTap: () {
-                                                Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            Details(
-                                                              id: boutique.id,
-                                                              nom: boutique.nom,
-                                                              prix:
-                                                                  boutique.prix,
-                                                              description: boutique
-                                                                  .description,
-                                                              categorie: boutique
-                                                                  .categorie,
-                                                              image: boutique
-                                                                  .image,
-                                                            )));
-                                              },
-                                              child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                child: Stack(
-                                                  children: [
-                                                    Image.network(
-                                                      "$api_link/api_fresh/uploads/${boutique.image}",
-                                                      height: 120,
-                                                      width: 180,
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                    Container(
-                                                      height: 120,
-                                                      decoration: BoxDecoration(
-                                                        gradient:
-                                                            LinearGradient(
-                                                          colors: [
-                                                            Colors.black
-                                                                .withOpacity(
-                                                                    0.5),
-                                                            Colors.transparent,
-                                                          ],
-                                                          begin: Alignment
-                                                              .bottomCenter,
-                                                          end: Alignment
-                                                              .topCenter,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Positioned(
-                                                      left: 8,
-                                                      bottom: 8,
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text(
-                                                            "${boutique.nom}",
-                                                            style:
-                                                                const TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
-                                                          ),
-                                                          const Text(
-                                                            "Prix au kg",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 12),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(height: 5),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  "${boutique.prix} F CFA",
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    commande_fict(
-                                                      boutique.id,
-                                                      boutique.nom,
-                                                      boutique.image,
-                                                      1,
-                                                      boutique.prix,
-                                                      boutique.description,
-                                                    );
-                                                  },
-                                                  child: Container(
-                                                    decoration:
-                                                        const BoxDecoration(
-                                                      color: Color(0xFF006650),
-                                                      shape: BoxShape.circle,
-                                                    ),
-                                                    padding:
-                                                        const EdgeInsets.all(6),
-                                                    child: const Icon(
-                                                      Icons.add,
-                                                      color: Colors.white,
-                                                      size: 18,
-                                                    ),
-                                                  ),
-                                                )
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  );
-                                } else {
-                                  return const Center(
-                                      child: Text("Chargement..."));
-                                }
-                              },
-                            ),
-                          )
-                        ],
-                      );
-                    },
-                  );
-                } else {
-                  return const Center(child: Text("Aucune donnée disponible"));
-                }
-              },
             ),
           ],
         ),

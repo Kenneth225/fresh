@@ -153,7 +153,7 @@ class _DetailsState extends State<Details> {
             productName: nom,
             productImages: [image],
             quantity: qt,
-            variants: [
+            variants: [ 
               ProductVariant(price: double.parse(prix)),
             ],
             //discount: double.parse(prix),
@@ -162,7 +162,7 @@ class _DetailsState extends State<Details> {
 
     const snackBar = SnackBar(
       backgroundColor: Color.fromARGB(255, 131, 230, 167),
-      content: Text('D---Article ajouté au panier'),
+      content: Text('Article ajouté au panier'),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
     print(cart.cartLength);

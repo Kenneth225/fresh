@@ -1,28 +1,35 @@
+import 'package:chrono_fresh/pages_principales/mescommandes.dart';
 import 'package:flutter/material.dart';
 
-class ConfirmationPage extends StatelessWidget {
-  const ConfirmationPage({super.key});
+class ConfirmationPage extends StatefulWidget {
+  final String id; // 🔹 On ajoute un paramètre id (puisqu’il est utilisé plus bas)
 
+  const ConfirmationPage({super.key, required this.id});
+
+  @override
+  State<ConfirmationPage> createState() => _ConfirmationPageState();
+}
+
+class _ConfirmationPageState extends State<ConfirmationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Image en haut
+            // 🔹 Image en haut
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Image.asset(
                 "assets/fresh.png", // ton image ici
                 height: 250,
-                fit: BoxFit.contain,
+                fit: BoxFit.cover,
               ),
             ),
 
-            // Texte de confirmation
+            // 🔹 Texte de confirmation
             const Column(
               children: [
                 Text(
@@ -45,12 +52,12 @@ class ConfirmationPage extends StatelessWidget {
               ],
             ),
 
-            // Boutons en bas
+            // 🔹 Boutons en bas
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
-                  // Bouton principal
+                  // 🔹 Bouton principal
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -63,6 +70,13 @@ class ConfirmationPage extends StatelessWidget {
                       ),
                       onPressed: () {
                         // Action suivre commande
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => Mescommandes(
+                              id: widget.id, // ✅ on utilise widget.id
+                            ),
+                          ),
+                        );
                       },
                       child: const Text(
                         "Suivre ma commande",
@@ -72,7 +86,7 @@ class ConfirmationPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
 
-                  // Bouton secondaire
+                  // 🔹 Bouton secondaire
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton(
@@ -85,6 +99,7 @@ class ConfirmationPage extends StatelessWidget {
                       ),
                       onPressed: () {
                         // Action retour accueil
+                        Navigator.pushReplacementNamed(context, 'accueil');
                       },
                       child: Text(
                         "Revenir sur l'accueil",

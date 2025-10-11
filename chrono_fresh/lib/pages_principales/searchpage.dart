@@ -1,4 +1,5 @@
 import 'package:chrono_fresh/controlleurs/searchbar_api.dart';
+import 'package:chrono_fresh/pages_principales/details.dart';
 import 'package:flutter/material.dart';
 
 class Search extends StatefulWidget {
@@ -58,15 +59,15 @@ class _SearchState extends State<Search> {
                   final product = searchResults[index];
                   return GestureDetector(
                     onTap: () {
-                     /* Navigator.of(context).push(MaterialPageRoute(
+                      Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => Details(
-                                id: product['id'],
-                                nom: product['name'],
-                                prix: product['price'],
-                                description: product['desc'],
-                                categorie: product['cat'],
-                                image: product['img'],
-                              )));*/
+                                id: "${product['id']}",
+                                nom: "${product['name']}",
+                                prix: "${product['price']}",
+                                description: "${product['desc']}",
+                                categorie: "${product['cat']}",
+                                image: "${product['img']}",
+                              )));
                     },
                     child: ListTile(
                       leading: Icon(Icons.search_off_outlined),

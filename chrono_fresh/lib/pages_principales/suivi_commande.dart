@@ -51,9 +51,9 @@ class _SuivicommandeState extends State<Suivicommande> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Color(0xFF006650),
-        title: Text('Suivre la commande'),
+        title: Text('Suivre la commande', style: TextStyle(color: Colors.white),),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back,color: Colors.white,),
           onPressed: () {
             Navigator.pop(context);
           },

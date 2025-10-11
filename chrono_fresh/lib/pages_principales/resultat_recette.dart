@@ -40,7 +40,7 @@ class ReSultatsCateGorieRecetteState extends State<ReSultatsCateGorieRecette> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(0),
                     child: Image.asset(
-                      "assets/recettepg.jpg", 
+                      "assets/recettepg.jpg",
                       width: double.infinity,
                       height: 200,
                       fit: BoxFit.cover,
@@ -67,7 +67,7 @@ class ReSultatsCateGorieRecetteState extends State<ReSultatsCateGorieRecette> {
                   child: Container(
                       color: Color(0xFFFFFFFF),
                       width: double.infinity,
-                      height: double.infinity,
+                      //height: double.infinity,
                       child: SingleChildScrollView(
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -115,7 +115,7 @@ class ReSultatsCateGorieRecetteState extends State<ReSultatsCateGorieRecette> {
 
                                   final recettes = snapshot.data!;
                                   return SizedBox(
-                                    height: 400,
+                                   height: 450,
                                     child: ListView.builder(
                                         itemCount: recettes.length,
                                         padding: const EdgeInsets.all(16.0),
@@ -193,7 +193,7 @@ class ReSultatsCateGorieRecetteState extends State<ReSultatsCateGorieRecette> {
                                                                                         margin: const EdgeInsets.only(right: 8),
                                                                                         child: const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                                                                                           Text(
-                                                                                            "Recette rapide",
+                                                                                            "Recette",
                                                                                             style: TextStyle(
                                                                                               color: Color(0xFF000000),
                                                                                               fontSize: 13,

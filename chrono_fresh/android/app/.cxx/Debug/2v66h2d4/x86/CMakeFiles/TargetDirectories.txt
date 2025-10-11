@@ -1,0 +1,2 @@
+C:/Users/HP/Documents/KITIX/ChronoFresh/chrono_fresh/android/app/.cxx/Debug/2v66h2d4/x86/CMakeFiles/edit_cache.dir
+C:/Users/HP/Documents/KITIX/ChronoFresh/chrono_fresh/android/app/.cxx/Debug/2v66h2d4/x86/CMakeFiles/rebuild_cache.dir

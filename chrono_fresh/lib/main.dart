@@ -234,7 +234,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                       onPressed: () {
-                         Navigator.pushReplacementNamed(context, 'connect');
+                        Navigator.pushReplacementNamed(context, 'connect');
                       },
                       child: const Text(
                         "Faites vos course",
@@ -256,11 +256,12 @@ class _MyHomePageState extends State<MyHomePage> {
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                       onPressed: () {
-                       /* Navigator.pushReplacementNamed(
+                        /* Navigator.pushReplacementNamed(
                       context,
                       'accueil',
                       arguments: {'initialTab': 0},
-                    );*/ Navigator.pushReplacementNamed(context, 'accueil');
+                    );*/
+                        Navigator.pushReplacementNamed(context, 'accueil');
                       },
                       child: Text(
                         "Decouvrir",
@@ -277,8 +278,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-
-      
     );
   }
 }

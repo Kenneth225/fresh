@@ -50,34 +50,7 @@ class _PanierState extends State<Panier> {
     autoLogIn();
   }
 
-  void callback(response, context) {
-    switch (response['status']) {
-      case PAYMENT_CANCELLED:
-        Navigator.pop(context);
-        debugPrint(PAYMENT_CANCELLED);
-        _showMyinfo(response['status']);
-        break;
-
-      case PAYMENT_INIT:
-        debugPrint(PAYMENT_INIT);
-        break;
-
-      case PENDING_PAYMENT:
-        debugPrint(PENDING_PAYMENT);
-        break;
-
-      case PAYMENT_SUCCESS:
-        commander(idArray, cart.cartLength, '${cart.total}');
-        Navigator.pop(context);
-
-        break;
-
-      default:
-        String? UNKNOWN_EVENT;
-        debugPrint(UNKNOWN_EVENT);
-        break;
-    }
-  }
+  
 
   void autoLogIn() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -187,225 +160,16 @@ class _PanierState extends State<Panier> {
                 Navigator.of(context).pop();
               },
             ),
-            // afficher les autres adresses enregistrer
-            /* Expanded(
-              child: SizedBox(
-                height: 100,
-                child: FutureBuilder<dynamic>(
-                    future: adresses(id),
-                    builder:
-                        (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                      if (snapshot.hasData) {
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: snapshot.data.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            max = snapshot.data.length;
-                            Zones mzones = snapshot.data[index];
-                            print(snapshot.data.length);
-                            return TextButton(
-                              child: Text("${mzones.name}"),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            );
-                
-                           
-                          },
-                        );
-                      } else {
-                        return const Center(
-                          child: Text('Aucune adresse enregistré',
-                              style: TextStyle(color: Colors.black)),
-                        );
-                      }
-                    }),
-              ),
-            ),*/
           ],
         );
       },
     );
   }
 
-  Future<void> _showOrderdone() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Commande acceptée'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Image.asset(
-                  'assets/ok.jpg', // Remplace cette image par la tienne
-                  width: 50,
-                  height: 250,
-                  fit: BoxFit.cover,
-                ),
-                const Text(
-                  "Votre commande a été accepté",
-                  textAlign: TextAlign.center,
-                ),
-                const Text(
-                  "Vos articles ont été placé et sont en cours de traitement",
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text("Suivre la commande"),
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Mescommandes(
-                          id: "${id}",
-                        )));
-              },
-            ),
-            TextButton(
-              child: const Text("Retour à l'acceuil"),
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, 'accueil');
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+  
 
-  void _showPaymentModal(
-    BuildContext context,
-  ) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Paiement",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              GestureDetector(
-                  onTap: () {
-                    _showMymap();
-                  },
-                  child: _buildOptionRow("Livraison", "Choisir le lieu")),
-              _buildOptionRow("Paiement", "🇧🇯"),
-              _buildOptionRow("Coût total", "${cart.total} Fcfa"),
-              const SizedBox(height: 10),
-              const Text(
-                "En passant une commande, vous acceptez nos Conditions générales",
-                style: TextStyle(fontSize: 12, color: Colors.grey),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF006650),
-                  minimumSize: const Size(double.infinity, 50),
-                ),
-                onPressed: () {
-                  if (isLoggedIn) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => KKiaPay(
-                              amount: cart.total.toInt(), //
-                              countries: ["BJ", "CI", "SN", "TG"], //
-                              phone: "22997000000", //
-                              name: "John Doe", //
-                              email: "test@mail.com", //
-                              reason: 'Paiement article reason', //
-                              data: 'Fake data', //
-                              sandbox: true, //
-                              apikey: "b59e46603af611f09dfd63ae9443e3ce", //
-                              callback: callback, //
-                              theme: defaultTheme, // Ex : "#222F5A",
-                              partnerId: 'AxXxXXxId', //
-                              paymentMethods: ["momo", "card"] //
-                              )),
-                    );
-                    // commander(idArray, cart.cartLength, '${cart.total}');
-                  } else {
-                    _showMyDialog();
-                  }
-                },
-                child: const Text("Passer la commande",
-                    style: TextStyle(fontSize: 16, color: Colors.white)),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
 
-  commander(idp, qtp, prixT) async {
-    try {
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high, // Or other accuracy levels
-      );
-      print('Latitude: ${position.latitude}');
-      print('Longitude: ${position.longitude}');
-
-      var url = Uri.parse("${api_link}/api_fresh/addcommandes.php");
-      var data = {
-        "IDcli": "${id}",
-        "taille": qtp.toString(),
-        "namep": nomArray.toString(),
-        "imgp": imgArray.toString(),
-        "montantT": prixT.toString(),
-        "IDproduit": idArray.toString(),
-        "pu": unitprArray.toString(),
-        "quant": qtArray.toString(),
-        "nom": "${prenom}",
-        "lat": "${position.latitude}",
-        "long": "${position.longitude}"
-      };
-
-      var res = await http.post(url, body: data);
-      if (jsonDecode(res.body) == "true") {
-        print("la reponse: ");
-        print(jsonDecode(res.body));
-        Fluttertoast.showToast(
-            msg: "Commande Effectué", toastLength: Toast.LENGTH_SHORT);
-        cart.clearCart();
-        unitprArray.clear();
-        idArray.clear();
-        imgArray.clear();
-        Provider.of<CartProvider>(context, listen: false).clearCart();
-        _showOrderdone();
-      } else {
-        Fluttertoast.showToast(msg: "Erreur", toastLength: Toast.LENGTH_SHORT);
-      }
-    } catch (e) {
-      print('Error getting current position: $e');
-      // Handle errors (e.g., location permission denied)
-      setState(() {
-        load = false;
-      });
-    }
-  }
+  
 
   Widget _buildOptionRow(String title, String value) {
     return Padding(
@@ -434,13 +198,13 @@ class _PanierState extends State<Panier> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xFF006650),
         elevation: 0,
         title: const Text(
           "Mon panier",
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            color: Colors.white,
           ),
         ),
         centerTitle: true,
@@ -527,6 +291,10 @@ class _PanierState extends State<Panier> {
                                                     item.productId,
                                                     item.variants,
                                                     item.quantity - 1);
+                                                Provider.of<CartProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .removeItem();
                                               });
                                             }
                                           },
@@ -548,6 +316,10 @@ class _PanierState extends State<Panier> {
                                                     item.productId,
                                                     item.variants,
                                                     item.quantity + 1);
+                                                Provider.of<CartProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .addItem();
                                               });
                                             }
                                           },
@@ -565,12 +337,15 @@ class _PanierState extends State<Panier> {
                               children: [
                                 IconButton(
                                   icon: const Icon(Icons.delete_outline,
-                                      color: Color(0xFF006650)),
+                                      color: Color.fromARGB(255, 195, 80, 80)),
                                   onPressed: () {
                                     _removeItem(item.productId, item.variants);
-                                    Provider.of<CartProvider>(context,
-                                            listen: false)
-                                        .removeItem();
+
+                                    for (var i = 0; i < item.quantity; i++) {
+                                      Provider.of<CartProvider>(context,
+                                              listen: false)
+                                          .removeItem();
+                                    }
                                   },
                                 ),
                                 Text(
@@ -591,10 +366,13 @@ class _PanierState extends State<Panier> {
                 // Vider panier
                 TextButton.icon(
                   onPressed: () {
+                    Provider.of<CartProvider>(context, listen: false)
+                        .clearCart();
                     cart.clearCart();
+                    Navigator.pushReplacementNamed(context, 'accueil');
                   },
                   icon: const Icon(Icons.delete_outline,
-                      color: Color(0xFF006650)),
+                      color: Color.fromARGB(255, 195, 80, 80)),
                   label: const Text("Vider mon panier",
                       style: TextStyle(color: Colors.black)),
                 ),
