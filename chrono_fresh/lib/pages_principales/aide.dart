@@ -1,3 +1,4 @@
+import 'package:chrono_fresh/pages_principales/conditions.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -21,16 +22,12 @@ class HelpPage extends StatelessWidget {
     );
   }
 
-
-
-
-void openUrl(String url) async {
-  final uri = Uri.parse(url);
-  if (await canLaunchUrl(uri)) {
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  void openUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -63,18 +60,17 @@ void openUrl(String url) async {
 
                     // Liste des options
                     buildListTile('Politique de protection des données', () {
-                    openUrl('https://www.squirrel.fr/mentions-legales-application-mobile-exemple/');
-
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => CguPage()));
                     }),
                     const Divider(),
                     buildListTile("Conditions générales d’utilisation", () {
-                    openUrl('https://www.squirrel.fr/mentions-legales-application-mobile-exemple/');
-
+                      openUrl(
+                          'https://www.squirrel.fr/mentions-legales-application-mobile-exemple/');
                     }),
                     const Divider(),
                     buildListTile('Mentions légales', () {
                       openUrl('https://flutter.dev');
-
                     }),
                     const Divider(),
 
@@ -91,11 +87,7 @@ void openUrl(String url) async {
                         ],
                       ),
                     ),
-
-                    
                   ])),
         ));
   }
 }
-
-    

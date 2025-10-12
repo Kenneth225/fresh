@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chrono_fresh/pages_principales/aide.dart';
 import 'package:chrono_fresh/pages_principales/conditions.dart';
 import 'package:chrono_fresh/pages_principales/editprofil.dart';
@@ -16,6 +18,7 @@ class Profil extends StatefulWidget {
 }
 
 class _ProfilState extends State<Profil> {
+  String? _imagePath;
   String? nom;
   String? prenom;
   String? role;
@@ -38,6 +41,7 @@ class _ProfilState extends State<Profil> {
 
     if (usermail != null) {
       setState(() {
+         _imagePath = prefs.getString('user_image');
         isLoggedIn = true;
         mail = usermail;
         role = coderole;
@@ -164,11 +168,16 @@ class _ProfilState extends State<Profil> {
                           padding: EdgeInsets.all(30.0),
                           child: Row(
                             children: [
-                              const CircleAvatar(
-                                maxRadius: 35,
-                                backgroundColor: Colors.green,
-                                backgroundImage: AssetImage("assets/moon.jpg"),
-                              ),
+                              Center(
+              child: CircleAvatar(
+                radius: 50,
+                backgroundImage:
+                    _imagePath != null ? FileImage(File(_imagePath!)) : null,
+                child: _imagePath == null
+                    ? const Icon(Icons.person, size: 50)
+                    : null,
+              ),
+            ),
                               const SizedBox(
                                 width: 20,
                               ),
@@ -504,11 +513,16 @@ class _ProfilState extends State<Profil> {
                                   horizontal: 16.0, vertical: 20.0),
                               child: Row(
                                 children: [
-                                  const CircleAvatar(
-                                    maxRadius: 40,
-                                    backgroundImage: AssetImage(
-                                        "assets/moon.jpg"), // Remplacez par le chemin de votre image
-                                  ),
+                                  Center(
+              child: CircleAvatar(
+                radius: 50,
+                backgroundImage:
+                    _imagePath != null ? FileImage(File(_imagePath!)) : null,
+                child: _imagePath == null
+                    ? const Icon(Icons.person, size: 50)
+                    : null,
+              ),
+            ),
                                   const SizedBox(width: 20),
                                   Expanded(
                                     child: Column(
@@ -524,9 +538,7 @@ class _ProfilState extends State<Profil> {
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
-                                            const SizedBox(width: 8),
-                                            const Icon(Icons.edit,
-                                                color: Colors.grey, size: 18),
+                                            
                                           ],
                                         ),
                                         const SizedBox(height: 4),

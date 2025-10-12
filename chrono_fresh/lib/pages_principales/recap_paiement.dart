@@ -233,6 +233,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
       var res = await http.post(url, body: data);
       if (jsonDecode(res.body) == "true") {
+        
         print("la reponse: ");
         print(jsonDecode(res.body));
         Fluttertoast.showToast(
@@ -242,6 +243,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
         idArray.clear();
         imgArray.clear();
         Provider.of<CartProvider>(context, listen: false).clearCart();
+        setState(() {
+          load = false;
+        });
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -501,114 +505,30 @@ class _CheckoutPageState extends State<CheckoutPage> {
             const Spacer(),
 
             // ---- Bouton paiement ----
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                ),
-                onPressed: () async {
-                  if (selectedDate == null) {
-                    print("pas de date");
-                    const snackBar = SnackBar(
-                      backgroundColor: Color.fromRGBO(217, 164, 65, 1),
-                      content: Text('Selectionnez une date de livraison'),
-                    );
-                    Fluttertoast.showToast(
-          msg: "Selectionnez une date de livraison",
-          toastLength: Toast.LENGTH_LONG);
-                  } else {
-                    if (useCustomAddress) {
-                      print("Adresse saisie : ${customAddressController.text}");
-                      setState(() {
-                        long = 0;
-                        lat = 0;
-                        adr = customAddressController.text;
-                      });
-
-                      commander(widget.idArray, cart.cartLength, '${prixTotal}',
-                          long, lat, adr);
-                    } else if (selectedAddress != null) {
-                      final zoneChoisie = _lastFetchedAddresses.firstWhere(
-                        (z) => z.id == selectedAddress,
-                        orElse: () =>
-                            Zones(id: selectedAddress, name: "Inconnue"),
-                      );
-                      print(
-                          "Adresse choisie : ${zoneChoisie.name} (id: ${zoneChoisie.id})");
-                      if ("${zoneChoisie.name}" != "Inconnue") {
-                        setState(() {
-                          long = "${zoneChoisie.longitude}";
-                          lat = "${zoneChoisie.latitude}";
-                          adr = "Benin";
-                        });
-
-                        commander(widget.idArray, cart.cartLength,
-                            '${prixTotal}', long, lat, adr);
-                      } else {
-                        try {
-                          Position position =
-                              await Geolocator.getCurrentPosition(
-                            desiredAccuracy: LocationAccuracy
-                                .high, // Or other accuracy levels
-                          );
-                          print('Latitude: ${position.latitude}');
-                          print('Longitude: ${position.longitude}');
-                          setState(() {
-                            long = "${position.longitude}";
-                            lat = "${position.latitude}";
-                            adr = "Benin";
-                          });
-
-                          commander(widget.idArray, cart.cartLength,
-                              '${prixTotal}', long, lat, adr);
-                        } catch (e) {
-                          print('Error getting current position: $e');
-                          // Handle errors (e.g., location permission denied)
-                          setState(() {
-                            load = false;
-                          });
-                        }
-                      }
-                    }
-                  }
-
-                  print("Date choisie : $selectedDate");
-
-                  if (isLoggedIn) {
-                    /* Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => KKiaPay(
-                              amount: cart.total.toInt(), //
-                              countries: ["BJ", "CI", "SN", "TG"], //
-                              phone: "22961000000", //
-                              name: "John Doe", //
-                              email: "test@mail.com", //
-                              reason: 'Paiement article reason', //
-                              data: 'Fake data', //
-                              sandbox: true, //
-                              apikey: "b59e46603af611f09dfd63ae9443e3ce", //
-                              callback: callback, //
-                              theme: defaultTheme, // Ex : "#222F5A",
-                              partnerId: 'AxXxXXxId', //
-                              paymentMethods: ["momo", "card"] //
-                              )),
-                    );*/
-                    //commander(widget.idArray, cart.cartLength, '${prixTotal}');
-                  } else {
-                    _showMyDialog();
-                  }
-                },
-                child: const Text(
-                  "Passer au paiement via KKiaPay",
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
-              ),
-            ),
+            load
+                ? const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.green,
+                    ),
+                  )
+                : SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                      ),
+                      onPressed: () async {
+                        handlePayment();
+                      },
+                      child: const Text(
+                        "Passer au paiement via KKiaPay",
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
+                    ),
+                  ),
             const SizedBox(height: 8),
             const Center(
               child: Text(
@@ -621,5 +541,130 @@ class _CheckoutPageState extends State<CheckoutPage> {
         ),
       ),
     );
+  }
+
+  Future<void> handlePayment() async {
+    // 🔹 1️⃣ Vérification de la date
+    if (selectedDate == null) {
+      Fluttertoast.showToast(
+        msg: "Sélectionnez une date de livraison",
+        toastLength: Toast.LENGTH_LONG,
+      );
+      return;
+    }
+
+    // 🔹 2️⃣ Gestion du choix d’adresse
+    setState(() => load = true);
+    try {
+      if (useCustomAddress) {
+        if (customAddressController.text.trim().isEmpty) {
+          Fluttertoast.showToast(
+              msg: "Veuillez saisir une adresse complète",
+              toastLength: Toast.LENGTH_LONG);
+          setState(() => load = false);
+          return;
+        }
+
+        adr = customAddressController.text.trim();
+        lat = "0";
+        long = "0";
+        print("📍 Adresse manuelle : $adr");
+      } else if (selectedAddress != null) {
+        // Récupération de la zone choisie
+        final zoneChoisie = _lastFetchedAddresses.firstWhere(
+          (z) => z.id == selectedAddress,
+          orElse: () => Zones(id: selectedAddress, name: "Inconnue"),
+        );
+
+        // 🔹 Si la zone est connue → coordonnées de la zone
+        if (zoneChoisie.name != "Inconnue") {
+          adr = zoneChoisie.name;
+          lat = "${zoneChoisie.latitude}";
+          long = "${zoneChoisie.longitude}";
+          print("✅ Zone choisie : ${zoneChoisie.name}");
+        } else {
+          // 🔹 Sinon → position GPS
+          Position? position = await _getCurrentPosition();
+          if (position == null) {
+            setState(() => load = false);
+            return;
+          }
+          adr = "Position actuelle";
+          lat = position.latitude.toString();
+          long = position.longitude.toString();
+          print("📍 Position GPS récupérée : $lat, $long");
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: "Sélectionnez une adresse de livraison",
+          toastLength: Toast.LENGTH_LONG,
+        );
+        setState(() => load = false);
+        return;
+      }
+
+      // 🔹 3️⃣ Vérification de connexion utilisateur
+      if (!isLoggedIn) {
+        _showMyDialog();
+        setState(() => load = false);
+        return;
+      }
+
+      // 🔹 4️⃣ Tout est prêt → Paiement
+      _launchPayment();
+    } catch (e) {
+      Fluttertoast.showToast(msg: "Erreur : $e");
+      setState(() => load = false);
+    }
+  }
+
+// ----------- Fonction d’aide : récupération GPS sécurisée -----------
+  Future<Position?> _getCurrentPosition() async {
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        Fluttertoast.showToast(msg: "Activez la localisation.");
+        return null;
+      }
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          Fluttertoast.showToast(msg: "Permission GPS refusée.");
+          return null;
+        }
+      }
+
+      return await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+    } catch (e) {
+      Fluttertoast.showToast(msg: "Erreur GPS : $e");
+      return null;
+    }
+  }
+
+// ----------- Fonction d’aide : lancement KKiaPay -----------
+  void _launchPayment() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => KKiaPay(
+          amount: prixTotal.toInt(),
+          countries: ["BJ", "CI", "SN", "TG"],
+          phone: "22961000000",
+          name: "John Doe",
+          email: "test@mail.com",
+          reason: 'Paiement article',
+          data: 'Commande Fresh',
+          sandbox: true,
+          apikey: "b59e46603af611f09dfd63ae9443e3ce",
+          callback: callback,
+          theme: defaultTheme,
+          partnerId: 'ChronoFresh',
+          paymentMethods: ["momo", "card"],
+        ),
+      ),
+    ).then((_) => setState(() => load = false));
   }
 }

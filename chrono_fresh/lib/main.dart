@@ -256,11 +256,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                       onPressed: () {
-                        /* Navigator.pushReplacementNamed(
-                      context,
-                      'accueil',
-                      arguments: {'initialTab': 0},
-                    );*/
+                       
                         Navigator.pushReplacementNamed(context, 'accueil');
                       },
                       child: Text(

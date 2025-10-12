@@ -68,6 +68,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
       _firstName = prefs.getString('prenom') ?? '';
       _lastName = prefs.getString('nom') ?? '';
       _phone = prefs.getString('telephone') ?? '';
+      _mail = mail ?? '';
     });
   }
 
@@ -75,6 +76,12 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     if (_imagePath != null) {
 
       var url = Uri.parse("${api_link}/api_fresh/editprofil.php");
+      
+    var request = http.MultipartRequest('POST', url);
+    
+    var pic = await http.MultipartFile.fromPath('image', _imagePath!);
+    request.files.add(pic);
+    //var response = await request.send();
     
     var data = {
       "idc": idcli,
@@ -91,7 +98,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
       await prefs.setString('prenom', _firstName);
       await prefs.setString('nom', _lastName);
       await prefs.setString('telephone', _phone);
-      await prefs.setString('email', _phone);
+      await prefs.setString('email', _mail);
       if (_imagePath != null) {
         await prefs.setString('user_image', _imagePath!);
       }
@@ -123,7 +130,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
       await prefs.setString('prenom', _firstName);
       await prefs.setString('nom', _lastName);
       await prefs.setString('telephone', _phone);
-      await prefs.setString('email', _phone);
+      await prefs.setString('email', _mail);
       if (_imagePath != null) {
         await prefs.setString('user_image', _imagePath!);
       }
@@ -228,12 +235,43 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     }
   }
 
+
+ Future<void> _uploadImage() async {
+    if (_imagePath == null) return;
+
+    final uri = Uri.parse('YOUR_UPLOAD_API_ENDPOINT'); // Replace with your API endpoint
+    final request = http.MultipartRequest('POST', uri)
+      ..fields['description'] = 'Image uploaded from Flutter' // Example field
+      ..files.add(await http.MultipartFile.fromPath(
+        'image', // Field name for the image on your server
+        _imagePath!,
+        filename: _imagePath,
+      ));
+
+    try {
+      final response = await request.send();
+      if (response.statusCode == 200) {
+        final responseBody = await response.stream.bytesToString();
+        print('Image uploaded successfully! Response: $responseBody');
+        // Handle success, e.g., display a success message or the image URL
+      } else {
+        print('Image upload failed with status: ${response.statusCode}');
+        // Handle error
+      }
+    } catch (e) {
+      print('Error uploading image: $e');
+      // Handle error
+    }
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Données personnelles'),
+        title: const Text('Mes informations personelles'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -252,13 +290,18 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
             const SizedBox(height: 20),
             ListTile(
               leading: const Icon(Icons.person),
-              title: const Text("Nom complet"),
+              title: const Text("Nom Prenom"),
               subtitle: Text("$_firstName $_lastName"),
             ),
             ListTile(
               leading: const Icon(Icons.phone),
               title: const Text("Téléphone"),
               subtitle: Text(_phone),
+            ),
+            ListTile(
+              leading: const Icon(Icons.mail),
+              title: const Text("Email"),
+              subtitle: Text(_mail),
             ),
           ],
         ),

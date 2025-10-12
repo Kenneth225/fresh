@@ -59,14 +59,16 @@ class _SearchState extends State<Search> {
                   final product = searchResults[index];
                   return GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
+                      print(
+                          "${product['id']} nom: ${product['name']}, prix: ${product['price']}, description: ${product['info']},categorie: ${product['cat']}, image: ${product['foto']}");
+                     Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => Details(
                                 id: "${product['id']}",
                                 nom: "${product['name']}",
                                 prix: "${product['price']}",
-                                description: "${product['desc']}",
+                                description: "${product['info']}",
                                 categorie: "${product['cat']}",
-                                image: "${product['img']}",
+                                image: "${product['foto']}",
                               )));
                     },
                     child: ListTile(
