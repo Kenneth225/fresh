@@ -141,137 +141,139 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            // Image en haut
-            Image.asset(
-              "assets/fresh.png", // ton image ici
-              height: 350,
-              width: double.infinity,
-              fit: BoxFit.fitWidth,
-            ),
-
-            Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Ligne "CHRONOFRESH"
-                  RichText(
-                    text: const TextSpan(
-                      children: [
-                        TextSpan(
-                          text: "CHRONO",
+      body: SingleChildScrollView(
+        child: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              // Image en haut
+              Image.asset(
+                "assets/fresh.png", // ton image ici
+                height: 350,
+                width: double.infinity,
+                fit: BoxFit.fitWidth,
+              ),
+        
+              Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Ligne "CHRONOFRESH"
+                    RichText(
+                      text: const TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "CHRONO",
+                            style: TextStyle(
+                              fontSize: 43,
+                              fontWeight: FontWeight.normal,
+                              color: Colors.black26,
+                            ),
+                          ),
+                          TextSpan(
+                            text: "FRESH",
+                            style: TextStyle(
+                              fontSize: 43,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black, // vert foncé
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+        
+                    // Ligne "Vos courses"
+                    const Text(
+                      "Vos courses",
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xFF00796B),
+                      ),
+                    ),
+        
+                    // Ligne "à portée de clic"
+                    const Text(
+                      "à portée de clic",
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF00796B),
+                      ),
+                    ),
+        
+                    const SizedBox(height: 4),
+        
+                    // Ligne "Livraison à domicile"
+                    const Text(
+                      "Livraison à domicile",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+        
+              // Boutons en bas
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  children: [
+                    // Bouton principal
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green[700],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                        ),
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(context, 'connect');
+                        },
+                        child: const Text(
+                          "Faites vos course",
+                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+        
+                    // Bouton secondaire
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: Colors.green[700]!),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                        ),
+                        onPressed: () {
+                         
+                          Navigator.pushReplacementNamed(context, 'accueil');
+                        },
+                        child: Text(
+                          "Decouvrir",
                           style: TextStyle(
-                            fontSize: 45,
-                            fontWeight: FontWeight.normal,
-                            color: Colors.black26,
+                            fontSize: 16,
+                            color: Colors.green[700],
                           ),
                         ),
-                        TextSpan(
-                          text: "FRESH",
-                          style: TextStyle(
-                            fontSize: 45,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black, // vert foncé
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-
-                  // Ligne "Vos courses"
-                  const Text(
-                    "Vos courses",
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xFF00796B),
-                    ),
-                  ),
-
-                  // Ligne "à portée de clic"
-                  const Text(
-                    "à portée de clic",
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF00796B),
-                    ),
-                  ),
-
-                  const SizedBox(height: 4),
-
-                  // Ligne "Livraison à domicile"
-                  const Text(
-                    "Livraison à domicile",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Boutons en bas
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                children: [
-                  // Bouton principal
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green[700],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                      ),
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(context, 'connect');
-                      },
-                      child: const Text(
-                        "Faites vos course",
-                        style: TextStyle(fontSize: 16, color: Colors.white),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Bouton secondaire
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: Colors.green[700]!),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                      ),
-                      onPressed: () {
-                       
-                        Navigator.pushReplacementNamed(context, 'accueil');
-                      },
-                      child: Text(
-                        "Decouvrir",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.green[700],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            )
-          ],
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

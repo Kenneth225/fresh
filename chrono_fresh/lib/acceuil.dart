@@ -78,138 +78,135 @@ class _AcceuilState extends State<Acceuil> {
       backgroundColor: Colors.white,
       body: _isLoggedIn ? tabs[_tabNum] : _tabsUser[_tabNum],
       bottomNavigationBar: _isLoggedIn
-          ? LayoutBuilder(
-              builder: (context, constraints) {
-                // Récupère la largeur et hauteur de l’écran
-                final screenWidth = MediaQuery.of(context).size.width;
-                final screenHeight = MediaQuery.of(context).size.height;
+    ? LayoutBuilder(
+        builder: (context, constraints) {
+          final screenWidth = MediaQuery.of(context).size.width;
+          final screenHeight = MediaQuery.of(context).size.height;
 
-                // Adapte les tailles dynamiquement
-                final isSmallScreen = screenWidth < 360;
+          final isVerySmall = screenWidth < 350;
+          final isSmallScreen = screenWidth < 400;
+          final isTablet = screenWidth > 600;
 
-                final isTablet = screenWidth > 600;
-                final baseIconSize =
-                    isSmallScreen ? 20.0 : (isTablet ? 28.0 : 23.0);
-                final baseTextSize =
-                    isSmallScreen ? 11.0 : (isTablet ? 20.0 : 14.0);
-                // final baseIconSize = isTablet ? 28.0 : 22.0;
-                // final baseTextSize = isTablet ? 20.0 : 14.0;
-                final paddingV = isTablet ? 25.0 : 15.0;
-                final paddingH = screenWidth * 0.03; // Adapté à la largeur
+          // Adjust icon and text sizes responsively
+          final baseIconSize =
+              isVerySmall ? 18.0 : (isSmallScreen ? 20.0 : (isTablet ? 28.0 : 23.0));
+          final baseTextSize =
+              isVerySmall ? 10.0 : (isSmallScreen ? 12.0 : (isTablet ? 20.0 : 14.0));
 
-                return SafeArea(
-                  child: Container(
-                    color: Colors.white,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: paddingH,
-                      vertical: paddingV,
-                    ),
-                    child: Consumer<CartProvider>(
-                      builder: (context, cartProvider, _) {
-                        return GNav(
-                          backgroundColor: Colors.white,
-                          style: GnavStyle.oldSchool,
-                          color: Colors.black,
-                          activeColor: const Color(0xFF006650),
-                          selectedIndex: _tabNum,
-                          padding: EdgeInsets.all(isTablet ? 14 : 10),
-                          gap: isTablet ? 8 : 5,
-                          iconSize: baseIconSize,
-                          onTabChange: (index) {
-                            setState(() {
-                              _tabNum = index;
-                            });
-                          },
-                          tabs: isLivreur
-                              ? [
-                                  GButton(
-                                    icon: Icons.auto_graph_outlined,
-                                    text: 'Statistique',
-                                    textSize: baseTextSize,
-                                  ),
-                                  GButton(
-                                    icon: Icons.motorcycle_rounded,
-                                    text: 'Courses',
-                                    textSize: baseTextSize,
-                                  ),
-                                  GButton(
-                                    icon: Icons.person_4_outlined,
-                                    text: 'Compte',
-                                    textSize: baseTextSize,
-                                  ),
-                                ]
-                              : [
-                                  GButton(
-                                    icon: Icons.local_convenience_store_rounded,
-                                    text: 'Home',
-                                    iconSize: baseIconSize,
-                                    textSize: baseTextSize,
-                                  ),
-                                  GButton(
-                                    icon: Icons.travel_explore_rounded,
-                                    text: 'Explorer',
-                                    iconSize: baseIconSize,
-                                    textSize: baseTextSize,
-                                  ),
-                                  GButton(
-                                    leading: Stack(
-                                      clipBehavior: Clip.none,
-                                      children: [
-                                        Icon(Icons.shopping_cart,
-                                            size: baseIconSize + 5),
-                                        if (cartProvider.cartItemCount > 0)
-                                          Positioned(
-                                            right: -6,
-                                            top: -6,
-                                            child: Container(
-                                              padding: const EdgeInsets.all(4),
-                                              decoration: BoxDecoration(
-                                                color: Colors.red,
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                              ),
-                                              constraints: const BoxConstraints(
-                                                minWidth: 20,
-                                                minHeight: 20,
-                                              ),
-                                              child: Text(
-                                                '${cartProvider.cartItemCount}',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: isTablet ? 14 : 11,
-                                                ),
-                                                textAlign: TextAlign.center,
-                                              ),
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                    text: 'Panier',
-                                    icon: Icons.shopping_cart_outlined,
-                                    textSize: baseTextSize,
-                                  ),
-                                  GButton(
-                                    icon: Icons.soup_kitchen_outlined,
-                                    text: 'Recettes',
-                                    iconSize: baseIconSize,
-                                    textSize: baseTextSize,
-                                  ),
-                                  GButton(
-                                    icon: Icons.person_4_outlined,
-                                    text: 'Profil',
-                                    iconSize: baseIconSize,
-                                    textSize: baseTextSize,
-                                  ),
-                                ],
-                        );
+          final paddingV = isTablet ? 25.0 : 17.0;
+          final paddingH = isTablet ? screenWidth * 0.05 : screenWidth * 0.03;
+
+          return SafeArea(
+            child: Container(
+              color: Colors.white,
+              padding: EdgeInsets.symmetric(
+                horizontal: paddingH,
+                vertical: paddingV,
+              ),
+              child: Consumer<CartProvider>(
+                builder: (context, cartProvider, _) {
+                  return SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    child: GNav(
+                      backgroundColor: Colors.white,
+                      style: GnavStyle.oldSchool,
+                      color: Colors.black,
+                      activeColor: const Color(0xFF006650),
+                      selectedIndex: _tabNum,
+                      padding: EdgeInsets.all(isTablet ? 14 : 10),
+                      gap: isTablet ? 8 : 5,
+                      iconSize: baseIconSize,
+                      onTabChange: (index) {
+                        setState(() {
+                          _tabNum = index;
+                        });
                       },
+                      tabs: isLivreur
+                          ? [
+                              GButton(
+                                icon: Icons.auto_graph_outlined,
+                                text: 'Statistique',
+                                textSize: baseTextSize,
+                              ),
+                              GButton(
+                                icon: Icons.motorcycle_rounded,
+                                text: 'Courses',
+                                textSize: baseTextSize,
+                              ),
+                              GButton(
+                                icon: Icons.person_4_outlined,
+                                text: 'Compte',
+                                textSize: baseTextSize,
+                              ),
+                            ]
+                          : [
+                              GButton(
+                                icon: Icons.local_convenience_store_rounded,
+                                text: 'Home',
+                                textSize: baseTextSize,
+                              ),
+                              GButton(
+                                icon: Icons.travel_explore_rounded,
+                                text: 'Explorer',
+                                textSize: baseTextSize,
+                              ),
+                              GButton(
+                                icon:Icons.shopping_cart_outlined,
+                                leading: Stack(
+                                  clipBehavior: Clip.none,
+                                  children: [
+                                    Icon(Icons.shopping_cart, size: baseIconSize + 5),
+                                    if (cartProvider.cartItemCount > 0)
+                                      Positioned(
+                                        right: -6,
+                                        top: -6,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(4),
+                                          decoration: BoxDecoration(
+                                            color: Colors.red,
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          constraints: const BoxConstraints(
+                                            minWidth: 20,
+                                            minHeight: 20,
+                                          ),
+                                          child: Text(
+                                            '${cartProvider.cartItemCount}',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: isTablet ? 14 : 11,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                                text: 'Panier',
+                                textSize: baseTextSize,
+                              ),
+                              GButton(
+                                icon: Icons.soup_kitchen_outlined,
+                                text: 'Recettes',
+                                textSize: baseTextSize,
+                              ),
+                              GButton(
+                                icon: Icons.person_4_outlined,
+                                text: 'Profil',
+                                textSize: baseTextSize,
+                              ),
+                            ],
                     ),
-                  ),
-                );
-              },
-            )
-          : null,
+                  );
+                },
+              ),
+            ),
+          );
+        },
+      )
+    : null,
+
     );
   }
 }
-

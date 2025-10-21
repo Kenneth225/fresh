@@ -247,89 +247,90 @@ class _PanierState extends State<Panier> {
                                 fit: BoxFit.contain,
                               ),
                             ),
-                            const SizedBox(width: 12),
+                            const SizedBox(width: 10),
 
                             // Nom + détail + bouton +/-
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    item.productName,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
+                             Flexible(
+                               child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      item.productName,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    "${item.variants.first.price} F CFA ",
-                                    style: const TextStyle(
-                                        fontSize: 13, color: Colors.grey),
-                                  ),
-                                  const SizedBox(height: 8),
-
-                                  // Boutons +/-
-                                  Container(
-                                    width: 103,
-                                    height: 30,
-                                    decoration: const BoxDecoration(
-                                        color: Color(0xFF006650),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(18))),
-                                    //color: Color(0xFF006650),
-                                    child: Row(
-                                      children: [
-                                        IconButton(
-                                          iconSize: 12,
-                                          icon: const Icon(Icons.remove,
-                                              color: Colors.white),
-                                          onPressed: () {
-                                            if (item.quantity > 1) {
-                                              setState(() {
-                                                cart.updateQuantity(
-                                                    item.productId,
-                                                    item.variants,
-                                                    item.quantity - 1);
-                                                Provider.of<CartProvider>(
-                                                        context,
-                                                        listen: false)
-                                                    .removeItem();
-                                              });
-                                            }
-                                          },
-                                        ),
-                                        Text(
-                                          "${item.quantity}",
-                                          style: const TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.white),
-                                        ),
-                                        IconButton(
-                                          iconSize: 12,
-                                          icon: const Icon(Icons.add,
-                                              color: Colors.white),
-                                          onPressed: () {
-                                            if (item.quantity < 10) {
-                                              setState(() {
-                                                cart.updateQuantity(
-                                                    item.productId,
-                                                    item.variants,
-                                                    item.quantity + 1);
-                                                Provider.of<CartProvider>(
-                                                        context,
-                                                        listen: false)
-                                                    .addItem();
-                                              });
-                                            }
-                                          },
-                                        ),
-                                      ],
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      "${item.variants.first.price} F CFA ",
+                                      style: const TextStyle(
+                                          fontSize: 13, color: Colors.grey),
                                     ),
-                                  )
-                                ],
-                              ),
-                            ),
+                                    const SizedBox(height: 8),
+                               
+                                    // Boutons +/-
+                                    Container(
+                                      //width: 100,
+                                      height: 30,
+                                      decoration: const BoxDecoration(
+                                          color: Color(0xFF006650),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(18))),
+                                      //color: Color(0xFF006650),
+                                      child: Row(
+                                        children: [
+                                          IconButton(
+                                            iconSize: 12,
+                                            icon: const Icon(Icons.remove,
+                                                color: Colors.white),
+                                            onPressed: () {
+                                              if (item.quantity > 1) {
+                                                setState(() {
+                                                  cart.updateQuantity(
+                                                      item.productId,
+                                                      item.variants,
+                                                      item.quantity - 1);
+                                                  Provider.of<CartProvider>(
+                                                          context,
+                                                          listen: false)
+                                                      .removeItem();
+                                                });
+                                              }
+                                            },
+                                          ),
+                                          Text(
+                                            "${item.quantity}",
+                                            style: const TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.white),
+                                          ),
+                                          IconButton(
+                                            iconSize: 12,
+                                            icon: const Icon(Icons.add,
+                                                color: Colors.white),
+                                            onPressed: () {
+                                              if (item.quantity < 10) {
+                                                setState(() {
+                                                  cart.updateQuantity(
+                                                      item.productId,
+                                                      item.variants,
+                                                      item.quantity + 1);
+                                                  Provider.of<CartProvider>(
+                                                          context,
+                                                          listen: false)
+                                                      .addItem();
+                                                });
+                                              }
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                             ),
+                            
 
                             // Prix + bouton supprimer
                             Column(
@@ -422,7 +423,7 @@ class _PanierState extends State<Panier> {
                           print('$unitprArray');
                           print('$imgArray');
                           print(cart.cartLength);
-                          //  _showPaymentModal(context);
+                          
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => CheckoutPage(
                                     imgArray: [imgArray],
@@ -432,11 +433,11 @@ class _PanierState extends State<Panier> {
                                     qtArray: [qtArray],
                                     unitprArray: [unitprArray],
                                   )));
-                          //commander(idArray, cart.cartLength, '${cart.total}');
+                          
                         },
                         child: const Text(
                           "Valider mon panier",
-                          style: TextStyle(fontSize: 16, color: Colors.white),
+                          style: TextStyle(fontSize: 15, color: Colors.white),
                         ),
                       ),
                     ],
