@@ -5,11 +5,11 @@ import 'package:http/http.dart' as http;
 
 
 
-Future<List<Mrecettes>>  viewrecall(id) async {
+Future<List<Mrecettes>>  viewrecall() async {
 
   var url = Uri.parse("${api_link}/api_fresh/recette.php");
   var data = {
-     'mrq': id,
+     
   };
 
   var res = await http.post(url, body: data);

@@ -140,22 +140,31 @@ class _PanierState extends State<Panier> {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Selectioner le lieu de livraison'),
-          content: SingleChildScrollView(
+          title: const Text('INFORMATION'),
+          content: const SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Image.asset(
-                  'assets/mapss.png', // Remplace cette image par la tienne
-                  width: 50,
-                  height: 150,
-                  fit: BoxFit.cover,
-                ),
+                Text("Pour le moment, nous livrons uniquement à Cotonou, Porto-Novo et Calavi. D’autres zones seront bientôt disponibles !")
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text("Ma position actuel"),
+              child: const Text("Continuer"),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => CheckoutPage(
+                                    imgArray: [imgArray],
+                                    idArray: [idArray],
+                                    priceArray: [priceArray],
+                                    nomArray: [nomArray],
+                                    qtArray: [qtArray],
+                                    unitprArray: [unitprArray],
+                                  )));
+              },
+            ),
+             TextButton(
+              child: const Text("Annuler"),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -241,7 +250,7 @@ class _PanierState extends State<Panier> {
                             ClipRRect(
                               borderRadius: BorderRadius.circular(8),
                               child: Image.network(
-                                "${api_link}/api_fresh/uploads/${item.productImages?[0]}",
+                                "$link_photo/${item.productImages?[0]}",
                                 height: 100,
                                 width: 100,
                                 fit: BoxFit.contain,
@@ -424,7 +433,8 @@ class _PanierState extends State<Panier> {
                           print('$imgArray');
                           print(cart.cartLength);
                           
-                          Navigator.of(context).push(MaterialPageRoute(
+                          _showMymap();
+                        /*  Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => CheckoutPage(
                                     imgArray: [imgArray],
                                     idArray: [idArray],
@@ -432,7 +442,7 @@ class _PanierState extends State<Panier> {
                                     nomArray: [nomArray],
                                     qtArray: [qtArray],
                                     unitprArray: [unitprArray],
-                                  )));
+                                  )));*/
                           
                         },
                         child: const Text(

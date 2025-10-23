@@ -80,6 +80,7 @@ class _CategoriedetailsState extends State<Categoriedetails> {
                     Boutique boutique = snapshot.data[index];
                     return Container(
                                     width: 180,
+                                    
                                     margin: const EdgeInsets.all(8.0),
                                     child: Column(
                                       crossAxisAlignment:
@@ -108,13 +109,14 @@ class _CategoriedetailsState extends State<Categoriedetails> {
                                             child: Stack(
                                               children: [
                                                 Image.network(
-                                                  "$api_link/api_fresh/uploads/${boutique.image}",
-                                                  height: 120,
+                                                  
+                                                  "$link_photo/${boutique.image}",
+                                                  height: 100,
                                                   width: 180,
-                                                  fit: BoxFit.cover,
+                                                  fit: BoxFit.contain,
                                                 ),
                                                 Container(
-                                                  height: 120,
+                                                  height: 100,
                                                   decoration: BoxDecoration(
                                                     gradient: LinearGradient(
                                                       colors: [

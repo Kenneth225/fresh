@@ -174,7 +174,7 @@ class _MescommandesState extends State<Mescommandes> {
                             return Column(
                               children: [
                                 mcommande.statut == "0" ||
-                                        mcommande.statut == "3"
+                                        mcommande.statut == "1"
                                     ? const Row(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -247,7 +247,7 @@ class _MescommandesState extends State<Mescommandes> {
                                           ),
                                         ),
                                         mcommande.statut == "0" ||
-                                                mcommande.statut == "3"
+                                                mcommande.statut == "1"
                                             ? GestureDetector(
                                                 onTap: () {
                                                   Navigator.of(context).push(

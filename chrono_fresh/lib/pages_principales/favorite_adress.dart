@@ -230,7 +230,7 @@ class _FavoriteAddressesPageState extends State<FavoriteAddressesPage> {
                             print(snapshot.data.length);
                             return Card(
                               margin: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 8),
+                                  horizontal: 18, vertical: 8),
                               elevation: 0,
                               child: Padding(
                                 padding: const EdgeInsets.all(20),
@@ -238,14 +238,14 @@ class _FavoriteAddressesPageState extends State<FavoriteAddressesPage> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.location_on_outlined,
-                                      size: 30,
-                                      weight: 30,
+                                      size: 25,
+                                      weight: 25,
                                     ),
                                     Text("${mzones.name}",
                                         style: const TextStyle(
-                                            fontSize: 25, color: Colors.black)),
+                                            fontSize: 20, color: Colors.black)),
                                     const SizedBox(width: 4),
                                     IconButton(
                                         onPressed: () {

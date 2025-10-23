@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:chrono_fresh/controlleurs/detailscommandes_api.dart';
+import 'package:chrono_fresh/controlleurs/mescommandes_api.dart';
 import 'package:chrono_fresh/global_var.dart';
 import 'package:chrono_fresh/models/detailscommande_structure.dart';
+import 'package:chrono_fresh/models/mescommandes_structure.dart';
 import 'package:http/http.dart' as http;
 import 'package:chrono_fresh/controlleurs/course_api.dart';
 import 'package:chrono_fresh/models/course_structure.dart';
@@ -33,6 +35,9 @@ class _SuivicommandeState extends State<Suivicommande> {
     return await viewsdetorders(id);
   }
 
+  morder(id) async {
+    return await viewsorders(id);
+  }
   void _goToScanner(BuildContext context) {
     Navigator.push(
       context,
@@ -67,12 +72,12 @@ class _SuivicommandeState extends State<Suivicommande> {
                 ? Center(
                     child: OrderStep(
                       icon: Icons.receipt_long,
-                      title: 'Commande prise',
+                      title: 'Command9 prise',
                       isCompleted: true,
                     ),
                   )
                 : FutureBuilder(
-                    future: getCourseDetails(widget.idL),
+                    future: morder(widget.idL),
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(child: CircularProgressIndicator());
@@ -93,11 +98,12 @@ class _SuivicommandeState extends State<Suivicommande> {
                           ),
                         );
                       } else {
+                        
                         final List course = snapshot.data;
                         return ListView.builder(
                           itemCount: course.length,
                           itemBuilder: (BuildContext context, int index) {
-                            final mc = course[index] as Course;
+                            Mcommande mcommande = snapshot.data[index];
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -107,7 +113,7 @@ class _SuivicommandeState extends State<Suivicommande> {
                                       'La commande est en cours de préparation',
                                   isCompleted: true,
                                 ),
-                                mc.livCourse == "1"
+                                mcommande.statut == "1"
                                     ? OrderStep(
                                         icon: Icons.delivery_dining,
                                         title: 'Livraison en cours',
@@ -117,7 +123,9 @@ class _SuivicommandeState extends State<Suivicommande> {
                                         onLivraison: true,
                                       )
                                     : SizedBox(height: 10),
-                                mc.finCourse == "1"
+                              /*  
+                              A utiliser quand l'app livreur sera fonctionnel pour scaner qr code
+                              mc.finCourse == "1"
                                     ? Container(
                                         height: 150,
                                         decoration: BoxDecoration(
@@ -133,7 +141,7 @@ class _SuivicommandeState extends State<Suivicommande> {
                                           ),
                                         ),
                                       )
-                                    : SizedBox(height: 10),
+                                    : SizedBox(height: 10),*/
                                 /*  OrderStep(
                   icon: Icons.check_circle,
                   title: 'Commande reçue',
@@ -199,7 +207,7 @@ class _SuivicommandeState extends State<Suivicommande> {
                                 Column(
                                   children: [
                                     Image.network(
-                                      "${api_link}/api_fresh/uploads/${mcommande.image}",
+                                      "$link_photo/${mcommande.image}",
                                       height: 100,
                                       width: 100,
                                       fit: BoxFit.contain,

@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_cart/cart.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-
 import 'package:chrono_fresh/controlleurs/cart_provider.dart';
 import 'package:chrono_fresh/livreur/statistiques.dart';
 import 'package:chrono_fresh/livreur/courses.dart';
@@ -89,7 +88,7 @@ class _AcceuilState extends State<Acceuil> {
 
           // Adjust icon and text sizes responsively
           final baseIconSize =
-              isVerySmall ? 18.0 : (isSmallScreen ? 20.0 : (isTablet ? 28.0 : 23.0));
+              isVerySmall ? 20.0 : (isSmallScreen ? 20.0 : (isTablet ? 28.0 : 23.0));
           final baseTextSize =
               isVerySmall ? 10.0 : (isSmallScreen ? 12.0 : (isTablet ? 20.0 : 14.0));
 
@@ -157,7 +156,7 @@ class _AcceuilState extends State<Acceuil> {
                                   clipBehavior: Clip.none,
                                   children: [
                                     Icon(Icons.shopping_cart, size: baseIconSize + 5),
-                                    if (cartProvider.cartItemCount > 0)
+                                    if (cart.cartLength > 0)
                                       Positioned(
                                         right: -6,
                                         top: -6,

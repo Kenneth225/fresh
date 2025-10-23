@@ -189,7 +189,7 @@ class _DetailsState extends State<Details> {
                     bottom: Radius.circular(30),
                   ),
                   child: Image.network(
-                    "${api_link}/api_fresh/uploads/${widget.image}",
+                    "$link_photo/${widget.image}",
                     height: 250,
                     width: double.infinity,
                     fit: BoxFit.cover,

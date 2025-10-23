@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'dart:ui';
+import 'package:chrono_fresh/controlleurs/categorie_api.dart';
 import 'package:chrono_fresh/controlleurs/categoriesall_api.dart';
 import 'package:chrono_fresh/controlleurs/notif_pub_api.dart';
 import 'package:chrono_fresh/controlleurs/sboutique_api.dart';
@@ -108,6 +109,10 @@ class _boutiqueState extends State<boutique> {
     return await viewnotif();
   }
 
+hcat() async {
+    return await viewcat();
+  }
+
   homecat() async {
     return await viewcatall();
   }
@@ -177,7 +182,6 @@ class _boutiqueState extends State<boutique> {
       },
     );
   }
-
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -296,7 +300,7 @@ class _boutiqueState extends State<boutique> {
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(15),
                                     child: Image.network(
-                                      "$api_link/api_fresh/uploads/${notif.image}" ??
+                                      "$link_photo/${notif.image}" ??
                                           "", // sécurité si null
                                       width: 100,
                                       height: 100,
@@ -429,11 +433,9 @@ class _boutiqueState extends State<boutique> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.stretch,
                                       children: <Widget>[
-                                        // Image de la recette
                                         Expanded(
                                           child: Image.network(
-                                            // Assurez-vous que l'objet `Mrecettes` a une propriété `imageUrl`
-                                            "$api_link/api_fresh/uploads/${cate.visuel}",
+                                            "$link_photo/${cate.visuel}",
                                             fit: BoxFit
                                                 .fitWidth, // L'image remplit l'espace sans déformation
                                             loadingBuilder: (context, child,
@@ -462,7 +464,7 @@ class _boutiqueState extends State<boutique> {
                                             },
                                           ),
                                         ),
-                                        // Nom de la recette
+                                       
                                         Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: Text(
@@ -517,7 +519,7 @@ class _boutiqueState extends State<boutique> {
                                               fontSize: 22),
                                         ),
                                       ),
-                                      TextButton(
+                                    /*  TextButton(
                                         onPressed: () {
                                           Navigator.of(context).push(
                                             MaterialPageRoute(
@@ -535,7 +537,7 @@ class _boutiqueState extends State<boutique> {
                                               fontSize: 16,
                                               color: Color(0xFF006650)),
                                         ),
-                                      ),
+                                      ),*/
                                     ],
                                   ),
                                   const SizedBox(height: 5),
@@ -555,7 +557,7 @@ class _boutiqueState extends State<boutique> {
                                               Boutique boutique =
                                                   snapshot.data[index];
                                               return Container(
-                                                width: 180,
+                                                width: 146,
                                                 margin:
                                                     const EdgeInsets.all(8.0),
                                                 child: Column(
@@ -591,10 +593,10 @@ class _boutiqueState extends State<boutique> {
                                                         child: Stack(
                                                           children: [
                                                             Image.network(
-                                                              "$api_link/api_fresh/uploads/${boutique.image}",
-                                                              height: 120,
+                                                              "$link_photo/${boutique.image}",
+                                                              height: 100,
                                                               width: 180,
-                                                              fit: BoxFit.cover,
+                                                              fit: BoxFit.contain,
                                                             ),
                                                             Container(
                                                               height: 120,
@@ -721,7 +723,7 @@ class _boutiqueState extends State<boutique> {
 
                     // ==== LISTE DES CATÉGORIES ====
                     FutureBuilder(
-                      future: homecat(),
+                      future: hcat(),
                       builder: (context, AsyncSnapshot snapshot) {
                         if (snapshot.hasData) {
                           return ListView.builder(
@@ -784,7 +786,7 @@ class _boutiqueState extends State<boutique> {
                                               Boutique boutique =
                                                   snapshot.data[index];
                                               return Container(
-                                                width: 180,
+                                                width: 146,
                                                 margin:
                                                     const EdgeInsets.all(8.0),
                                                 child: Column(
@@ -820,10 +822,10 @@ class _boutiqueState extends State<boutique> {
                                                         child: Stack(
                                                           children: [
                                                             Image.network(
-                                                              "$api_link/api_fresh/uploads/${boutique.image}",
-                                                              height: 120,
+                                                              "$link_photo/${boutique.image}",
+                                                              height: 100,
                                                               width: 180,
-                                                              fit: BoxFit.cover,
+                                                              fit: BoxFit.contain,
                                                             ),
                                                             Container(
                                                               height: 120,

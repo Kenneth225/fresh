@@ -13,7 +13,7 @@ class ReSultatsCateGorieRecette extends StatefulWidget {
 
 // Fonction pour récupérer toutes les recettes
 Future<List<Mrecettes>> viewallrec() async {
-  return await viewrecall('0');
+  return await viewrecall();
 }
 
 class ReSultatsCateGorieRecetteState extends State<ReSultatsCateGorieRecette> {
@@ -72,12 +72,7 @@ class ReSultatsCateGorieRecetteState extends State<ReSultatsCateGorieRecette> {
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                            /*Container(
-                                        margin:
-                                            const EdgeInsets.only(bottom: 26),
-                                        height: 129,
-                                        width: double.infinity,
-                                        child: Image.asset("assets/recettepg.jpg", fit: BoxFit.fill)),*/
+                           
                             Container(
                               margin:
                                   const EdgeInsets.only(bottom: 8, left: 20),
@@ -115,10 +110,10 @@ class ReSultatsCateGorieRecetteState extends State<ReSultatsCateGorieRecette> {
 
                                   final recettes = snapshot.data!;
                                   return SizedBox(
-                                   height: 450,
+                                    height: 450,
                                     child: ListView.builder(
                                         itemCount: recettes.length,
-                                        padding: const EdgeInsets.all(16.0),
+                                        padding: const EdgeInsets.all(6.0),
                                         itemBuilder: (context, index) {
                                           final recette = recettes[index];
                                           return GestureDetector(
@@ -135,12 +130,7 @@ class ReSultatsCateGorieRecetteState extends State<ReSultatsCateGorieRecette> {
                                                                   recette.image,
                                                             )));
                                               },
-                                              /* () => showRecipeDetails(
-                                                              context,
-                                                              recette.nomPlat,
-                                                              recette
-                                                                  .description,
-                                                              recette.image),*/
+                                              
                                               child: IntrinsicHeight(
                                                   child: Container(
                                                       margin:
@@ -149,24 +139,18 @@ class ReSultatsCateGorieRecetteState extends State<ReSultatsCateGorieRecette> {
                                                               left: 20,
                                                               right: 20),
                                                       width: double.infinity,
-                                                      child: Row(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
+                                                      child: Row( crossAxisAlignment: CrossAxisAlignment .start,
                                                           children: [
-                                                            Container(
-                                                              margin:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      right:
-                                                                          11),
-                                                              width: 140,
+                                                            Container( 
+                                                              
+                                                              margin:const EdgeInsets .only(right: 8),
+                                                             width: 100,
                                                               height: 97,
                                                               child:
                                                                   Image.network(
-                                                                "$api_link/api_fresh/uploads/${recette.image}",
+                                                                "$link_photo/${recette.image}",
                                                                 height: 60,
-                                                                width: 180,
+                                                                width: 90,
                                                                 fit: BoxFit
                                                                     .cover,
                                                               ),

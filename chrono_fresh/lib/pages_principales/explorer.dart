@@ -137,10 +137,10 @@ class _ExplorerState extends State<Explorer> {
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(18),
                                         child: Image.network(
-                                          "${api_link}/api_fresh/uploads/${cate.visuel}",
-                                          height: 70,
-                                          width: 70,
-                                          fit: BoxFit.cover,
+                                          "$link_photo/${cate.visuel}",
+                                         height: 70,
+                                          fit: BoxFit.fitWidth,
+                                          
                                         ),
                                       ),
                                     ],

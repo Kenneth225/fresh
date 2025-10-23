@@ -82,7 +82,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
     PriceFuture.then((data) {
       if (data.isNotEmpty) {
         setState(() {
-          prixliv = double.parse("${data[0].prix}");
+          prixliv = double.parse("${data[0].value}");
           prixTotal = cart.total + prixliv;
         });
       }
@@ -275,20 +275,80 @@ class _CheckoutPageState extends State<CheckoutPage> {
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // ---- Sélecteur d'adresse ----
-            FutureBuilder<List<Zones>>(
-              future: adresses(id),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (snapshot.hasError) {
-                  // return Text("Erreur: ${snapshot.error}");
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ---- Sélecteur d'adresse ----
+              FutureBuilder<List<Zones>>(
+                future: adresses(id),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.hasError) {
+                    // return Text("Erreur: ${snapshot.error}");
+                    return Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text("Adresse de livraison",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16)),
+                            const SizedBox(height: 8),
+                            DropdownButton<String>(
+                              value: selectedAddress,
+                              hint: const Text("Sélectionner une adresse"),
+                              isExpanded: true,
+                              items: const [
+                                DropdownMenuItem(
+                                  value: "gps",
+                                  child: Text("Adresse actuel"),
+                                ),
+                                DropdownMenuItem(
+                                  value: "autre",
+                                  child: Text("Autre adresse"),
+                                ),
+                              ],
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedAddress = value;
+                                  useCustomAddress = value == "autre";
+                                });
+                              },
+                            ),
+                            if (useCustomAddress) ...[
+                              const SizedBox(height: 8),
+                              TextField(
+                                controller: customAddressController,
+                                decoration: const InputDecoration(
+                                  labelText: "Saisir une adresse",
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                            ]
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Text(
+                      'Aucune adresse enregistrée',
+                      style: TextStyle(color: Colors.black),
+                    );
+                  }
+        
+                  final addresses = snapshot.data!;
+                  _lastFetchedAddresses =
+                      addresses; // sauvegarde pour valider après
+        
                   return Card(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
@@ -305,12 +365,16 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             value: selectedAddress,
                             hint: const Text("Sélectionner une adresse"),
                             isExpanded: true,
-                            items: const [
-                              DropdownMenuItem(
+                            items: [
+                              ...addresses.map((zone) => DropdownMenuItem(
+                                    value: zone.id,
+                                    child: Text(zone.name ?? ""),
+                                  )),
+                              const DropdownMenuItem(
                                 value: "gps",
                                 child: Text("Adresse actuel"),
                               ),
-                              DropdownMenuItem(
+                              const DropdownMenuItem(
                                 value: "autre",
                                 child: Text("Autre adresse"),
                               ),
@@ -336,208 +400,145 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       ),
                     ),
                   );
-                }
-                if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Text(
-                    'Aucune adresse enregistrée',
-                    style: TextStyle(color: Colors.black),
-                  );
-                }
-
-                final addresses = snapshot.data!;
-                _lastFetchedAddresses =
-                    addresses; // sauvegarde pour valider après
-
-                return Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text("Adresse de livraison",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16)),
-                        const SizedBox(height: 8),
-                        DropdownButton<String>(
-                          value: selectedAddress,
-                          hint: const Text("Sélectionner une adresse"),
-                          isExpanded: true,
-                          items: [
-                            ...addresses.map((zone) => DropdownMenuItem(
-                                  value: zone.id,
-                                  child: Text(zone.name ?? ""),
-                                )),
-                            const DropdownMenuItem(
-                              value: "gps",
-                              child: Text("Adresse actuel"),
-                            ),
-                            const DropdownMenuItem(
-                              value: "autre",
-                              child: Text("Autre adresse"),
-                            ),
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              selectedAddress = value;
-                              useCustomAddress = value == "autre";
-                            });
-                          },
-                        ),
-                        if (useCustomAddress) ...[
-                          const SizedBox(height: 8),
-                          TextField(
-                            controller: customAddressController,
-                            decoration: const InputDecoration(
-                              labelText: "Saisir une adresse",
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                        ]
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-
-            const SizedBox(height: 8),
-
-            // ---- Sélecteur de date ----
-            Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
-              child: ListTile(
-                leading: const Icon(Icons.calendar_today, color: Colors.green),
-                title: Text(selectedDate == null
-                    ? "Sélectionner une date de livraison"
-                    : "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}"),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: () async {
-                  final now = DateTime.now();
-                  final pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: now,
-                    firstDate: now,
-                    lastDate: DateTime(now.year + 1),
-                    locale: const Locale("fr", "FR"),
-                  );
-                  if (pickedDate != null) {
-                    setState(() {
-                      selectedDate = pickedDate;
-                    });
-                  }
                 },
               ),
-            ),
-
-            const SizedBox(height: 16),
-
-            // ---- Paiement recap ----
-            Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text("Paiement",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16)),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        cart.cartLength <= 1
-                            ? Text("${cart.cartLength} article")
-                            : Text("${cart.cartLength} articles"),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Montant"),
-                        Text("${cart.total} F FCA"),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text("Frais de livraison"),
-                        FutureBuilder(
-                          future: PriceFuture,
-                          builder: (context, AsyncSnapshot snapshot) {
-                            if (snapshot.hasData && snapshot.data.isNotEmpty) {
-                              // Si viewprice() renvoie une liste
-                              Pliv p = snapshot.data[0];
-
-                              return Text(
-                                "${p.prix} F CFA",
-                                style: const TextStyle(color: Colors.black),
-                              );
-                            } else {
-                              return const Text("0 F CFA");
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                    const Divider(height: 24, thickness: 1),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text("Total",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16)),
-                        Text("$prixTotal  F FCA",
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16)),
-                      ],
-                    ),
-                  ],
+        
+              const SizedBox(height: 8),
+        
+              // ---- Sélecteur de date ----
+              Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                child: ListTile(
+                  leading: const Icon(Icons.calendar_today, color: Colors.green),
+                  title: Text(selectedDate == null
+                      ? "Sélectionner une date de livraison"
+                      : "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}"),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onTap: () async {
+                    final now = DateTime.now();
+                    final pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: now,
+                      firstDate: now,
+                      lastDate: DateTime(now.year + 1),
+                      locale: const Locale("fr", "FR"),
+                    );
+                    if (pickedDate != null) {
+                      setState(() {
+                        selectedDate = pickedDate;
+                      });
+                    }
+                  },
                 ),
               ),
-            ),
-
-            const Spacer(),
-
-            // ---- Bouton paiement ----
-            load
-                ? const Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.green,
-                    ),
-                  )
-                : SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+        
+              const SizedBox(height: 12),
+        
+              // ---- Paiement recap ----
+              Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text("Paiement",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16)),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          cart.cartLength <= 1
+                              ? Text("${cart.cartLength} article")
+                              : Text("${cart.cartLength} articles"),
+                        ],
                       ),
-                      onPressed: () async {
-                        handlePayment();
-                      },
-                      child: const Text(
-                        "Passer au paiement via KKiaPay",
-                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Montant"),
+                          Text("${cart.total} F FCA"),
+                        ],
                       ),
-                    ),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text("Frais de livraison"),
+                          FutureBuilder(
+                            future: PriceFuture,
+                            builder: (context, AsyncSnapshot snapshot) {
+                              if (snapshot.hasData && snapshot.data.isNotEmpty) {
+                                // Si viewprice() renvoie une liste
+                                Pliv p = snapshot.data[0];
+                                        return Text(
+                                  "${p.value} F CFA",
+                                  style: const TextStyle(color: Colors.black),
+                                );
+                              } else {
+                                return const Text("0 F CFA");
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                      const Divider(height: 24, thickness: 1),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text("Total",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 16)),
+                          Text("$prixTotal  F FCA",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 16)),
+                        ],
+                      ),
+                    ],
                   ),
-            const SizedBox(height: 8),
-            const Center(
-              child: Text(
-                "Vous allez être redirigé vers la plateforme de paiement.",
-                style: TextStyle(fontSize: 12, color: Colors.grey),
-                textAlign: TextAlign.center,
+                ),
               ),
-            )
-          ],
+        
+             const SizedBox(height: 24),
+        
+              // ---- Bouton paiement ----
+              load
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.green,
+                      ),
+                    )
+                  : SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                        ),
+                        onPressed: () async {
+                          handlePayment();
+                        },
+                        child: const Text(
+                          "Passer au paiement via KKiaPay",
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                      ),
+                    ),
+              const SizedBox(height: 8),
+              const Center(
+                child: Text(
+                  "Vous allez être redirigé vers la plateforme de paiement.",
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                  textAlign: TextAlign.center,
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

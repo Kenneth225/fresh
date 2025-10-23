@@ -9,21 +9,21 @@ List<Pliv> plivFromJson(String str) => List<Pliv>.from(json.decode(str).map((x) 
 String plivToJson(List<Pliv> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class Pliv {
-    String? id;
-    String? prix;
+    String? cle;
+    String? value;
 
     Pliv({
-        this.id,
-        this.prix,
+        this.cle,
+        this.value,
     });
 
     factory Pliv.fromJson(Map<String, dynamic> json) => Pliv(
-        id: json["id"],
-        prix: json["prix"],
+        cle: json["cle"],
+        value: json["value"],
     );
 
     Map<String, dynamic> toJson() => {
-        "id": id,
-        "prix": prix,
+        "cle": cle,
+        "value": value,
     };
 }

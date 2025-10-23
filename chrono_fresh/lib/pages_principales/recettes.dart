@@ -1,3 +1,4 @@
+import 'package:chrono_fresh/controlleurs/recette_api.dart';
 import 'package:chrono_fresh/controlleurs/recette_api_all.dart';
 import 'package:chrono_fresh/global_var.dart';
 import 'package:chrono_fresh/models/recette_structure.dart';
@@ -18,7 +19,7 @@ class Recettes extends StatefulWidget {
 
 // Fonction pour récupérer toutes les recettes
 Future<List<Mrecettes>> viewallrec() async {
-  return await viewrecall('0');
+  return await viewrec('0');
 }
 
 // Affichage du détail de la recette en bas de l'écran
@@ -102,7 +103,7 @@ class _RecettesState extends State<Recettes> {
                   bottom: Radius.circular(30),
                 ),
                 child: Image.network(
-                  "${api_link}/api_fresh/uploads/${widget.image}",
+                  "$link_photo/${widget.image}",
                   height: 250,
                   width: double.infinity,
                   fit: BoxFit.cover,
