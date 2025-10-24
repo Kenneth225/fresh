@@ -41,7 +41,7 @@ class _ProfilState extends State<Profil> {
 
     if (usermail != null) {
       setState(() {
-         _imagePath = prefs.getString('user_image');
+        _imagePath = prefs.getString('user_image');
         isLoggedIn = true;
         mail = usermail;
         role = coderole;
@@ -144,13 +144,13 @@ class _ProfilState extends State<Profil> {
       leading: Icon(icon, color: Colors.green), // icône à gauche
       title: Text(
         title,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 16,
           color: Colors.black,
           fontWeight: FontWeight.w400,
         ),
       ),
-      trailing: Icon(Icons.arrow_forward_ios,
+      trailing: const Icon(Icons.arrow_forward_ios,
           size: 16, color: Colors.grey), // icône de flèche
       onTap: () => onTap(),
     );
@@ -169,15 +169,16 @@ class _ProfilState extends State<Profil> {
                           child: Row(
                             children: [
                               Center(
-              child: CircleAvatar(
-                radius: 50,
-                backgroundImage:
-                    _imagePath != null ? FileImage(File(_imagePath!)) : null,
-                child: _imagePath == null
-                    ? const Icon(Icons.person, size: 50)
-                    : null,
-              ),
-            ),
+                                child: CircleAvatar(
+                                  radius: 50,
+                                  backgroundImage: _imagePath != null
+                                      ? FileImage(File(_imagePath!))
+                                      : null,
+                                  child: _imagePath == null
+                                      ? const Icon(Icons.person, size: 50)
+                                      : null,
+                                ),
+                              ),
                               const SizedBox(
                                 width: 20,
                               ),
@@ -491,13 +492,177 @@ class _ProfilState extends State<Profil> {
                   // Définir une fonction pour créer un widget de ligne pour la liste
 // Le corps de la page
 // Nous utiliserons un Stack pour superposer les widgets
-                  Column(
+                  Center(
+                      child: Container(
+                        width: double.infinity,
+                        child: SafeArea(
+                          child: SingleChildScrollView(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 20),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    children: [
+                                      // En-tête de la page ("Mon compte")
+                                      const Padding(
+                                        padding: EdgeInsets.only(
+                                            top: 20.0, bottom: 15.0),
+                                        child: Text(
+                                          'Mon compte',
+                                          style: TextStyle(
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+
+                                      // Section du profil utilisateur
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 16.0, vertical: 20.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            CircleAvatar(
+                                              radius: 50,
+                                              backgroundImage: _imagePath !=
+                                                      null
+                                                  ? FileImage(File(_imagePath!))
+                                                  : null,
+                                              child: _imagePath == null
+                                                  ? const Icon(Icons.person,
+                                                      size: 50)
+                                                  : null,
+                                            ),
+                                            const SizedBox(width: 20),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "$prenom $nom",
+                                                    style: const TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                  const SizedBox(height: 4),
+                                                  Text(
+                                                    "$mail",
+                                                    style: const TextStyle(
+                                                        color: Colors.grey),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+
+                                      const Divider(),
+
+                                      // Liste des options
+                                      buildListTile(
+                                          Icons.folder_open, 'Mes commandes',
+                                          () {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    Mescommandes(id: "$id")));
+                                      }),
+                                      const Divider(),
+                                      buildListTile(Icons.person_outline,
+                                          'Mes informations personnelles', () {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    PersonalInfoPage()));
+                                      }),
+                                      const Divider(),
+                                      buildListTile(Icons.location_on_outlined,
+                                          'Mon adresses de livraison', () {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const FavoriteAddressesPage()));
+                                      }),
+                                      const Divider(),
+                                      buildListTile(
+                                          Icons.info_outline, 'À propos', () {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const HelpPage()));
+                                      }),
+                                      const Divider(),
+                                    ],
+                                  ),
+
+                                  // Bouton de déconnexion
+                                  Container(
+                                    width: double.infinity,
+                                    decoration: const BoxDecoration(
+                                      image: DecorationImage(
+                                        image: AssetImage('assets/fresh.png'),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 30.0),
+                                      child: ElevatedButton.icon(
+                                        onPressed: () {
+                                          _showMyDialog();
+                                        },
+                                        icon: const Icon(Icons.logout,
+                                            color: Colors.white),
+                                        label: const Text(
+                                          'Me déconnecter',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18),
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.green[800],
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 50, vertical: 15),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(30.0),
+                                          ),
+                                          minimumSize: const Size(
+                                              double.infinity,
+                                              50), // largeur adaptative
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
+              /* Column(
                       children: [
                         Column(
                           children: [
                             // En-tête de la page ("Mon compte")
                             const Padding(
-                              padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                              padding: EdgeInsets.only(top: 20.0, bottom: 15.0),
                               child: Text(
                                 'Mon compte',
                                 style: TextStyle(
@@ -514,15 +679,15 @@ class _ProfilState extends State<Profil> {
                               child: Row(
                                 children: [
                                   Center(
-              child: CircleAvatar(
-                radius: 50,
-                backgroundImage:
-                    _imagePath != null ? FileImage(File(_imagePath!)) : null,
-                child: _imagePath == null
-                    ? const Icon(Icons.person, size: 50)
-                    : null,
-              ),
-            ),
+                            child: CircleAvatar(
+                              radius: 50,
+                              backgroundImage:
+                                  _imagePath != null ? FileImage(File(_imagePath!)) : null,
+                              child: _imagePath == null
+                                  ? const Icon(Icons.person, size: 50)
+                                  : null,
+                            ),
+                          ),
                                   const SizedBox(width: 20),
                                   Expanded(
                                     child: Column(
@@ -603,16 +768,14 @@ class _ProfilState extends State<Profil> {
                               // 2. Contenu principal de la page, enveloppé dans un SingleChildScrollView
                               SingleChildScrollView(
                                 child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     // Bouton de déconnexion
                                     Padding(
                                       padding: const EdgeInsets.all(30.0),
                                       child: ElevatedButton(
                                         onPressed: () {
-                                           
-
-
+                                                                                                    
                                            _showMyDialog();
                                           // Logique de déconnexion
                                         },
@@ -654,7 +817,7 @@ class _ProfilState extends State<Profil> {
                           ),
                         ),
                       ],
-                    )
+                    )*/
               /*Column(
                       children: [
                         Padding(
@@ -888,7 +1051,7 @@ class _ProfilState extends State<Profil> {
                         )
                       ],
                     ),*/
-              )
+            )
           : Center(
               child: GestureDetector(
                 onTap: () {

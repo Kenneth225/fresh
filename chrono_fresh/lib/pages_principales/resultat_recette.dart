@@ -109,119 +109,130 @@ class ReSultatsCateGorieRecetteState extends State<ReSultatsCateGorieRecette> {
                                   }
 
                                   final recettes = snapshot.data!;
-                                  return SizedBox(
-                                    height: 450,
-                                    child: ListView.builder(
-                                        itemCount: recettes.length,
-                                        padding: const EdgeInsets.all(6.0),
-                                        itemBuilder: (context, index) {
-                                          final recette = recettes[index];
-                                          return GestureDetector(
-                                              onTap: () {
-                                                Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            Recettes(
-                                                              nom: recette
-                                                                  .nomPlat,
-                                                              description: recette
-                                                                  .description,
-                                                              image:
-                                                                  recette.image,
-                                                            )));
-                                              },
-                                              
-                                              child: IntrinsicHeight(
-                                                  child: Container(
-                                                      margin:
-                                                          const EdgeInsets.only(
-                                                              bottom: 24,
-                                                              left: 20,
-                                                              right: 20),
-                                                      width: double.infinity,
-                                                      child: Row( crossAxisAlignment: CrossAxisAlignment .start,
-                                                          children: [
-                                                            Container( 
-                                                              
-                                                              margin:const EdgeInsets .only(right: 8),
-                                                             width: 100,
-                                                              height: 97,
-                                                              child:
-                                                                  Image.network(
-                                                                "$link_photo/${recette.image}",
-                                                                height: 60,
-                                                                width: 90,
-                                                                fit: BoxFit
-                                                                    .cover,
+                                  return SingleChildScrollView(
+                                    child: SizedBox(
+                                      height: 380,
+                                      child: ListView.builder(
+                                          itemCount: recettes.length,
+                                          padding: const EdgeInsets.all(6.0),
+                                          itemBuilder: (context, index) {
+                                            final recette = recettes[index];
+                                            return GestureDetector(
+                                                onTap: () {
+                                                  Navigator.of(context).push(
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              Recettes(
+                                                                nom: recette
+                                                                    .nomPlat,
+                                                                description: recette
+                                                                    .description,
+                                                                    ingredient: recette.ingredient,
+                                                                image:
+                                                                    recette.image,
+                                                              )));
+                                                },
+                                                
+                                                child: IntrinsicHeight(
+                                                    child: Container(
+                                                        margin:
+                                                            const EdgeInsets.only(
+                                                                bottom: 24,
+                                                                left: 20,
+                                                                right: 20),
+                                                        width: double.infinity,
+                                                        child: Row( crossAxisAlignment: CrossAxisAlignment .start,
+                                                            children: [
+                                                              Container( 
+                                                                
+                                                                margin:const EdgeInsets .only(right: 8),
+                                                               width: 100,
+                                                                height: 97,
+                                                                child:
+                                                                    Image.network(
+                                                                  "$link_photo/${recette.image}",
+                                                                  height: 60,
+                                                                  width: 90,
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                ),
                                                               ),
-                                                            ),
-                                                            Expanded(
-                                                                child: IntrinsicHeight(
-                                                                    child: Container(
-                                                                        width: double.infinity,
-                                                                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                                                          IntrinsicWidth(
-                                                                            child:
-                                                                                IntrinsicHeight(
-                                                                              child: Container(
-                                                                                margin: const EdgeInsets.only(bottom: 12),
-                                                                                child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                                                                  IntrinsicWidth(
-                                                                                    child: IntrinsicHeight(
-                                                                                      child: Container(
-                                                                                        decoration: BoxDecoration(
-                                                                                          borderRadius: BorderRadius.circular(64),
-                                                                                          color: Color(0x33006650),
-                                                                                        ),
-                                                                                        padding: const EdgeInsets.only(left: 8, right: 8),
-                                                                                        margin: const EdgeInsets.only(right: 8),
-                                                                                        child: const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                                                                          Text(
-                                                                                            "Recette",
-                                                                                            style: TextStyle(
-                                                                                              color: Color(0xFF000000),
-                                                                                              fontSize: 13,
-                                                                                              fontWeight: FontWeight.bold,
-                                                                                            ),
+                                                              Expanded(
+                                                                  child: IntrinsicHeight(
+                                                                      child: Container(
+                                                                          width: double.infinity,
+                                                                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                                                            IntrinsicWidth(
+                                                                              child:
+                                                                                  IntrinsicHeight(
+                                                                                child: Container(
+                                                                                  margin: const EdgeInsets.only(bottom: 12),
+                                                                                  child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                                                                    IntrinsicWidth(
+                                                                                      child: IntrinsicHeight(
+                                                                                        child: Container(
+                                                                                          decoration: BoxDecoration(
+                                                                                            borderRadius: BorderRadius.circular(64),
+                                                                                            color: Color(0x33006650),
                                                                                           ),
-                                                                                        ]),
+                                                                                          padding: const EdgeInsets.only(left: 8, right: 8),
+                                                                                          margin: const EdgeInsets.only(right: 8),
+                                                                                          child: const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                                                                            Text(
+                                                                                              "Recette",
+                                                                                              style: TextStyle(
+                                                                                                color: Color(0xFF000000),
+                                                                                                fontSize: 13,
+                                                                                                fontWeight: FontWeight.bold,
+                                                                                              ),
+                                                                                            ),
+                                                                                          ]),
+                                                                                        ),
                                                                                       ),
                                                                                     ),
-                                                                                  ),
-                                                                                  IntrinsicWidth(
-                                                                                    child: IntrinsicHeight(
-                                                                                      child: Container(
-                                                                                        decoration: BoxDecoration(
-                                                                                          borderRadius: BorderRadius.circular(64),
-                                                                                          color: Color(0x33006650),
-                                                                                        ),
-                                                                                        padding: const EdgeInsets.only(left: 8, right: 8),
-                                                                                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                                                                          Text(
-                                                                                            recette.ingredient,
-                                                                                            style: const TextStyle(
-                                                                                              color: Color(0xFF000000),
-                                                                                              fontSize: 13,
-                                                                                              fontWeight: FontWeight.bold,
-                                                                                            ),
+                                                                                    IntrinsicWidth(
+                                                                                      child: IntrinsicHeight(
+                                                                                        child: Container(
+                                                                                          decoration: BoxDecoration(
+                                                                                            borderRadius: BorderRadius.circular(64),
+                                                                                            color: Color(0x33006650),
                                                                                           ),
-                                                                                        ]),
+                                                                                          padding: const EdgeInsets.only(left: 8, right: 8),
+                                                                                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                                                                            recette.ingredient.length > 10 ?
+                                                                                            Text(
+                                                                                              "${recette.ingredient.substring(0, 8)}...",
+                                                                                              style: const TextStyle(
+                                                                                                color: Color(0xFF000000),
+                                                                                                fontSize: 13,
+                                                                                                fontWeight: FontWeight.bold,
+                                                                                              ),
+                                                                                            ): Text(
+                                                                                              recette.ingredient,
+                                                                                              style: const TextStyle(
+                                                                                                color: Color(0xFF000000),
+                                                                                                fontSize: 13,
+                                                                                                fontWeight: FontWeight.bold,
+                                                                                              ),
+                                                                                            ),
+                                                                                          ]),
+                                                                                        ),
                                                                                       ),
                                                                                     ),
-                                                                                  ),
-                                                                                ]),
+                                                                                  ]),
+                                                                                ),
                                                                               ),
                                                                             ),
-                                                                          ),
-                                                                          IntrinsicHeight(
-                                                                              child: Container(
-                                                                                  width: double.infinity,
-                                                                                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                                                                    Container(margin: const EdgeInsets.only(bottom: 6), child: Text(recette.nomPlat, style: const TextStyle(color: Color(0xFF000000), fontSize: 13, fontWeight: FontWeight.bold)))
-                                                                                  ])))
-                                                                        ]))))
-                                                          ]))));
-                                        }),
+                                                                            IntrinsicHeight(
+                                                                                child: Container(
+                                                                                    width: double.infinity,
+                                                                                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                                                                      Container(margin: const EdgeInsets.only(bottom: 6), child: Text(recette.nomPlat, style: const TextStyle(color: Color(0xFF000000), fontSize: 13, fontWeight: FontWeight.bold)))
+                                                                                    ])))
+                                                                          ]))))
+                                                            ]))));
+                                          }),
+                                    ),
                                   );
                                 })
                           ]))))

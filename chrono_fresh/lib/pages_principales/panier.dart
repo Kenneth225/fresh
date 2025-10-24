@@ -50,8 +50,6 @@ class _PanierState extends State<Panier> {
     autoLogIn();
   }
 
-  
-
   void autoLogIn() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? usermail = prefs.getString('email');
@@ -144,7 +142,8 @@ class _PanierState extends State<Panier> {
           content: const SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text("Pour le moment, nous livrons uniquement à Cotonou, Porto-Novo et Calavi. D’autres zones seront bientôt disponibles !")
+                Text(
+                    "Pour le moment, nous livrons uniquement à Cotonou, Porto-Novo et Calavi. D’autres zones seront bientôt disponibles !")
               ],
             ),
           ),
@@ -153,17 +152,17 @@ class _PanierState extends State<Panier> {
               child: const Text("Continuer"),
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => CheckoutPage(
-                                    imgArray: [imgArray],
-                                    idArray: [idArray],
-                                    priceArray: [priceArray],
-                                    nomArray: [nomArray],
-                                    qtArray: [qtArray],
-                                    unitprArray: [unitprArray],
-                                  )));
+                    builder: (context) => CheckoutPage(
+                          imgArray: [imgArray],
+                          idArray: [idArray],
+                          priceArray: [priceArray],
+                          nomArray: [nomArray],
+                          qtArray: [qtArray],
+                          unitprArray: [unitprArray],
+                        )));
               },
             ),
-             TextButton(
+            TextButton(
               child: const Text("Annuler"),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -174,11 +173,6 @@ class _PanierState extends State<Panier> {
       },
     );
   }
-
-  
-
-
-  
 
   Widget _buildOptionRow(String title, String value) {
     return Padding(
@@ -257,90 +251,88 @@ class _PanierState extends State<Panier> {
                               ),
                             ),
                             const SizedBox(width: 10),
-
                             // Nom + détail + bouton +/-
-                             Flexible(
-                               child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      item.productName,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                            Flexible(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    item.productName,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
                                     ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      "${item.variants.first.price} F CFA ",
-                                      style: const TextStyle(
-                                          fontSize: 13, color: Colors.grey),
-                                    ),
-                                    const SizedBox(height: 8),
-                               
-                                    // Boutons +/-
-                                    Container(
-                                      //width: 100,
-                                      height: 30,
-                                      decoration: const BoxDecoration(
-                                          color: Color(0xFF006650),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(18))),
-                                      //color: Color(0xFF006650),
-                                      child: Row(
-                                        children: [
-                                          IconButton(
-                                            iconSize: 12,
-                                            icon: const Icon(Icons.remove,
-                                                color: Colors.white),
-                                            onPressed: () {
-                                              if (item.quantity > 1) {
-                                                setState(() {
-                                                  cart.updateQuantity(
-                                                      item.productId,
-                                                      item.variants,
-                                                      item.quantity - 1);
-                                                  Provider.of<CartProvider>(
-                                                          context,
-                                                          listen: false)
-                                                      .removeItem();
-                                                });
-                                              }
-                                            },
-                                          ),
-                                          Text(
-                                            "${item.quantity}",
-                                            style: const TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.white),
-                                          ),
-                                          IconButton(
-                                            iconSize: 12,
-                                            icon: const Icon(Icons.add,
-                                                color: Colors.white),
-                                            onPressed: () {
-                                              if (item.quantity < 10) {
-                                                setState(() {
-                                                  cart.updateQuantity(
-                                                      item.productId,
-                                                      item.variants,
-                                                      item.quantity + 1);
-                                                  Provider.of<CartProvider>(
-                                                          context,
-                                                          listen: false)
-                                                      .addItem();
-                                                });
-                                              }
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
-                             ),
-                            
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    "${item.variants.first.price} F CFA ",
+                                    style: const TextStyle(
+                                        fontSize: 13, color: Colors.grey),
+                                  ),
+                                  const SizedBox(height: 8),
 
+                                  // Boutons +/-
+                                  Container(
+                                    width: 103,
+                                    height: 30,
+                                    decoration: const BoxDecoration(
+                                        color: Color(0xFF006650),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(18))),
+                                    //color: Color(0xFF006650),
+                                    child: Row(
+                                      children: [
+                                        IconButton(
+                                          iconSize: 12,
+                                          icon: const Icon(Icons.remove,
+                                              color: Colors.white),
+                                          onPressed: () {
+                                            if (item.quantity > 1) {
+                                              setState(() {
+                                                cart.updateQuantity(
+                                                    item.productId,
+                                                    item.variants,
+                                                    item.quantity - 1);
+                                                Provider.of<CartProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .removeItem();
+                                              });
+                                            }
+                                          },
+                                        ),
+                                        Text(
+                                          "${item.quantity}",
+                                          style: const TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.white),
+                                        ),
+                                        IconButton(
+                                          iconSize: 12,
+                                          icon: const Icon(Icons.add,
+                                              color: Colors.white),
+                                          onPressed: () {
+                                            if (item.quantity < 10) {
+                                              setState(() {
+                                                cart.updateQuantity(
+                                                    item.productId,
+                                                    item.variants,
+                                                    item.quantity + 1);
+                                                Provider.of<CartProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .addItem();
+                                              });
+                                            }
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 5),
                             // Prix + bouton supprimer
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
@@ -417,24 +409,29 @@ class _PanierState extends State<Panier> {
                               borderRadius: BorderRadius.circular(10)),
                         ),
                         onPressed: () {
-                          //Ajout des produits au tableaux
-                          cart.cartItemsList.forEach((f) {
-                            nomArray.add(f.productName);
-                            qtArray.add(f.quantity);
-                            imgArray.add(f.productImages?[0]);
-                            unitprArray.add(f.variants.isNotEmpty
-                                ? f.variants[0].price
-                                : null); // Ajout du prix
-                            idArray.add(f.productId);
-                          });
-                          print('$nomArray');
-                          print('$qtArray');
-                          print('$unitprArray');
-                          print('$imgArray');
-                          print(cart.cartLength);
-                          
-                          _showMymap();
-                        /*  Navigator.of(context).push(MaterialPageRoute(
+                          if (cart.cartLength < 1) {
+                            Navigator.pushReplacementNamed(context, 'accueil');
+                          } else {
+                            //Ajout des produits au tableaux
+                            cart.cartItemsList.forEach((f) {
+                              nomArray.add(f.productName);
+                              qtArray.add(f.quantity);
+                              imgArray.add(f.productImages?[0]);
+                              unitprArray.add(f.variants.isNotEmpty
+                                  ? f.variants[0].price
+                                  : null); // Ajout du prix
+                              idArray.add(f.productId);
+                            });
+                            print('$nomArray');
+                            print('$qtArray');
+                            print('$unitprArray');
+                            print('$imgArray');
+                            print(cart.cartLength);
+
+                            _showMymap();
+                          }
+
+                          /*  Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => CheckoutPage(
                                     imgArray: [imgArray],
                                     idArray: [idArray],
@@ -443,7 +440,6 @@ class _PanierState extends State<Panier> {
                                     qtArray: [qtArray],
                                     unitprArray: [unitprArray],
                                   )));*/
-                          
                         },
                         child: const Text(
                           "Valider mon panier",

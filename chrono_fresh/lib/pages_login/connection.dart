@@ -15,6 +15,8 @@ class Connection extends StatefulWidget {
 }
 
 class _ConnectionState extends State<Connection> {
+  final _formKey = GlobalKey<FormState>();
+
   late TextEditingController nomctrl;
   late TextEditingController prenomctrl;
   late TextEditingController mailctrl;
@@ -53,7 +55,7 @@ class _ConnectionState extends State<Connection> {
             child: ListBody(
               children: <Widget>[
                 Text(
-                    'Un e-mail de confirmation vous a été envoyé. Cliquez sur le lien pour continuer. Pensez à vérifier vos spams !'),
+                    "Un e-mail de confirmation vous a été envoyé. Cliquez sur le lien qu’il contient pour activer votre compte. Pensez à vérifier vos spams."),
               ],
             ),
           ),
@@ -161,15 +163,6 @@ class _ConnectionState extends State<Connection> {
           prefs.setString('telephone', "...");
           prefs.setString('id', jsonData[0]["id"]);
         }
-        /*  } else {
-          prefs.setString('dispo', jsonData[0]["statutDisponibilite"]);
-          prefs.setString('role', jsonData[0]["role"]);
-          prefs.setString('email', jsonData[0]["email"]);
-          prefs.setString('nom', jsonData[0]["nom"]);
-          prefs.setString('prenom', jsonData[0]["prenom"]);
-          prefs.setString('telephone', jsonData[0]["telephone"]);
-          prefs.setString('id', jsonData[0]["id"]);
-        }*/
 
         setState(() {
           isLoggedIn = true;
@@ -184,7 +177,7 @@ class _ConnectionState extends State<Connection> {
     }
   }
 
-  Future<void> saveuser(nom, prenom, mail) async {
+  Future<void> saveuser(nom, prenom, numer, mail) async {
     var rng = new Random();
     var next = rng.nextDouble() * 1000000;
     while (next < 100000) {
@@ -194,7 +187,13 @@ class _ConnectionState extends State<Connection> {
     print(cd);
 
     var url = Uri.parse("${api_link}/api_fresh/inscrip.php");
-    var data = {"nom": nom, "prenom": prenom, "mail": mail, "key": '${cd}'};
+    var data = {
+      "nom": nom,
+      "prenom": prenom,
+      "phone": numer,
+      "mail": mail,
+      "key": '${cd}'
+    };
     var res = await http.post(url, body: data);
 
     if (jsonDecode(res.body) == "true") {
@@ -248,7 +247,7 @@ class _ConnectionState extends State<Connection> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-            backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: SafeArea(
           child: Column(
@@ -323,7 +322,8 @@ class _ConnectionState extends State<Connection> {
                                       decidor(context, mailctrl.text);
                                     },
                                     child: const Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           "Se connecté",
@@ -370,7 +370,7 @@ class _ConnectionState extends State<Connection> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                                                      const Text(
+                            const Text(
                               "Inscription",
                               style: TextStyle(
                                 color: Colors.black,
@@ -381,6 +381,144 @@ class _ConnectionState extends State<Connection> {
                               height: 11,
                             ),
                             TextField(
+                              controller: nomctrl,
+                              style: const TextStyle(color: Colors.black),
+                              keyboardType: TextInputType.name,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                ),
+                                hintStyle: const TextStyle(color: Colors.grey),
+                                hintText: "Nom",
+                                fillColor: Colors.white,
+                                hoverColor: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            TextField(
+                              controller: prenomctrl,
+                              style: const TextStyle(color: Colors.black),
+                              keyboardType: TextInputType.name,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                ),
+                                hintStyle: const TextStyle(color: Colors.grey),
+                                hintText: "Prenom",
+                                fillColor: Colors.white,
+                                hoverColor: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            TextField(
+                              controller: numctrl,
+                              style: const TextStyle(color: Colors.black),
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                ),
+                                hintStyle: const TextStyle(color: Colors.grey),
+                                hintText: "Numero",
+                                fillColor: Colors.white,
+                                hoverColor: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            TextField(
+                              controller: mailctrl,
+                              style: const TextStyle(color: Colors.black),
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                ),
+                                hintStyle: const TextStyle(color: Colors.grey),
+                                hintText: "Mail",
+                                fillColor: Colors.white,
+                                hoverColor: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Center(
+                              child: Container(
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      Color.fromRGBO(14, 209, 223, 0.667),
+                                      Color.fromRGBO(87, 118, 192, 1),
+                                    ],
+                                  ),
+                                ),
+                                child: Center(
+                                  child: TextButton(
+                                    onPressed: () {
+                                      // 🔹 Validation simple avant enregistrement
+                                      if (nomctrl.text.isEmpty ||
+                                          prenomctrl.text.isEmpty ||
+                                          numctrl.text.isEmpty ||
+                                          mailctrl.text.isEmpty) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                              "Veuillez remplir tous les champs requis ❗",
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                            backgroundColor: Colors.redAccent,
+                                          ),
+                                        );
+                                        return;
+                                      }
+
+                                      // Optionnel : validation email simple
+                                      if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
+                                          .hasMatch(mailctrl.text)) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                              "Adresse mail invalide ❌",
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                            backgroundColor: Colors.redAccent,
+                                          ),
+                                        );
+                                        return;
+                                      }
+
+                                      // ✅ Si tout est bon, on enregistre
+                                      saveuser(
+                                        nomctrl.text,
+                                        prenomctrl.text,
+                                        numctrl.text,
+                                        mailctrl.text,
+                                      );
+                                    },
+                                    child: const Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "S'inscrire",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            /* TextField(
                               controller: nomctrl,
                               style: TextStyle(color: Colors.black),
                               keyboardType: TextInputType.name,
@@ -393,7 +531,7 @@ class _ConnectionState extends State<Connection> {
                                   fillColor: Colors.white,
                                   hoverColor: Colors.white),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 8,
                             ),
                             TextField(
@@ -407,6 +545,23 @@ class _ConnectionState extends State<Connection> {
                                   //filled: true,
                                   hintStyle: TextStyle(color: Colors.grey),
                                   hintText: "Prenom",
+                                  fillColor: Colors.white,
+                                  hoverColor: Colors.white),
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            TextField(
+                              controller: numctrl,
+                              style: TextStyle(color: Colors.black),
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12.0),
+                                  ),
+                                  //filled: true,
+                                  hintStyle: TextStyle(color: Colors.grey),
+                                  hintText: "Numero",
                                   fillColor: Colors.white,
                                   hoverColor: Colors.white),
                             ),
@@ -428,7 +583,7 @@ class _ConnectionState extends State<Connection> {
                                   fillColor: Colors.white,
                                   hoverColor: Colors.white),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 16,
                             ),
                             Center(
@@ -444,8 +599,7 @@ class _ConnectionState extends State<Connection> {
                                 child: Center(
                                   child: TextButton(
                                     onPressed: () {
-                                      saveuser(nomctrl.text, prenomctrl.text,
-                                          mailctrl.text);
+                                      saveuser(nomctrl.text, prenomctrl.text, numctrl.text, mailctrl.text);
                                     },
                                     child: const Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -462,7 +616,7 @@ class _ConnectionState extends State<Connection> {
                                   ),
                                 ),
                               ),
-                            ),
+                            ),*/
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [

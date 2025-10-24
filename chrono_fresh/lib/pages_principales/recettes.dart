@@ -1,5 +1,4 @@
 import 'package:chrono_fresh/controlleurs/recette_api.dart';
-import 'package:chrono_fresh/controlleurs/recette_api_all.dart';
 import 'package:chrono_fresh/global_var.dart';
 import 'package:chrono_fresh/models/recette_structure.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +22,7 @@ Future<List<Mrecettes>> viewallrec() async {
 }
 
 // Affichage du détail de la recette en bas de l'écran
+/*
 void showRecipeDetails(
     BuildContext context, String titre, String description, image) {
   showModalBottomSheet(
@@ -75,7 +75,7 @@ void showRecipeDetails(
       );
     },
   );
-}
+}*/
 
 class _RecettesState extends State<Recettes> {
   late Future<List<Mrecettes>> recetteFuture;
@@ -140,6 +140,21 @@ class _RecettesState extends State<Recettes> {
                     style: const TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 20),
                   ),
+                  const Center(
+                      child: Text(
+                    "Ingrédients",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17,
+                        color: Color(0xFF006650)),
+                  )),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "${widget.ingredient}",
+                      style: TextStyle(fontSize: 15, color: Colors.black),
+                    ),
+                  ),
                   const SizedBox(
                     height: 5,
                   ),
@@ -151,9 +166,16 @@ class _RecettesState extends State<Recettes> {
                         fontSize: 17,
                         color: Color(0xFF006650)),
                   )),
-                  Text(
-                    "${widget.description}",
-                    style: TextStyle(fontSize: 17, color: Colors.black),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "${widget.description}",
+                      style: TextStyle(fontSize: 17, color: Colors.black),
+                    ),
                   ),
                 ],
               ),

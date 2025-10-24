@@ -113,6 +113,7 @@ class _DetailsState extends State<Details> {
 
   void showRecipeDetails(BuildContext context, titre, description) {
     showModalBottomSheet(
+      isScrollControlled: true,
       context: context,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
@@ -136,9 +137,9 @@ class _DetailsState extends State<Details> {
                   )
                 ],
               ),
-              const SizedBox(height: 10),
-              Text(description, style: const TextStyle(fontSize: 16)),
-              const SizedBox(height: 20),
+              const SizedBox(height: 8),
+              SizedBox(child: Text(description, style: const TextStyle(fontSize: 16))),
+              const SizedBox(height: 5),
             ],
           ),
         );
@@ -423,7 +424,7 @@ class _DetailsState extends State<Details> {
                                           Expanded(
                                             child: Image.network(
                                               // Assurez-vous que l'objet `Mrecettes` a une propriété `imageUrl`
-                                              "$api_link/api_fresh/uploads/${recette.image}",
+                                              "$link_photo/${recette.image}",
                                               fit: BoxFit
                                                   .cover, // L'image remplit l'espace sans déformation
                                               loadingBuilder: (context, child,

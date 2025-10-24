@@ -30,7 +30,7 @@ class Notifications {
     factory Notifications.fromJson(Map<String, dynamic> json) => Notifications(
         id: json["id"],
         titre: json["titre"],
-        sousTitre: json["sous-titre"],
+        sousTitre: json["sous_titre"],
         image: json["image"],
         lien: json["lien"],
         createdAt: json["created_at"],
@@ -40,7 +40,7 @@ class Notifications {
     Map<String, dynamic> toJson() => {
         "id": id,
         "titre": titre,
-        "sous-titre": sousTitre,
+        "sous_titre": sousTitre,
         "image": image,
         "lien": lien,
         "created_at": createdAt,

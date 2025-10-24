@@ -193,11 +193,11 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                 controller: _lastNameController,
                 decoration: const InputDecoration(labelText: 'Nom'),
               ),
-              TextField(
+             /* TextField(
                 controller: _mailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(labelText: 'Email'),
-              ),
+              ),*/
               TextField(
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
@@ -298,11 +298,11 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
               title: const Text("Téléphone"),
               subtitle: Text(_phone),
             ),
-            ListTile(
+           /* ListTile(
               leading: const Icon(Icons.mail),
               title: const Text("Email"),
               subtitle: Text(_mail),
-            ),
+            ),*/
           ],
         ),
       ),
