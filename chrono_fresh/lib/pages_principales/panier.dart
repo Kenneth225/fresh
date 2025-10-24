@@ -43,10 +43,10 @@ class _PanierState extends State<Panier> {
   var Montant = 0;
   late int qt;
   var taille = FlutterCart().cartItemsList.length;
-
+  Map<int, int> productStocks = {}; // id -> stock
   initState() {
     super.initState();
-
+    updateStocks();
     autoLogIn();
   }
 
@@ -71,6 +71,16 @@ class _PanierState extends State<Panier> {
   void _removeItem(id, variants) {
     setState(() {
       cart.removeItem(id, variants);
+    });
+  }
+
+  // Récupération du stock pour tous les produits du panier
+  void updateStocks() async {
+    List<int> productIds =
+        cart.cartItemsList.map((item) => item.productId).cast<int>().toList();
+    Map<int, int> stocks = await fetchStocks(productIds);
+    setState(() {
+      productStocks = stocks;
     });
   }
 
@@ -103,6 +113,25 @@ class _PanierState extends State<Panier> {
         );
       },
     );
+  }
+
+  Future<Map<int, int>> fetchStocks(List<int> productIds) async {
+    try {
+      var url = Uri.parse("$api_link/get_products_stock.php");
+      var response = await http.post(url, body: {
+        "ids": jsonEncode(productIds),
+      });
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> data = jsonDecode(response.body);
+        return data.map((key, value) => MapEntry(int.parse(key), value as int));
+      } else {
+        throw Exception("Erreur serveur");
+      }
+    } catch (e) {
+      print("Erreur fetchStocks: $e");
+      return {};
+    }
   }
 
   Future<void> _showMyDialog() async {
@@ -153,12 +182,12 @@ class _PanierState extends State<Panier> {
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => CheckoutPage(
-                          imgArray: [imgArray],
-                          idArray: [idArray],
-                          priceArray: [priceArray],
-                          nomArray: [nomArray],
-                          qtArray: [qtArray],
-                          unitprArray: [unitprArray],
+                          imgArray: imgArray, // ✅ pas [imgArray]
+                          idArray: idArray,
+                          priceArray: priceArray,
+                          nomArray: nomArray,
+                          qtArray: qtArray,
+                          unitprArray: unitprArray,
                         )));
               },
             ),
@@ -312,6 +341,10 @@ class _PanierState extends State<Panier> {
                                           icon: const Icon(Icons.add,
                                               color: Colors.white),
                                           onPressed: () {
+                                            // a utiliser plus tard pour gerer dynamiquement le stock
+                                            int maxStock =
+                                                productStocks[item.productId] ??
+                                                    0;
                                             if (item.quantity < 10) {
                                               setState(() {
                                                 cart.updateQuantity(
@@ -323,6 +356,12 @@ class _PanierState extends State<Panier> {
                                                         listen: false)
                                                     .addItem();
                                               });
+                                            } else {
+                                              Fluttertoast.showToast(
+                                                msg:
+                                                    "Stock maximum atteint pour ${item.productName}",
+                                                toastLength: Toast.LENGTH_SHORT,
+                                              );
                                             }
                                           },
                                         ),

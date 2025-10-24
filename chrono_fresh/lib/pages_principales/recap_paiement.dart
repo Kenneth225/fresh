@@ -77,6 +77,12 @@ class _CheckoutPageState extends State<CheckoutPage> {
   @override
   void initState() {
     super.initState();
+    imgArray = widget.imgArray!;
+    idArray = widget.idArray!;
+    priceArray = widget.priceArray!;
+    nomArray = widget.nomArray!;
+    qtArray = widget.qtArray!;
+    unitprArray = widget.unitprArray!;
     autoLogIn();
     PriceFuture = fraisliv();
     PriceFuture.then((data) {
@@ -105,6 +111,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
         id = prefs.getString('id');
       });
     }
+  }
+
+  Future<void> fetchProductDetails() async {
+    var response = await http.post(Uri.parse("$api_link/get_products.php"),
+        body: {"ids": jsonEncode(idArray)});
+    var data = jsonDecode(response.body);
+    // Remplir prixArray, imgArray, nomArray à partir du serveur
   }
 
   Future<void> _showMyDialog() async {
@@ -233,7 +246,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
       var res = await http.post(url, body: data);
       if (jsonDecode(res.body) == "true") {
-        
         print("la reponse: ");
         print(jsonDecode(res.body));
         Fluttertoast.showToast(
@@ -344,11 +356,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       style: TextStyle(color: Colors.black),
                     );
                   }
-        
+
                   final addresses = snapshot.data!;
                   _lastFetchedAddresses =
                       addresses; // sauvegarde pour valider après
-        
+
                   return Card(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
@@ -402,15 +414,16 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   );
                 },
               ),
-        
+
               const SizedBox(height: 8),
-        
+
               // ---- Sélecteur de date ----
               Card(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12)),
                 child: ListTile(
-                  leading: const Icon(Icons.calendar_today, color: Colors.green),
+                  leading:
+                      const Icon(Icons.calendar_today, color: Colors.green),
                   title: Text(selectedDate == null
                       ? "Sélectionner une date de livraison"
                       : "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}"),
@@ -432,9 +445,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   },
                 ),
               ),
-        
+
               const SizedBox(height: 12),
-        
+
               // ---- Paiement recap ----
               Card(
                 shape: RoundedRectangleBorder(
@@ -471,10 +484,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
                           FutureBuilder(
                             future: PriceFuture,
                             builder: (context, AsyncSnapshot snapshot) {
-                              if (snapshot.hasData && snapshot.data.isNotEmpty) {
+                              if (snapshot.hasData &&
+                                  snapshot.data.isNotEmpty) {
                                 // Si viewprice() renvoie une liste
                                 Pliv p = snapshot.data[0];
-                                        return Text(
+                                return Text(
                                   "${p.value} F CFA",
                                   style: const TextStyle(color: Colors.black),
                                 );
@@ -501,9 +515,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   ),
                 ),
               ),
-        
-             const SizedBox(height: 24),
-        
+
+              const SizedBox(height: 24),
+
               // ---- Bouton paiement ----
               load
                   ? const Center(
